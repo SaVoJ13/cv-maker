@@ -1,30 +1,49 @@
-/* Ustawienia. */
+/* Ustawienia: osobne karty z ikoną, treść po lewej, kontrolka po prawej (na telefonie pod spodem). */
 .settings {
   max-width: 820px;
 }
 .set-card {
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.set-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px 16px;
+  padding: 20px;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--surface);
   box-shadow: var(--shadow-xs);
+  animation: rise var(--dur-3) var(--ease-out) backwards;
 }
-.set-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 22px 24px;
+.set-row:nth-child(2) {
+  animation-delay: 50ms;
 }
-.set-row + .set-row {
-  border-top: 1px solid var(--line);
+.set-row:nth-child(3) {
+  animation-delay: 100ms;
+}
+.set-row:nth-child(4) {
+  animation-delay: 150ms;
+}
+.set-ic {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 .set-text {
-  max-width: 400px;
+  max-width: 440px;
 }
 .set-text h2 {
   margin: 0 0 4px;
-  font-size: var(--fs-base);
+  font-size: var(--fs-md);
+  font-weight: 700;
 }
 .set-text p {
   margin: 0;
@@ -32,7 +51,6 @@
   font-size: 13.5px;
 }
 .set-ctl {
-  flex: none;
   max-width: 100%;
 }
 .backup .row {
@@ -41,15 +59,23 @@
   justify-content: flex-end;
   gap: 8px;
 }
-
 @media (max-width: 959px) {
   .set-row {
-    flex-direction: column;
-    gap: 14px;
-    padding: 18px 16px;
+    grid-template-columns: 48px minmax(0, 1fr);
+    padding: 16px;
+  }
+  .set-ctl {
+    grid-column: 1 / -1;
+  }
+  .set-ctl .seg {
+    display: flex;
+  }
+  .set-ctl .seg button {
+    flex: 1;
+    padding: 0 8px;
   }
   .backup .row {
-    justify-content: flex-start;
+    justify-content: stretch;
   }
   .backup .row .btn {
     flex: 1 1 200px;

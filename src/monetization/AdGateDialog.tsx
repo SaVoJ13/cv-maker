@@ -37,6 +37,11 @@ export function AdGateDialog({ onWatched, onClose }: { onWatched: () => void; on
       busy={busy}
       onClose={onClose}
       initialFocus={watchRef}
+      badge={
+        <span className="dlg-badge warm">
+          <Icon name="download" size={26} />
+        </span>
+      }
       actions={
         <>
           <button type="button" id="adCancel" className="btn" disabled={busy} onClick={onClose}>

@@ -11,9 +11,12 @@ import { Segmented } from './ui';
 
 const THEME_ICON: Record<ThemePref, IconName> = { system: 'monitor', light: 'sun', dark: 'moon' };
 
-function Row({ title, desc, children, id }: { title: string; desc?: string; children: ReactNode; id: string }) {
+function Row({ title, desc, children, id, icon }: { title: string; desc?: string; children: ReactNode; id: string; icon: IconName }) {
   return (
     <section className="set-row" aria-labelledby={id}>
+      <span className="set-ic" aria-hidden="true">
+        <Icon name={icon} size={22} />
+      </span>
       <div className="set-text">
         <h2 id={id}>{title}</h2>
         {desc ? <p>{desc}</p> : null}
@@ -42,7 +45,7 @@ export function Settings() {
       </div>
 
       <div className="set-card">
-        <Row id="set-lang" title={t('set_lang_title')} desc={t('set_lang_desc')}>
+        <Row id="set-lang" icon="globe" title={t('set_lang_title')} desc={t('set_lang_desc')}>
           <Segmented
             label={t('set_lang_title')}
             value={ui}
@@ -53,7 +56,7 @@ export function Settings() {
             ]}
           />
         </Row>
-        <Row id="set-theme" title={t('set_theme_title')} desc={t('set_theme_desc')}>
+        <Row id="set-theme" icon={THEME_ICON[theme]} title={t('set_theme_title')} desc={t('set_theme_desc')}>
           <Segmented<ThemePref>
             label={t('set_theme_title')}
             value={theme}
@@ -61,11 +64,11 @@ export function Settings() {
             options={THEME_PREFS.map((p) => ({ value: p, label: t(`theme_${p}`), icon: THEME_ICON[p] }))}
           />
         </Row>
-        <Row id="set-data" title={t('backup_title')} desc={t('backup_desc')}>
+        <Row id="set-data" icon="database" title={t('backup_title')} desc={t('backup_desc')}>
           <BackupBox />
         </Row>
         {adsActive() ? (
-          <Row id="set-ads" title={t('set_ads_title')} desc={t('set_ads_desc')}>
+          <Row id="set-ads" icon="shield" title={t('set_ads_title')} desc={t('set_ads_desc')}>
             <button
               type="button"
               id="adPrivacy"

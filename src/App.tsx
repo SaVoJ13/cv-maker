@@ -80,30 +80,32 @@ function Shell() {
       )}
 
       <main id="main" ref={mainRef} tabIndex={-1} className={inEditor ? 'workspace' : 'page'}>
-        {view === 'sample' && sampleCvShown ? (
-          <SampleView cv={sampleCvShown} onBack={() => go('dash')} onCreate={() => go('pick-new')} />
-        ) : view === 'pick-new' ? (
-          <TemplatePicker base={sample} mode="new" onCancel={() => go('dash')} onPick={(tpl, accent) => open(create({ tpl, accent }))} />
-        ) : view === 'pick-change' && current ? (
-          <TemplatePicker
-            base={current}
-            mode="change"
-            onCancel={() => go('edit')}
-            onPick={(tpl, accent) => {
-              update(current.id, (x) => {
-                x.tpl = tpl;
-                x.accent = accent;
-              });
-              go('edit');
-            }}
-          />
-        ) : view === 'settings' ? (
-          <Settings />
-        ) : showEditor && current ? (
-          <Editor key={current.id} cv={current} onBack={() => go('dash')} onChangeTemplate={() => go('pick-change')} />
-        ) : (
-          <Dashboard onOpen={open} onPreview={preview} onCreate={() => go('pick-new')} onSettings={() => go('settings')} />
-        )}
+        <div key={view} className="view">
+          {view === 'sample' && sampleCvShown ? (
+            <SampleView cv={sampleCvShown} onBack={() => go('dash')} onCreate={() => go('pick-new')} />
+          ) : view === 'pick-new' ? (
+            <TemplatePicker base={sample} mode="new" onCancel={() => go('dash')} onPick={(tpl, accent) => open(create({ tpl, accent }))} />
+          ) : view === 'pick-change' && current ? (
+            <TemplatePicker
+              base={current}
+              mode="change"
+              onCancel={() => go('edit')}
+              onPick={(tpl, accent) => {
+                update(current.id, (x) => {
+                  x.tpl = tpl;
+                  x.accent = accent;
+                });
+                go('edit');
+              }}
+            />
+          ) : view === 'settings' ? (
+            <Settings />
+          ) : showEditor && current ? (
+            <Editor key={current.id} cv={current} onBack={() => go('dash')} onChangeTemplate={() => go('pick-change')} />
+          ) : (
+            <Dashboard onOpen={open} onPreview={preview} onCreate={() => go('pick-new')} onSettings={() => go('settings')} />
+          )}
+        </div>
       </main>
 
       {inEditor ? null : (

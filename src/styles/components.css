@@ -598,6 +598,10 @@ select {
 .dlg-badge.pop > .icon {
   animation: check-pop var(--dur-3) var(--ease-out);
 }
+.dlg-badge.bad {
+  background: var(--bad-soft);
+  color: var(--bad);
+}
 .dlg-badge.warm {
   background: var(--accent-soft);
   color: var(--accent);

@@ -30,7 +30,8 @@ h2,
 h3 {
   text-wrap: balance;
 }
-h1,
+/* tylko nagłówki interfejsu: arkusz CV (.paper) ma własną typografię */
+.ph h1,
 .display {
   font-family: var(--font-display);
   font-weight: 700;
@@ -42,9 +43,6 @@ button {
 ::selection {
   background: var(--brand-soft);
   color: var(--ink);
-}
-a {
-  color: var(--brand);
 }
 [hidden] {
   display: none !important;

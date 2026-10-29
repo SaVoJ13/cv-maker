@@ -247,6 +247,7 @@ export function Dialog({
   initialFocus,
   titleId = 'dlg-title',
   className = '',
+  badge,
 }: {
   title: string;
   children?: ReactNode;
@@ -257,6 +258,8 @@ export function Dialog({
   initialFocus?: RefObject<HTMLElement | null>;
   titleId?: string;
   className?: string;
+  /** Plakietka z ikoną nad tytułem (np. <span className="dlg-badge">…</span>) */
+  badge?: ReactNode;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const live = useRef({ onClose, busy });
@@ -307,6 +310,7 @@ export function Dialog({
   return createPortal(
     <div className="modal" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}>
       <div className={`dialog ${className}`.trim()} role={role} aria-modal="true" aria-labelledby={titleId} ref={box} tabIndex={-1}>
+        {badge}
         <h2 id={titleId}>{title}</h2>
         {children}
         <div className="dlg-act">{actions}</div>

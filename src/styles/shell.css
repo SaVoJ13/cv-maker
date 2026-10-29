@@ -134,6 +134,8 @@
   max-width: var(--content-w);
   margin: 0 auto;
   padding: 8px max(var(--gutter), var(--safe-r)) calc(var(--bottombar-h) + 32px + var(--safe-b)) max(var(--gutter), var(--safe-l));
+}
+.view {
   animation: rise var(--dur-3) var(--ease-out);
 }
 .workspace {

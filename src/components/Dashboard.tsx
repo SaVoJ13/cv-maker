@@ -85,6 +85,11 @@ function DeleteDialog({ cv, onClose }: { cv: Cv; onClose: () => void }) {
       role="alertdialog"
       onClose={onClose}
       initialFocus={cancel}
+      badge={
+        <span className="dlg-badge bad">
+          <Icon name="trash" size={24} />
+        </span>
+      }
       actions={
         <>
           <button type="button" className="btn" ref={cancel} onClick={onClose}>

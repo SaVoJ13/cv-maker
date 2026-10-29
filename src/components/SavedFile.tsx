@@ -46,6 +46,11 @@ export function SavedFileProvider({ children }: { children: ReactNode }) {
           busy={busy}
           onClose={() => setFile(null)}
           initialFocus={doneRef}
+          badge={
+            <span className="dlg-badge pop">
+              <Icon name="check" size={28} />
+            </span>
+          }
           actions={
             <>
               <button type="button" id="savedShare" className="btn" disabled={busy} onClick={() => void share()}>
