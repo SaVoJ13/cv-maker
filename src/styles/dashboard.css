@@ -1,0 +1,484 @@
+/* Pulpit: pusty stan (wachlarz szablonów), lista CV, przykład, pasek o danych. */
+
+/* ---------- miniatury dokumentu (używane też w galerii i oknach) ---------- */
+.thumb-wrap {
+  position: relative;
+  padding: 16px 16px 0;
+  background: var(--stage);
+}
+.thumb {
+  position: relative;
+  overflow: hidden;
+  max-height: 260px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+.scaler {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+.thumb-hit {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* ---------- pusty stan ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  grid-template-areas: 'text fan';
+  align-items: center;
+  gap: 32px;
+  padding: 40px 48px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--hero);
+  box-shadow: var(--shadow-sm);
+}
+.hero-text {
+  grid-area: text;
+  min-width: 0;
+}
+.hero-text h2 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.hero-text > p {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 520px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+.steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--glass);
+}
+.step-ic {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.step-t {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.step-n {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.hero-cta {
+  box-shadow: var(--shadow-md);
+}
+.fan {
+  position: relative;
+  grid-area: fan;
+  height: 330px;
+}
+.fan-p {
+  position: absolute;
+  bottom: 0;
+  width: 54%;
+  padding: 6px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.fan-p .thumb {
+  max-height: none;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: none;
+}
+.fan-0 {
+  left: 0;
+  transform: rotate(-9deg) translateY(-6px);
+}
+.fan-1 {
+  left: 23%;
+  z-index: 2;
+  transform: translateY(-20px);
+}
+.fan-2 {
+  right: 0;
+  transform: rotate(9deg) translateY(-6px);
+}
+.hero:hover .fan-0 {
+  transform: rotate(-12deg) translate(-6px, -6px);
+}
+.hero:hover .fan-2 {
+  transform: rotate(12deg) translate(6px, -6px);
+}
+
+/* przykład: zwarty wiersz */
+.example-sec {
+  margin-top: 28px;
+}
+.sec-title {
+  margin: 0 0 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+.ex-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  max-width: 560px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+.ex-thumb {
+  position: relative;
+  align-self: start;
+  padding: 0;
+}
+.ex-thumb .thumb {
+  max-height: 124px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.ex-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.ex-body h3 {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.ex-body .meta {
+  margin: 0;
+}
+
+/* ---------- lista CV ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.search {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 440px;
+}
+.search > .icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--muted);
+  pointer-events: none;
+}
+.search input {
+  padding-left: 42px;
+  padding-right: 44px;
+  border-radius: var(--r-full);
+}
+.search-x {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.search-x:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+.sortbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.sortbox label {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.sortbox select {
+  width: auto;
+  min-width: 180px;
+  border-radius: var(--r-full);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.cv-card {
+  animation: rise var(--dur-3) var(--ease-out) backwards;
+}
+.cv-card:nth-child(2) {
+  animation-delay: 40ms;
+}
+.cv-card:nth-child(3) {
+  animation-delay: 80ms;
+}
+.cv-card:nth-child(n + 4) {
+  animation-delay: 120ms;
+}
+.cv-card .cbody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 16px 12px;
+}
+.cv-card h3 {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.meta {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+.clamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cact {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+  padding: 4px 16px 16px;
+}
+.add-card {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 240px;
+  padding: 24px;
+  border: 2px dashed var(--line-strong);
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+  text-align: center;
+  cursor: pointer;
+}
+.add-card:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  box-shadow: none;
+}
+.add-ic {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: var(--brand-solid);
+  color: var(--on-brand);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.add-card:hover .add-ic {
+  transform: rotate(90deg) scale(1.06);
+}
+.add-t {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+.add-s {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 16px;
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--muted);
+  text-align: center;
+}
+.empty h2 {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: var(--fs-lg);
+}
+.empty p {
+  margin: 0 0 8px;
+}
+.datastrip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 13.5px;
+}
+.datastrip > .icon {
+  color: var(--brand);
+}
+.datastrip p {
+  flex: 1;
+  margin: 0;
+}
+
+/* ---------- węższe ekrany ---------- */
+@media (max-width: 959px) {
+  /* na telefonie „Nowe CV" jest zawsze pod kciukiem w nawigacji, więc karta dodawania tylko zajmowałaby miejsce */
+  .add-card {
+    display: none;
+  }
+}
+@media (max-width: 859px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'fan'
+      'text';
+    gap: 20px;
+    padding: 24px 20px 24px;
+  }
+  .fan {
+    height: 200px;
+    max-width: 320px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .steps {
+    gap: 8px;
+    margin: 18px 0 20px;
+  }
+  .hero-cta {
+    width: 100%;
+  }
+}
+/* telefon: karty jako gęsta lista z miniaturą z boku */
+@media (max-width: 559px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .cv-card {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-areas:
+      'thumb body'
+      'act act';
+  }
+  .cv-card .thumb-wrap {
+    grid-area: thumb;
+    padding: 12px 0 0 12px;
+  }
+  .cv-card .thumb {
+    max-height: 150px;
+  }
+  .cv-card .cbody {
+    grid-area: body;
+    padding: 12px 14px 8px;
+  }
+  .cv-card .cact {
+    grid-area: act;
+    padding: 4px 12px 12px;
+  }
+  .add-card {
+    min-height: 88px;
+    flex-direction: row;
+    gap: 14px;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 14px 18px;
+  }
+  .add-card .add-ic {
+    margin: 0;
+  }
+  .add-card .add-s {
+    display: none;
+  }
+  .datastrip {
+    flex-wrap: wrap;
+  }
+  .sortbox {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sortbox select {
+    flex: 1;
+  }
+  .search {
+    max-width: none;
+  }
+  .steps li {
+    padding: 10px;
+  }
+  .ex-row {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 14px;
+  }
+  .ex-thumb .thumb {
+    max-height: 104px;
+  }
+}

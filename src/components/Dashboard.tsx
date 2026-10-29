@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import type { Cv } from '../domain/types';
+import type { Cv, TemplateId } from '../domain/types';
 import { completeness } from '../domain/completeness';
 import { matchesCv, sortCvs, type SortKey } from '../domain/search';
 import { useStore } from '../store/StoreProvider';
@@ -181,26 +181,21 @@ function CvCard({ cv, onOpen, onRename, onDelete }: { cv: Cv; onOpen: (id: strin
   );
 }
 
-/** Przykład: tylko do obejrzenia (bez edycji, duplikowania i usuwania). */
+/** Przykład: tylko do obejrzenia (bez edycji, duplikowania i usuwania). Zwarty wiersz: miniatura, opis i jeden przycisk. */
 function ExampleCard({ cv, onPreview }: { cv: Cv; onPreview: (id: string) => void }) {
   const { t } = useStore();
   const who = [cv.data.basics.name, cv.data.basics.title].filter(Boolean).join(' · ');
   return (
-    <article className="card cv-card example" aria-label={`${t('example')}: ${cv.name || t('untitled')}`}>
-      <div className="thumb-wrap">
+    <article className="ex-row" aria-label={`${t('example')}: ${cv.name || t('untitled')}`}>
+      <div className="ex-thumb">
         <Thumb cv={cv} />
         <button type="button" className="thumb-hit" tabIndex={-1} aria-hidden="true" onClick={() => onPreview(cv.id)} />
       </div>
-      <div className="cbody">
-        <h3>
-          {cv.name || t('untitled')}
-          <span className="badge">{t('example')}</span>
-        </h3>
-        {who ? <div className="meta clamp1">{who}</div> : null}
-        <div className="meta">{t(`tpl_${cv.tpl}`)}</div>
-      </div>
-      <div className="cact">
-        <button type="button" className="btn grow" onClick={() => onPreview(cv.id)}>
+      <div className="ex-body">
+        <span className="badge">{t('example')}</span>
+        <h3>{cv.name || t('untitled')}</h3>
+        {who ? <p className="meta clamp1">{who}</p> : null}
+        <button type="button" className="btn soft sm" onClick={() => onPreview(cv.id)}>
           <Icon name="eye" size={16} />
           {t('sample_open')}
         </button>
@@ -208,6 +203,23 @@ function ExampleCard({ cv, onPreview }: { cv: Cv; onPreview: (id: string) => voi
     </article>
   );
 }
+
+/** Wachlarz trzech prawdziwych szablonów na pustym pulpicie: pokazuje, co powstanie, zanim użytkownik cokolwiek wybierze. */
+const FAN: readonly TemplateId[] = ['classic', 'modern', 'nordic'];
+function TemplateFan({ base }: { base: Cv }) {
+  const pages = useMemo(() => FAN.map((tpl) => ({ tpl, cv: { ...base, tpl } as Cv })), [base]);
+  return (
+    <div className="fan" aria-hidden="true">
+      {pages.map(({ tpl, cv }, i) => (
+        <div key={tpl} className={`fan-p fan-${i}`}>
+          <Thumb cv={cv} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const STEP_ICONS = ['layout', 'edit', 'download'] as const;
 
 /* ---------- ekran ---------- */
 
@@ -247,40 +259,53 @@ export function Dashboard({
           <h1>{t('dash_title')}</h1>
           <p>{t('dash_sub')}</p>
         </div>
-        <button type="button" className="btn primary lg ph-new" onClick={onCreate}>
-          <Icon name="plus" size={18} />
-          {t('new_cv')}
-        </button>
+        {own.length > 0 ? (
+          <button type="button" className="btn primary lg ph-new" onClick={onCreate}>
+            <Icon name="plus" size={18} />
+            {t('new_cv')}
+          </button>
+        ) : null}
       </div>
 
       {own.length === 0 ? (
-        <section className="onboard" aria-labelledby="onboard-h">
-          <div className="onboard-main">
-            <h2 id="onboard-h">{t('empty_title')}</h2>
-            <p>{t('empty_text')}</p>
-            <ol className="steps">
-              {(['step1', 'step2', 'step3'] as const).map((k, i) => (
-                <li key={k}>
-                  <span className="step-n" aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  {t(k)}
-                </li>
-              ))}
-            </ol>
-            <div>
-              <button type="button" className="btn primary lg" onClick={onCreate}>
-                <Icon name="plus" size={18} />
+        <>
+          <section className="hero" aria-labelledby="onboard-h">
+            {example ? <TemplateFan base={example} /> : null}
+            <div className="hero-text">
+              <h2 id="onboard-h" className="display">
+                {t('empty_title')}
+              </h2>
+              <p>{t('empty_text')}</p>
+              <ol className="steps">
+                {(['step1', 'step2', 'step3'] as const).map((k, i) => (
+                  <li key={k}>
+                    <span className="step-ic" aria-hidden="true">
+                      <Icon name={STEP_ICONS[i]} size={20} />
+                    </span>
+                    <span className="step-t">
+                      <span className="step-n" aria-hidden="true">
+                        {i + 1}
+                      </span>
+                      {t(k)}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <button type="button" className="btn primary lg hero-cta" onClick={onCreate}>
+                <Icon name="plus" size={20} />
                 {t('new_cv')}
               </button>
             </div>
-          </div>
+          </section>
           {example ? (
-            <div className="onboard-example">
+            <section className="example-sec" aria-labelledby="example-h">
+              <h2 id="example-h" className="sec-title">
+                {t('example')}
+              </h2>
               <ExampleCard cv={example} onPreview={onPreview} />
-            </div>
+            </section>
           ) : null}
-        </section>
+        </>
       ) : (
         <>
           {toolbar ? (
@@ -339,10 +364,10 @@ export function Dashboard({
 
           {example ? (
             <section className="example-sec" aria-labelledby="example-h">
-              <h2 id="example-h">{t('example')}</h2>
-              <div className="cards cards-sm">
-                <ExampleCard cv={example} onPreview={onPreview} />
-              </div>
+              <h2 id="example-h" className="sec-title">
+                {t('example')}
+              </h2>
+              <ExampleCard cv={example} onPreview={onPreview} />
             </section>
           ) : null}
         </>
@@ -351,7 +376,7 @@ export function Dashboard({
       <aside className="datastrip">
         <Icon name="shield" size={20} />
         <p>{t('local_note')}</p>
-        <button type="button" className="btn sm" onClick={onSettings}>
+        <button type="button" className="btn soft sm" onClick={onSettings}>
           {t('backup_title')}
         </button>
       </aside>

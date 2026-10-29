@@ -60,38 +60,22 @@ function Shell() {
 
       {inEditor ? null : (
         <header className="appbar">
-          <div className="appbar-in">
-            <button type="button" className="brand" onClick={() => go('dash')} aria-label={`CV Maker: ${t('nav_dash')}`}>
-              <span className="logo" aria-hidden="true">
-                CV
-              </span>
-              <span className="brand-name">CV Maker</span>
-            </button>
-            <nav className="nav" aria-label={t('main_nav')}>
-              <button type="button" className="nav-link" aria-current={view === 'dash' || view === 'sample' ? 'page' : undefined} onClick={() => go('dash')}>
-                {t('nav_dash')}
-              </button>
-              {current ? (
-                <button type="button" className="nav-link" onClick={() => go('edit')}>
-                  {t('nav_edit')}
-                </button>
-              ) : null}
-              <button type="button" className="nav-link" aria-current={view === 'settings' ? 'page' : undefined} onClick={() => go('settings')}>
-                {t('nav_settings')}
-              </button>
-            </nav>
-            <span className="spacer" />
-            <Segmented
-              className="lang-seg"
-              label={t('lang_label')}
-              value={ui}
-              onChange={setUi}
-              options={[
-                { value: 'pl', label: 'PL', ariaLabel: 'Polski' },
-                { value: 'en', label: 'EN', ariaLabel: 'English' },
-              ]}
-            />
-          </div>
+          <button type="button" className="brand" onClick={() => go('dash')} aria-label={`CV Maker: ${t('nav_dash')}`}>
+            <span className="logo" aria-hidden="true">
+              CV
+            </span>
+            <span className="brand-name">CV Maker</span>
+          </button>
+          <Segmented
+            className="lang-seg"
+            label={t('lang_label')}
+            value={ui}
+            onChange={setUi}
+            options={[
+              { value: 'pl', label: 'PL', ariaLabel: 'Polski' },
+              { value: 'en', label: 'EN', ariaLabel: 'English' },
+            ]}
+          />
         </header>
       )}
 
@@ -123,20 +107,32 @@ function Shell() {
       </main>
 
       {inEditor ? null : (
-        <nav className="bottomnav" aria-label={t('main_nav')}>
-          <button type="button" className="bn-item" aria-current={tab === 'home' ? 'page' : undefined} onClick={() => go('dash')}>
-            <Icon name="home" size={22} />
-            <span>{t('nav_dash')}</span>
+        <nav className="nav" aria-label={t('main_nav')}>
+          <button type="button" className="nav-item" aria-current={tab === 'home' ? 'page' : undefined} onClick={() => go('dash')}>
+            <span className="nav-ic">
+              <Icon name="home" size={22} />
+            </span>
+            <span className="nav-t">{t('nav_dash')}</span>
           </button>
-          <button type="button" className="bn-item bn-new" aria-current={tab === 'new' ? 'page' : undefined} onClick={() => go('pick-new')}>
-            <span className="bn-fab">
+          {current ? (
+            <button type="button" className="nav-item nav-edit" onClick={() => go('edit')}>
+              <span className="nav-ic">
+                <Icon name="edit" size={22} />
+              </span>
+              <span className="nav-t">{t('nav_edit')}</span>
+            </button>
+          ) : null}
+          <button type="button" className="nav-item nav-new" aria-current={tab === 'new' ? 'page' : undefined} onClick={() => go('pick-new')}>
+            <span className="nav-ic">
               <Icon name="plus" size={24} />
             </span>
-            <span>{t('new_cv')}</span>
+            <span className="nav-t">{t('new_cv')}</span>
           </button>
-          <button type="button" className="bn-item" aria-current={tab === 'settings' ? 'page' : undefined} onClick={() => go('settings')}>
-            <Icon name="sliders" size={22} />
-            <span>{t('nav_settings')}</span>
+          <button type="button" className="nav-item" aria-current={tab === 'settings' ? 'page' : undefined} onClick={() => go('settings')}>
+            <span className="nav-ic">
+              <Icon name="sliders" size={22} />
+            </span>
+            <span className="nav-t">{t('nav_settings')}</span>
           </button>
         </nav>
       )}
