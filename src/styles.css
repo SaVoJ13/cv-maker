@@ -1,0 +1,6 @@
+/* Wejście stylów: tokeny, baza, komponenty, ekrany, a na końcu arkusz CV (paper.css, bez zmian względem poprzedniej wersji). */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/components.css';
+@import './styles/screens.css';
+@import './styles/paper.css';

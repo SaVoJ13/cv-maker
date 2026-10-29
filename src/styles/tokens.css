@@ -1,0 +1,171 @@
+/* Tokeny projektowe interfejsu (kolory, odstępy, promienie, typografia, cienie, ruch).
+   Motyw: domyślnie podąża za systemem, a atrybut data-theme na <html> wymusza jasny lub ciemny.
+   Arkusz CV (paper.css) ma własne, stałe kolory i nie korzysta z motywu aplikacji. */
+:root {
+  /* czcionki: --font-ui i --font-doc są też używane w paper.css */
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-doc: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
+  /* odstępy (siatka 4 px) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* promienie */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-full: 999px;
+
+  /* typografia */
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-md: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 34px;
+
+  /* ruch */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+
+  /* układ */
+  --gutter: clamp(16px, 4vw, 32px);
+  --topbar-h: 60px;
+  --bottombar-h: 64px;
+  --touch: 44px;
+  --content-w: 1240px;
+  --workspace-w: 1640px;
+
+  /* jasny motyw */
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f9fafb;
+  --surface-3: #f0f2f5;
+  --ink: #101828;
+  --ink-2: #344054;
+  --muted: #5d6b7e;
+  --line: #e4e7ec;
+  --line-strong: #cfd5de;
+  --control: #838ea0;
+  --brand: #2748c9;
+  --brand-hover: #1e3aa8;
+  --brand-solid: #2748c9;
+  --brand-solid-hover: #1f3bb0;
+  --on-brand: #ffffff;
+  --brand-soft: #eaefff;
+  --brand-line: #b9c7f7;
+  --good: #067647;
+  --good-soft: #e8f7ef;
+  --warn: #93370d;
+  --warn-soft: #fff4e0;
+  --warn-line: #f2c98a;
+  --bad: #b42318;
+  --bad-soft: #fdecea;
+  --bad-line: #f1b3ad;
+  --stage: #e6e9ee;
+  --scrim: rgba(16, 24, 40, 0.5);
+  --ring: rgba(39, 72, 201, 0.22);
+  --danger-solid: #b42318;
+  --on-danger: #ffffff;
+  --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08), 0 2px 4px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 16px 40px rgba(16, 24, 40, 0.18), 0 4px 10px rgba(16, 24, 40, 0.06);
+  --shadow: 0 1px 2px rgba(20, 27, 36, 0.07), 0 10px 28px rgba(20, 27, 36, 0.1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0b0f14;
+    --surface: #131921;
+    --surface-2: #171e27;
+    --surface-3: #1e2733;
+    --ink: #f2f4f7;
+    --ink-2: #d0d5dd;
+    --muted: #9aa7b8;
+    --line: #232d3a;
+    --line-strong: #364353;
+    --control: #657489;
+    --brand: #9db0ff;
+    --brand-hover: #b9c6ff;
+    --brand-solid: #8da3ff;
+    --brand-solid-hover: #a3b5ff;
+    --on-brand: #0b0f14;
+    --brand-soft: #1b2548;
+    --brand-line: #3a4a8c;
+    --good: #5fd6a4;
+    --good-soft: #10302a;
+    --warn: #f2b660;
+    --warn-soft: #302410;
+    --warn-line: #6b4e1d;
+    --bad: #ff8f85;
+    --bad-soft: #3a1a18;
+    --bad-line: #7a2e29;
+    --stage: #080b10;
+    --scrim: rgba(0, 0, 0, 0.62);
+    --ring: rgba(141, 163, 255, 0.32);
+    --danger-solid: #ff8f85;
+    --on-danger: #0b0f14;
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0b0f14;
+  --surface: #131921;
+  --surface-2: #171e27;
+  --surface-3: #1e2733;
+  --ink: #f2f4f7;
+  --ink-2: #d0d5dd;
+  --muted: #9aa7b8;
+  --line: #232d3a;
+  --line-strong: #364353;
+  --control: #657489;
+  --brand: #9db0ff;
+  --brand-hover: #b9c6ff;
+  --brand-solid: #8da3ff;
+  --brand-solid-hover: #a3b5ff;
+  --on-brand: #0b0f14;
+  --brand-soft: #1b2548;
+  --brand-line: #3a4a8c;
+  --good: #5fd6a4;
+  --good-soft: #10302a;
+  --warn: #f2b660;
+  --warn-soft: #302410;
+  --warn-line: #6b4e1d;
+  --bad: #ff8f85;
+  --bad-soft: #3a1a18;
+  --bad-line: #7a2e29;
+  --stage: #080b10;
+  --scrim: rgba(0, 0, 0, 0.62);
+  --ring: rgba(141, 163, 255, 0.32);
+  --danger-solid: #ff8f85;
+  --on-danger: #0b0f14;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}

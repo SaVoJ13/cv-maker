@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f6f8" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f14" />
+    <script>
+      /* Zapisany motyw ustawiamy przed pierwszym malowaniem, żeby nie było błysku jasnego tła. */
+      try {
+        var th = localStorage.getItem('cvmaker.theme');
+        if (th === 'light' || th === 'dark') document.documentElement.setAttribute('data-theme', th);
+      } catch (e) {}
+    </script>
+    <meta name="description" content="Generator CV pod polski rynek pracy: szablony ATS, zdjęcie, klauzula RODO i eksport PDF." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>CV Maker</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

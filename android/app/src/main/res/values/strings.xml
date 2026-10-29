@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CV Maker</string>
+    <string name="title_activity_main">CV Maker</string>
+    <string name="package_name">com.savoj13.freecv</string>
+    <string name="custom_url_scheme">com.savoj13.freecv</string>
+    <string name="admob_app_id">ca-app-pub-2983570541795370~6308389405</string>
+</resources>

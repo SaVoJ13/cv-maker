@@ -1,0 +1,8 @@
+// Importy stylów (Vite) oraz pdfmake, które nie dostarcza własnych typów dla tych ścieżek.
+declare module '*.css';
+declare module 'pdfmake/build/pdfmake';
+// Kod pliku z czcionkami wczytywany jako tekst (patrz src/export/vfs.ts)
+declare module 'pdfmake/build/vfs_fonts.js?raw' {
+  const source: string;
+  export default source;
+}
