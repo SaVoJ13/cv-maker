@@ -70,7 +70,10 @@ button {
   left: 12px;
   top: -80px;
   z-index: 200;
-  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  min-height: var(--touch);
+  padding: 0 14px;
   border-radius: var(--r-sm);
   background: var(--surface);
   color: var(--ink);

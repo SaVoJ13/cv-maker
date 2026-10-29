@@ -326,7 +326,7 @@ select {
 }
 @media (pointer: coarse), (max-width: 959px) {
   .seg button {
-    min-height: 40px;
+    min-height: var(--touch);
   }
 }
 
