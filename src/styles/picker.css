@@ -1,0 +1,360 @@
+/* Galeria szablonów: na komputerze siatka z panelem szczegółów i dużym podglądem, na telefonie przewijana karuzela dużych kart. */
+.pick-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: start;
+}
+.ph-nowrap {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.ph-nowrap > div {
+  min-width: 0;
+}
+.pick-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-bottom: 20px;
+}
+.ctl {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ctl-l {
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.swatch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--dur-1) var(--ease);
+}
+.swatch > span {
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 50%;
+}
+.swatch > .icon {
+  position: relative;
+  color: #fff;
+}
+.swatch:hover {
+  border-color: var(--line-strong);
+}
+.swatch[aria-pressed='true'] {
+  border-color: var(--ink);
+}
+.pick-swipe {
+  display: none;
+}
+.pickgrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 18px;
+}
+.pickcard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-2) var(--ease),
+    transform var(--dur-2) var(--ease-out);
+}
+.pickcard:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-md);
+}
+.pickcard[aria-pressed='true'] {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+.pick-thumb {
+  position: relative;
+  display: block;
+  padding: 14px 14px 0;
+  background: var(--stage);
+}
+.pick-thumb .thumb {
+  max-height: 290px;
+}
+.pick-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--brand-solid);
+  color: var(--on-brand);
+  box-shadow: var(--shadow-sm);
+  animation: check-pop var(--dur-3) var(--ease-out);
+}
+.pickbody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+}
+.pickname {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.pickdesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+.pickmeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.ats {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ats-bars {
+  display: inline-flex;
+  gap: 2px;
+}
+.ats-bars i {
+  width: 14px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--line-strong);
+}
+.ats-high .ats-bars i[data-on] {
+  background: var(--good);
+}
+.ats-medium .ats-bars i[data-on],
+.ats-low .ats-bars i[data-on] {
+  background: var(--warn);
+}
+.pick-side {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100dvh - 48px);
+  padding: 22px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.side-thumb {
+  padding: 16px 16px 0;
+  border-radius: var(--r-md);
+  background: var(--stage);
+}
+.side-thumb .thumb {
+  max-height: 250px;
+}
+.pick-side h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  letter-spacing: -0.015em;
+}
+.side-desc {
+  margin: 0;
+  color: var(--ink-2);
+}
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.facts dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.facts dd {
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.dlg-thumb {
+  padding: 14px 14px 0;
+  border-radius: var(--r-md);
+  background: var(--stage);
+}
+.dlg-thumb .thumb {
+  max-height: 340px;
+}
+.pick-bar {
+  display: none;
+}
+
+@media (max-width: 1059px) {
+  .pick-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pick-side {
+    display: none;
+  }
+  .pick-bar {
+    position: fixed;
+    left: max(12px, var(--safe-l));
+    right: max(12px, var(--safe-r));
+    bottom: calc(10px + var(--safe-b));
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 8px 8px 8px 18px;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: var(--glass);
+    box-shadow: var(--shadow-md);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .pick-bar-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .pick-bar-info strong {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pick-bar .btn {
+    border-radius: 22px;
+  }
+  .pick {
+    padding-bottom: calc(var(--bottombar-h) + 8px);
+  }
+}
+
+/* telefon i wąski tablet: karuzela dużych kart z przyciąganiem do środka */
+@media (max-width: 719px) {
+  .pick-swipe {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .pickgrid {
+    display: flex;
+    gap: 14px;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 6px var(--gutter) 18px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--gutter);
+    scrollbar-width: none;
+  }
+  .pickgrid::-webkit-scrollbar {
+    display: none;
+  }
+  .pickcard {
+    flex: 0 0 min(72vw, 300px);
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    opacity: 0.78;
+    transform: scale(0.97);
+  }
+  .pickcard[aria-pressed='true'] {
+    opacity: 1;
+    transform: none;
+  }
+  .pick-thumb .thumb {
+    max-height: none;
+  }
+  .pick-controls {
+    align-items: flex-start;
+  }
+  .pick-controls .seg {
+    width: 100%;
+  }
+  .pick-controls .seg button {
+    flex: 1;
+    padding: 0 6px;
+  }
+  .pick-bar .pick-details {
+    flex: none;
+    width: var(--touch);
+    padding: 0;
+  }
+  .pick-bar .pick-details .lbl {
+    display: none;
+  }
+}

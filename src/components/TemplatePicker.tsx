@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AccentId, Cv, TemplateId } from '../domain/types';
 import { ACCENT_IDS, ACCENTS, TEMPLATES, TEMPLATE_META, type AtsLevel } from '../domain/constants';
 import { useStore } from '../store/StoreProvider';
@@ -85,13 +85,50 @@ export function TemplatePicker({ base, mode, onPick, onCancel }: TemplatePickerP
   const [filter, setFilter] = useState<Filter>('all');
   const [details, setDetails] = useState(false);
   const detailsBtn = useRef<HTMLButtonElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const settle = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(settle.current), []);
+
+  /* Na telefonie szablony przewija się w poziomie jak karuzelę: ten, który zatrzyma się na środku, zostaje wybrany. */
+  const onGridScroll = () => {
+    const grid = gridRef.current;
+    if (!grid || grid.scrollWidth <= grid.clientWidth + 1) return;
+    clearTimeout(settle.current);
+    settle.current = setTimeout(() => {
+      const mid = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+      let best: { k: TemplateId; d: number } | null = null;
+      grid.querySelectorAll<HTMLElement>('[data-tpl]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - mid);
+        if (!best || d < best.d) best = { k: el.dataset.tpl as TemplateId, d };
+      });
+      if (best) setSelected((best as { k: TemplateId }).k);
+    }, 120);
+  };
+  /* przewijamy tylko karuzelę (scrollIntoView ruszałby też stronę w pionie) */
+  const centerCard = (k: TemplateId, behavior: ScrollBehavior) => {
+    const grid = gridRef.current;
+    const el = grid?.querySelector<HTMLElement>(`[data-tpl="${k}"]`);
+    if (!grid || !el || grid.scrollWidth <= grid.clientWidth + 1) return;
+    grid.scrollTo({ left: el.offsetLeft - (grid.clientWidth - el.offsetWidth) / 2, behavior });
+  };
+  const choose = (k: TemplateId) => {
+    setSelected(k);
+    centerCard(k, 'smooth');
+  };
+  /* przy zmianie szablonu karuzela startuje na obecnym szablonie */
+  useEffect(() => {
+    centerCard(selected, 'auto');
+    // tylko przy otwarciu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const previews = useMemo(() => TEMPLATES.map((k) => ({ k, cv: { ...base, tpl: k, accent } as Cv })), [base, accent]);
   const visible = previews.filter(({ k }) => (filter === 'ats' ? TEMPLATE_META[k].atsSafe : filter === 'photo' ? TEMPLATE_META[k].photo : true));
 
   return (
     <section className="pick" aria-labelledby="pick-title">
-      <div className="ph">
+      <div className="ph ph-nowrap">
         <div>
           <h1 id="pick-title">{t('pick_title')}</h1>
           <p>{t(mode === 'new' ? 'pick_sub_new' : 'pick_sub_change')}</p>
@@ -134,60 +171,70 @@ export function TemplatePicker({ base, mode, onPick, onCancel }: TemplatePickerP
               <p>{t('pick_none')}</p>
             </div>
           ) : (
-            <div className="pickgrid">
-              {visible.map(({ k, cv }) => {
-                const meta = TEMPLATE_META[k];
-                const isSel = selected === k;
-                return (
-                  <button
-                    key={k}
-                    type="button"
-                    className="pickcard"
-                    aria-pressed={isSel}
-                    aria-label={`${t(`tpl_${k}`)}${mode === 'change' && base.tpl === k ? ` (${t('pick_current')})` : ''}`}
-                    onClick={() => setSelected(k)}
-                    onDoubleClick={() => onPick(k, accent)}
-                  >
-                    <span className="pick-thumb">
-                      <Thumb cv={cv} />
-                      {isSel ? (
-                        <span className="pick-check" aria-hidden="true">
-                          <Icon name="check" size={16} />
-                        </span>
-                      ) : null}
-                    </span>
-                    <span className="pickbody">
-                      <span className="pickname">
-                        {t(`tpl_${k}`)}
-                        {mode === 'change' && base.tpl === k ? <span className="tag brand">{t('pick_current')}</span> : null}
+            <>
+              <p className="pick-swipe">
+                <Icon name="arrow-right" size={14} />
+                {t('pick_swipe')}
+              </p>
+              <div className="pickgrid" ref={gridRef} onScroll={onGridScroll}>
+                {visible.map(({ k, cv }) => {
+                  const meta = TEMPLATE_META[k];
+                  const isSel = selected === k;
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      className="pickcard"
+                      data-tpl={k}
+                      aria-pressed={isSel}
+                      aria-label={`${t(`tpl_${k}`)}${mode === 'change' && base.tpl === k ? ` (${t('pick_current')})` : ''}`}
+                      onClick={() => choose(k)}
+                      onDoubleClick={() => onPick(k, accent)}
+                    >
+                      <span className="pick-thumb">
+                        <Thumb cv={cv} />
+                        {isSel ? (
+                          <span className="pick-check" aria-hidden="true">
+                            <Icon name="check" size={16} />
+                          </span>
+                        ) : null}
                       </span>
-                      <span className="pickdesc">{t(`tpl_desc_${k}`)}</span>
-                      <span className="pickmeta">
-                        <AtsMeter level={meta.ats} />
-                        <span className="tags">
-                          <Tags k={k} />
+                      <span className="pickbody">
+                        <span className="pickname">
+                          {t(`tpl_${k}`)}
+                          {mode === 'change' && base.tpl === k ? <span className="tag brand">{t('pick_current')}</span> : null}
+                        </span>
+                        <span className="pickdesc">{t(`tpl_desc_${k}`)}</span>
+                        <span className="pickmeta">
+                          <AtsMeter level={meta.ats} />
+                          <span className="tags">
+                            <Tags k={k} />
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
 
         <aside className="pick-side" aria-label={t('pick_selected')}>
+          <div className="side-thumb" aria-hidden="true">
+            <Thumb cv={previews.find((p) => p.k === selected)?.cv ?? base} />
+          </div>
           <p className="eyebrow">{t('pick_selected')}</p>
           <h2>{t(`tpl_${selected}`)}</h2>
           <div className="tags">
             <Tags k={selected} />
           </div>
           <p className="side-desc">{t(`tpl_desc_${selected}`)}</p>
-          <Facts k={selected} />
           <button type="button" className="btn primary lg block" onClick={() => onPick(selected, accent)}>
             {t('pick_continue')}
             <Icon name="arrow-right" size={18} />
           </button>
+          <Facts k={selected} />
         </aside>
       </div>
 
@@ -209,6 +256,7 @@ export function TemplatePicker({ base, mode, onPick, onCancel }: TemplatePickerP
       {details ? (
         <Dialog
           title={t(`tpl_${selected}`)}
+          className="wide"
           onClose={() => setDetails(false)}
           actions={
             <>
@@ -222,6 +270,9 @@ export function TemplatePicker({ base, mode, onPick, onCancel }: TemplatePickerP
           }
         >
           <div className="dlg-body">
+            <div className="dlg-thumb" aria-hidden="true">
+              <Thumb cv={previews.find((p) => p.k === selected)?.cv ?? base} />
+            </div>
             <div className="tags">
               <Tags k={selected} />
             </div>

@@ -298,6 +298,7 @@ const pl = {
   theme_dark: 'Ciemny',
   set_ads_title: 'Reklamy i zgody',
   set_ads_desc: 'Zmień swoją decyzję dotyczącą zgód na reklamy.',
+  pick_swipe: 'Przesuń, żeby porównać szablony',
 } as const;
 
 export type MsgKey = keyof typeof pl;
@@ -596,6 +597,7 @@ const en: Record<MsgKey, string> = {
   theme_dark: 'Dark',
   set_ads_title: 'Ads and consent',
   set_ads_desc: 'Change your ad consent choices.',
+  pick_swipe: 'Swipe to compare templates',
 };
 
 export const MESSAGES: Record<Lang, Record<MsgKey, string>> = { pl, en };

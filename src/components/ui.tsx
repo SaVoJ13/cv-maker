@@ -246,6 +246,7 @@ export function Dialog({
   role = 'dialog',
   initialFocus,
   titleId = 'dlg-title',
+  className = '',
 }: {
   title: string;
   children?: ReactNode;
@@ -255,6 +256,7 @@ export function Dialog({
   role?: 'dialog' | 'alertdialog';
   initialFocus?: RefObject<HTMLElement | null>;
   titleId?: string;
+  className?: string;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const live = useRef({ onClose, busy });
@@ -304,7 +306,7 @@ export function Dialog({
 
   return createPortal(
     <div className="modal" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}>
-      <div className="dialog" role={role} aria-modal="true" aria-labelledby={titleId} ref={box} tabIndex={-1}>
+      <div className={`dialog ${className}`.trim()} role={role} aria-modal="true" aria-labelledby={titleId} ref={box} tabIndex={-1}>
         <h2 id={titleId}>{title}</h2>
         {children}
         <div className="dlg-act">{actions}</div>
