@@ -821,3 +821,15 @@ test('isUnimplementedError: rozpoznaje brak wtyczki natywnej, także w PdfStageE
   assert.equal(isUnimplementedError(new Error('disk full')), false);
   assert.equal(isUnimplementedError(undefined), false);
 });
+
+test('isBlank: puste CV jest puste, wpisane imię lub treść to już nie', async () => {
+  const { isBlank } = await import('../src/domain/completeness.ts');
+  const c = blankCv('pl', 'x');
+  assert.equal(isBlank(c), true);
+  c.data.basics.name = 'Jan';
+  assert.equal(isBlank(c), false);
+  const d = blankCv('pl', 'y');
+  d.data.summary = 'Opis';
+  assert.equal(isBlank(d), false);
+  assert.equal(isBlank(sampleCv()), false);
+});

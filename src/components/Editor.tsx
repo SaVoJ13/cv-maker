@@ -78,6 +78,15 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
     void runExport(true);
   };
 
+  /** Pusty podgląd: przejdź do formularza i ustaw kursor w pierwszym polu. */
+  const startFilling = () => {
+    setTab('content');
+    setOpenSec('basics');
+    setPane('form');
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => document.getElementById('f_name')?.focus());
+  };
+
   const tabs: Tab[] = ['content', 'look'];
   const onTabKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -136,12 +145,6 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
               {t('backup_save')}
             </button>
           ) : null}
-          {backup.hasOwn ? (
-            <button type="button" className="btn sm" onClick={() => void backup.save()}>
-              <Icon name="download" size={14} />
-              {t('backup_save')}
-            </button>
-          ) : null}
         </Callout>
       ) : null}
 
@@ -173,6 +176,7 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
           <Preview
             cv={cv}
             onPages={onPages}
+            onStart={startFilling}
             onPhotoCrop={(c) =>
               update((x) => {
                 x.data.basics.photoX = c.x;

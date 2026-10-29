@@ -299,6 +299,10 @@ const pl = {
   set_ads_title: 'Reklamy i zgody',
   set_ads_desc: 'Zmień swoją decyzję dotyczącą zgód na reklamy.',
   pick_swipe: 'Przesuń, żeby porównać szablony',
+  prev_empty_title: 'Tu pojawi się Twoje CV',
+  prev_empty_text: 'Widzisz wzór szablonu z danymi przykładowymi. Wpisz swoje dane, a pojawią się tutaj na żywo.',
+  prev_empty_cta: 'Zacznij od danych',
+  prog_done: 'Wszystko gotowe. Pobierz PDF albo dopracuj wygląd.',
 } as const;
 
 export type MsgKey = keyof typeof pl;
@@ -598,6 +602,10 @@ const en: Record<MsgKey, string> = {
   set_ads_title: 'Ads and consent',
   set_ads_desc: 'Change your ad consent choices.',
   pick_swipe: 'Swipe to compare templates',
+  prev_empty_title: 'Your CV will appear here',
+  prev_empty_text: 'This is the template with sample data. Type your details and they will show up here live.',
+  prev_empty_cta: 'Start with your details',
+  prog_done: 'All set. Download the PDF or fine-tune the look.',
 };
 
 export const MESSAGES: Record<Lang, Record<MsgKey, string>> = { pl, en };

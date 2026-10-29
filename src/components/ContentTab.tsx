@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Basics, Cv, Education, Experience, LangLevel, LanguageSkill, RodoMode } from '../domain/types';
 import { LEVELS, TEMPLATE_META } from '../domain/constants';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
-import { SECTION_IDS, sectionFilled, type SectionId } from '../domain/completeness';
+import { CORE_SECTIONS, SECTION_IDS, completeness, sectionFilled, type SectionId } from '../domain/completeness';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';
 import { PhotoView } from './PhotoView';
 import { loadPhoto } from '../export/photo';
@@ -71,6 +71,58 @@ function Section({
           </div>
         ) : null}
       </div>
+    </section>
+  );
+}
+
+/** Pasek postępu: jedna kreska na każdą kluczową sekcję (dotknięcie otwiera ją), pod spodem podpowiedź, co dalej. */
+function Progress({ cv, open, onOpen }: { cv: Cv; open: SectionId | null; onOpen: (id: SectionId | null) => void }) {
+  const { t } = useStore();
+  const { done, total } = completeness(cv);
+  const nextId = CORE_SECTIONS.find((id) => !sectionFilled(cv, id)) ?? null;
+  return (
+    <section className="prog" aria-label={t('filled')}>
+      <div className="prog-head">
+        <p className="prog-count">
+          <b>{done}</b>
+          <span aria-hidden="true">/{total}</span>
+          <span className="sr-only">
+            {' '}
+            {t('filled')} {done}/{total}
+          </span>
+        </p>
+        {nextId ? (
+          <button type="button" className="btn soft sm" onClick={() => onOpen(nextId)}>
+            {t('sec_next')}: {t(TITLE_KEY[nextId])}
+            <Icon name="arrow-right" size={14} />
+          </button>
+        ) : (
+          <p className="prog-done">
+            <Icon name="check" size={16} />
+            {t('prog_done')}
+          </p>
+        )}
+      </div>
+      <ol className="prog-steps">
+        {CORE_SECTIONS.map((id) => {
+          const filled = sectionFilled(cv, id);
+          return (
+            <li key={id}>
+              <button
+                type="button"
+                className="prog-step"
+                data-done={filled || undefined}
+                data-open={open === id || undefined}
+                aria-label={`${t(TITLE_KEY[id])}: ${t(filled ? 'sec_done' : 'sec_todo')}`}
+                title={t(TITLE_KEY[id])}
+                onClick={() => onOpen(id)}
+              >
+                <span />
+              </button>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
@@ -144,6 +196,7 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
 
   return (
     <div className="accs">
+      <Progress cv={cv} open={open} onOpen={onOpen} />
       <Section {...sec('basics')}>
         <div className="row2">
           <Field id="f_name" label={t('f_name')} value={b.name} onChange={setBasic('name')} />
