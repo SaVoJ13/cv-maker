@@ -4,6 +4,8 @@
 }
 html {
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-padding-top: 16px;
 }
 html.modal-open body {
   overflow: hidden;
@@ -27,6 +29,22 @@ h1,
 h2,
 h3 {
   text-wrap: balance;
+}
+h1,
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-optical-sizing: auto;
+}
+button {
+  touch-action: manipulation;
+}
+::selection {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+a {
+  color: var(--brand);
 }
 [hidden] {
   display: none !important;
@@ -87,6 +105,29 @@ main:focus {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.98);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes slide-x {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+@keyframes check-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 @keyframes sheet-in {
