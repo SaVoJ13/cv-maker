@@ -44,6 +44,6 @@ export function completeness(cv: Cv): { done: number; total: number } {
 /** Nic jeszcze nie wpisano (poza ustawieniami i klauzulą RODO): podgląd pokazuje wtedy wzór z danymi przykładowymi. */
 export function isBlank(cv: Cv): boolean {
   const b = cv.data.basics;
-  if ([b.name, b.title, b.email, b.phone, b.city, b.link].some((v) => v.trim())) return false;
+  if ([b.name, b.title, b.email, b.phone, b.city, b.link, b.address, b.birthDate, b.birthPlace, b.license, b.photo].some((v) => v.trim())) return false;
   return SECTION_IDS.every((id) => id === 'rodo' || id === 'basics' || !sectionFilled(cv, id));
 }

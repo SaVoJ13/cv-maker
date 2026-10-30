@@ -833,3 +833,22 @@ test('isBlank: puste CV jest puste, wpisane imię lub treść to już nie', asyn
   assert.equal(isBlank(d), false);
   assert.equal(isBlank(sampleCv()), false);
 });
+
+test('isBlank: samo zdjęcie lub pole dodatkowe to nie puste CV; ustawienia i RODO nie liczą się', async () => {
+  const { isBlank } = await import('../src/domain/completeness.ts');
+  const photo = blankCv('pl', 'p');
+  photo.data.basics.photo = 'data:image/jpeg;base64,AAAA';
+  assert.equal(isBlank(photo), false);
+  for (const field of ['address', 'birthDate', 'birthPlace', 'license'] as const) {
+    const c = blankCv('pl', field);
+    c.data.basics[field] = 'x';
+    assert.equal(isBlank(c), false, field);
+  }
+  const settings = blankCv('pl', 's');
+  settings.accent = 'graphite';
+  settings.density = 'compact';
+  settings.tpl = 'ats';
+  settings.rodo = 'future';
+  settings.rodoTarget = 'Frontend Developer';
+  assert.equal(isBlank(settings), true);
+});
