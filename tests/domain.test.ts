@@ -705,7 +705,7 @@ test('kopia zapasowa: ponowne wczytanie nie dubluje, inna wersja nie nadpisuje',
 test('dostęp do PDF: reklama, kredyt, premium i wersja bez blokady', () => {
   assert.equal(decideExport(FREE_ACCESS, false), 'free');
   assert.equal(decideExport(FREE_ACCESS, true), 'needs-ad');
-  assert.equal(decideExport({ premium: true, credits: 0 }, true), 'premium');
+  assert.equal(decideExport({ ...FREE_ACCESS, pro: true }, true), 'premium');
   let s = grantCredit(FREE_ACCESS, 3);
   assert.equal(decideExport(s, true), 'credit');
   s = consumeCredit(s);
@@ -720,13 +720,13 @@ test('dostęp do PDF: uszkodzony zapis nigdy nie daje darmowego dostępu ani bł
   assert.deepEqual(normalizeAccess(null, 3), FREE_ACCESS);
   assert.deepEqual(normalizeAccess('x', 3), FREE_ACCESS);
   assert.deepEqual(normalizeAccess({ premium: 'yes', credits: -4 }, 3), FREE_ACCESS);
-  assert.deepEqual(normalizeAccess({ premium: true, credits: 99.9 }, 3), { premium: true, credits: 3 });
+  assert.deepEqual(normalizeAccess({ premium: true, credits: 99.9 }, 3), { ...FREE_ACCESS, pro: true, credits: 3 });
   assert.deepEqual(normalizeAccess({ credits: NaN }, 3), FREE_ACCESS);
   const mem = new Map<string, string>();
   const st = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v) };
   assert.deepEqual(loadAccess(st, 3), FREE_ACCESS);
-  saveAccess(st, { premium: false, credits: 2 });
-  assert.deepEqual(loadAccess(st, 3), { premium: false, credits: 2 });
+  saveAccess(st, { ...FREE_ACCESS, credits: 2 });
+  assert.deepEqual(loadAccess(st, 3), { ...FREE_ACCESS, credits: 2 });
   mem.set(ACCESS_KEY, '{oops');
   assert.deepEqual(loadAccess(st, 3), FREE_ACCESS);
   assert.deepEqual(loadAccess(null, 3), FREE_ACCESS);

@@ -1,8 +1,8 @@
-import { FREE_ACCESS, normalizeAccess, type AccessState } from '../domain/access';
+import { FREE_ACCESS, normalizeAccess, type ProState } from '../domain/access';
 
 export const ACCESS_KEY = 'cvmaker.access';
 
-export function loadAccess(storage: Pick<Storage, 'getItem'> | null, max: number): AccessState {
+export function loadAccess(storage: Pick<Storage, 'getItem'> | null, max: number): ProState {
   if (!storage) return FREE_ACCESS;
   try {
     const raw = storage.getItem(ACCESS_KEY);
@@ -12,7 +12,7 @@ export function loadAccess(storage: Pick<Storage, 'getItem'> | null, max: number
   }
 }
 
-export function saveAccess(storage: Pick<Storage, 'setItem'> | null, state: AccessState): void {
+export function saveAccess(storage: Pick<Storage, 'setItem'> | null, state: ProState): void {
   try {
     storage?.setItem(ACCESS_KEY, JSON.stringify(state));
   } catch {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { consumeCredit, decideExport, grantCredit, type AccessState, type ExportDecision } from '../domain/access';
+import { consumeCredit, decideExport, grantCredit, type ProState, type ExportDecision } from '../domain/access';
 import { browserStorage } from '../store/persist';
 import { loadAccess, saveAccess } from '../store/accessPersist';
 import { adsActive } from './ads';
@@ -13,7 +13,7 @@ export interface ExportGate {
 }
 
 export function useExportGate(): ExportGate {
-  const [access, setAccess] = useState<AccessState>(() => loadAccess(browserStorage(), MONETIZATION.maxCredits));
+  const [access, setAccess] = useState<ProState>(() => loadAccess(browserStorage(), MONETIZATION.maxCredits));
   useEffect(() => saveAccess(browserStorage(), access), [access]);
   const decide = useCallback(() => decideExport(access, adsActive()), [access]);
   const grant = useCallback(() => setAccess((s) => grantCredit(s, MONETIZATION.maxCredits)), []);
