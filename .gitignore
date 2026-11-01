@@ -1,5 +1,27 @@
+# Залежності та збірка веб-частини
 node_modules
 dist
 .env
 *.log
 .DS_Store
+
+# Android: старий проєкт-резервна копія та результати збірки
+android_old/
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea/
+android/.kotlin/
+android/local.properties
+android/capacitor-cordova-android-plugins/build/
+
+# НІКОЛИ не заливати на GitHub: ключі підпису і готові збірки
+*.jks
+*.keystore
+keystore.properties
+*.aab
+*.apk
+
+# Редактори
+.idea/
+.vscode/
