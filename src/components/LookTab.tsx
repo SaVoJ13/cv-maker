@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { AccentId, DensityId, Lang, TemplateId } from '../domain/types';
+import type { AccentId, DensityId, DocLang, TemplateId } from '../domain/types';
 import { ACCENT_IDS, ACCENTS, DENSITY_IDS, TEMPLATES, TEMPLATE_META } from '../domain/constants';
 import { qualityChecks } from '../domain/quality';
 import { useStore } from '../store/StoreProvider';
@@ -99,7 +99,7 @@ export function LookTab({ cv, update, pages, onChangeTemplate }: TabProps & { pa
 
       <section className="sec">
         <h3>{t('s_dlang')}</h3>
-        <Segmented<Lang>
+        <Segmented<DocLang>
           className="full"
           label={t('s_dlang')}
           value={cv.lang}

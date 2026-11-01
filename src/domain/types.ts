@@ -1,4 +1,7 @@
-export type Lang = 'pl' | 'en';
+/** Мова інтерфейсу. 'uk' додається в кроці 6 разом зі словником. */
+export type UiLang = 'pl' | 'en';
+/** Мова тексту самого документа CV (польська або англійська). */
+export type DocLang = 'pl' | 'en';
 export type TemplateId =
   | 'classic'
   | 'modern'
@@ -86,7 +89,7 @@ export interface Cv {
   name: string;
   updated: number;
   /** Język dokumentu (nie interfejsu) */
-  lang: Lang;
+  lang: DocLang;
   tpl: TemplateId;
   accent: AccentId;
   density: DensityId;

@@ -1,11 +1,11 @@
-import type { Cv, Lang } from '../domain/types';
+import type { Cv, UiLang } from '../domain/types';
 import { normalizeCv } from '../domain/cvOps';
 
 export const STORAGE_KEY = 'cvmaker.state';
 
 export interface PersistedState {
   cvs: Cv[];
-  ui: Lang;
+  ui: UiLang;
   currentId: string | null;
 }
 
@@ -23,7 +23,7 @@ export function loadState(storage: ReadableStorage | null): PersistedState | nul
     const o = parsed as Record<string, unknown>;
     if (!Array.isArray(o.cvs)) return null;
     const cvs = o.cvs.map(normalizeCv).filter((c): c is Cv => c !== null);
-    const ui: Lang = o.ui === 'en' ? 'en' : 'pl';
+    const ui: UiLang = o.ui === 'en' ? 'en' : 'pl';
     const currentId = typeof o.currentId === 'string' && cvs.some((c) => c.id === o.currentId) ? o.currentId : null;
     return { cvs, ui, currentId };
   } catch {

@@ -1,4 +1,4 @@
-import type { Lang } from './types';
+import type { UiLang } from './types';
 
 /**
  * Teksty interfejsu. Klucze wynikają z obiektu `pl`, a `en` musi mieć dokładnie te same,
@@ -608,8 +608,8 @@ const en: Record<MsgKey, string> = {
   prog_done: 'All set. Download the PDF or fine-tune the look.',
 };
 
-export const MESSAGES: Record<Lang, Record<MsgKey, string>> = { pl, en };
+export const MESSAGES: Record<UiLang, Record<MsgKey, string>> = { pl, en };
 
-export function translate(lang: Lang, key: MsgKey): string {
+export function translate(lang: UiLang, key: MsgKey): string {
   return MESSAGES[lang][key];
 }

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
-import type { Cv, Lang } from '../domain/types';
+import type { Cv, UiLang } from '../domain/types';
 import { blankCv, sampleCv } from '../domain/cvOps';
 import { planImport } from '../domain/backup';
 import { translate, type MsgKey } from '../domain/i18n';
@@ -8,11 +8,11 @@ import { reducer, type State } from './reducer';
 
 interface Store {
   cvs: Cv[];
-  ui: Lang;
+  ui: UiLang;
   currentId: string | null;
   current: Cv | null;
   t: (key: MsgKey) => string;
-  setUi: (lang: Lang) => void;
+  setUi: (lang: UiLang) => void;
   select: (id: string | null) => void;
   create: (opts?: Partial<Pick<Cv, 'tpl' | 'accent'>>) => string;
   remove: (id: string) => void;

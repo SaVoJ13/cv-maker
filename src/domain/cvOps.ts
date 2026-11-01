@@ -8,7 +8,7 @@ import type {
   Experience,
   LanguageSkill,
   LangLevel,
-  Lang,
+  DocLang,
   RodoMode,
   TemplateId,
 } from './types';
@@ -124,7 +124,7 @@ export function emptyBasics(): Basics {
   };
 }
 
-export function blankCv(lang: Lang = 'pl', name = '', opts: Partial<Pick<Cv, 'tpl' | 'accent'>> = {}): Cv {
+export function blankCv(lang: DocLang = 'pl', name = '', opts: Partial<Pick<Cv, 'tpl' | 'accent'>> = {}): Cv {
   return {
     id: uid(),
     name,

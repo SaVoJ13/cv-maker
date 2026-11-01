@@ -1,4 +1,4 @@
-import type { Cv, Lang } from '../domain/types';
+import type { Cv, UiLang } from '../domain/types';
 import { duplicateCv } from '../domain/cvOps';
 import type { PersistedState } from './persist';
 
@@ -10,7 +10,7 @@ export type Action =
   | { type: 'remove'; id: string }
   | { type: 'duplicate'; id: string; copyLabel: string }
   | { type: 'select'; id: string | null }
-  | { type: 'ui'; lang: Lang }
+  | { type: 'ui'; lang: UiLang }
   /** Mutator działa na kopii CV; `updated` ustawiamy automatycznie. */
   | { type: 'update'; id: string; mutate: (draft: Cv) => void; now?: number };
 

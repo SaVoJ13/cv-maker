@@ -1,4 +1,4 @@
-import type { Cv, Lang } from './types';
+import type { Cv, DocLang } from './types';
 
 /** Teksty, które trafiają do samego dokumentu CV (nie do interfejsu). */
 export interface DocStrings {
@@ -22,7 +22,7 @@ export interface DocStrings {
   license: string;
 }
 
-export const DOC: Record<Lang, DocStrings> = {
+export const DOC: Record<DocLang, DocStrings> = {
   pl: {
     summary: 'Podsumowanie zawodowe',
     exp: 'Doświadczenie zawodowe',
