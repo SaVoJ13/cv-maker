@@ -9,8 +9,8 @@ import { normalizeCv } from './cvOps';
  */
 export const CURRENT_SCHEMA = 2;
 
-/** Мови інтерфейсу, які вміємо читати зі збереження. 'uk' додається разом зі словником. */
-export const UI_LANGS: readonly UiLang[] = ['pl', 'en'];
+/** Мови інтерфейсу, які вміємо читати зі збереження. */
+export const UI_LANGS: readonly UiLang[] = ['pl', 'uk', 'en'];
 
 /** Стан у пам'яті застосунку. На диск пишеться разом з `schema`. */
 export interface PersistedState {

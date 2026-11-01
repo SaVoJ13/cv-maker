@@ -19,7 +19,7 @@ import {
   sortExperience,
 } from '../src/domain/cvOps.ts';
 import { DOC, rodoText } from '../src/domain/docText.ts';
-import { MESSAGES } from '../src/domain/i18n.ts';
+import { MESSAGES } from '../src/domain/i18n/index.ts';
 import { qualityChecks } from '../src/domain/quality.ts';
 import { buildPdfDocument, pdfFileName } from '../src/domain/pdf.ts';
 import { TEMPLATES, TEMPLATE_META } from '../src/domain/templates.ts';
@@ -88,14 +88,27 @@ test('klauzula RODO: wariant bieżący, przyszły, stanowisko i angielski', () =
   assert.match(en, /future recruitment/);
 });
 
-test('interfejs: PL i EN mają te same klucze i niepuste teksty', () => {
+test('interfejs: PL, UK i EN mają te same klucze i niepuste teksty', () => {
   const pl = Object.keys(MESSAGES.pl).sort();
-  const en = Object.keys(MESSAGES.en).sort();
-  assert.deepEqual(pl, en);
+  assert.deepEqual(Object.keys(MESSAGES.en).sort(), pl);
+  assert.deepEqual(Object.keys(MESSAGES.uk).sort(), pl);
   for (const k of pl) {
-    assert.ok(MESSAGES.pl[k as keyof typeof MESSAGES.pl].length > 0, k);
-    assert.ok(MESSAGES.en[k as keyof typeof MESSAGES.en].length > 0, k);
+    for (const lang of ['pl', 'uk', 'en'] as const) {
+      assert.ok(MESSAGES[lang][k as keyof typeof MESSAGES.pl].trim().length > 0, `${lang}.${k}`);
+    }
   }
+});
+
+test('словник uk: справді український текст, а не копія польського чи англійського', () => {
+  const same = Object.keys(MESSAGES.pl).filter(
+    (k) => MESSAGES.uk[k as keyof typeof MESSAGES.pl] === MESSAGES.pl[k as keyof typeof MESSAGES.pl],
+  );
+  // Допустимі збіги: назви, які однакові в усіх мовах
+  assert.deepEqual(same.sort(), ['f_email', 'tpl_executive']);
+  // жодних російських літер ы, э, ъ, ё
+  for (const [k, v] of Object.entries(MESSAGES.uk)) assert.ok(!/[ыэъё]/i.test(v), k);
+  // у значеннях немає латинських літер, вставлених усередину українських слів
+  for (const [k, v] of Object.entries(MESSAGES.uk)) assert.ok(!/[а-яіїєґ][a-z]|[a-z][а-яіїєґ]/i.test(v), k);
 });
 
 test('przykładowe CV przechodzi wszystkie 8 reguł jakości', () => {

@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
-import type { Cv, TemplateId } from '../domain/types';
+import type { Cv, TemplateId, UiLang } from '../domain/types';
+import { UI_LOCALE } from '../domain/i18n';
 import { completeness } from '../domain/completeness';
 import { matchesCv, sortCvs, type SortKey } from '../domain/search';
 import { useStore } from '../store/StoreProvider';
@@ -8,9 +9,9 @@ import { Thumb } from './Thumb';
 import { useToast } from './Toast';
 import { Dialog } from './ui';
 
-function formatDate(ts: number, ui: 'pl' | 'en'): string {
+function formatDate(ts: number, ui: UiLang): string {
   try {
-    return new Date(ts).toLocaleDateString(ui === 'pl' ? 'pl-PL' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(ts).toLocaleDateString(UI_LOCALE[ui], { day: 'numeric', month: 'short', year: 'numeric' });
   } catch {
     return '';
   }
@@ -247,7 +248,7 @@ export function Dashboard({
 
   const own = useMemo(() => cvs.filter((c) => !c.example), [cvs]);
   const example = cvs.find((c) => c.example) ?? null;
-  const locale = ui === 'pl' ? 'pl-PL' : 'en-GB';
+  const locale = UI_LOCALE[ui];
   const shown = useMemo(
     () => sortCvs(own.filter((c) => matchesCv(c, query, t(`tpl_${c.tpl}`))), sort, locale),
     [own, query, sort, locale, t],
