@@ -9,11 +9,13 @@ import type {
   LanguageSkill,
   LangLevel,
   DocLang,
+  PhotoShape,
   RodoMode,
   TemplateId,
 } from './types';
 import { PHOTO_DEFAULT, normalizePhotoView } from './photo';
 import { ACCENTS, DENSITY, LEGACY_TEMPLATES, LEVELS, SIDEBAR, TEMPLATES, TEMPLATE_META } from './constants';
+import { normalizeExtras } from './extras';
 import { DOC, rodoText, type DocStrings } from './docText';
 
 /* ---------- małe narzędzia ---------- */
@@ -121,6 +123,7 @@ export function emptyBasics(): Basics {
     photoY: PHOTO_DEFAULT.y,
     photoZoom: PHOTO_DEFAULT.zoom,
     photoSize: PHOTO_DEFAULT.size,
+    photoShape: 'circle',
   };
 }
 
@@ -135,6 +138,7 @@ export function blankCv(lang: DocLang = 'pl', name = '', opts: Partial<Pick<Cv, 
     density: 'normal',
     rodo: 'current',
     rodoTarget: '',
+    autoFit: false,
     example: false,
     data: {
       basics: emptyBasics(),
@@ -145,6 +149,7 @@ export function blankCv(lang: DocLang = 'pl', name = '', opts: Partial<Pick<Cv, 
       skillsSoft: '',
       languages: [],
       interests: '',
+      extras: {},
     },
   };
 }
@@ -178,9 +183,10 @@ export function sampleCv(): Cv {
       license: 'B',
       photo: SAMPLE_PHOTO,
       photoX: PHOTO_DEFAULT.x,
-    photoY: PHOTO_DEFAULT.y,
-    photoZoom: PHOTO_DEFAULT.zoom,
-    photoSize: PHOTO_DEFAULT.size,
+      photoY: PHOTO_DEFAULT.y,
+      photoZoom: PHOTO_DEFAULT.zoom,
+      photoSize: PHOTO_DEFAULT.size,
+      photoShape: 'circle',
     },
     summary:
       'Frontend Developer z 4-letnim doświadczeniem w budowie aplikacji w React i TypeScript dla e-commerce i fintechu. Skracam czas ładowania stron i upraszczam proces zakupowy, co przekłada się na wzrost konwersji. Szukam zespołu, w którym mogę rozwijać design system i dbać o dostępność.',
@@ -226,6 +232,7 @@ export function sampleCv(): Cv {
       { id: uid(), name: 'Niemiecki', level: 'A2' },
     ],
     interests: 'Bieganie, fotografia, wolontariat w fundacji uczącej programowania dzieci',
+    extras: {},
   };
   return c;
 }
@@ -276,6 +283,7 @@ export function normalizeCv(raw: unknown): Cv | null {
         const v = normalizePhotoView(b);
         return { photoX: v.x, photoY: v.y, photoZoom: v.zoom, photoSize: v.size };
       })(),
+      photoShape: oneOf<PhotoShape>(b.photoShape, ['square', 'rounded', 'circle'] as const, 'circle'),
     },
     summary: str(d.summary),
     experience: arr(d.experience).map((e) => ({
@@ -304,6 +312,7 @@ export function normalizeCv(raw: unknown): Cv | null {
       level: oneOf<LangLevel>(l.level, LEVELS, 'B2'),
     })),
     interests: str(d.interests),
+    extras: normalizeExtras(d.extras),
   };
   return {
     id: str(raw.id) || base.id,
@@ -315,6 +324,7 @@ export function normalizeCv(raw: unknown): Cv | null {
     density: oneOf<DensityId>(raw.density, Object.keys(DENSITY) as DensityId[], 'normal'),
     rodo: oneOf<RodoMode>(raw.rodo, ['current', 'future'] as const, 'current'),
     rodoTarget: str(raw.rodoTarget),
+    autoFit: raw.autoFit === true,
     example: raw.example === true,
     data,
   };

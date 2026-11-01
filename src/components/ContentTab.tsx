@@ -171,7 +171,7 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       x.data.basics.photoY = c.y;
       x.data.basics.photoZoom = c.zoom;
     });
-  const setBasic = (key: Exclude<keyof Basics, 'photoX' | 'photoY' | 'photoZoom' | 'photoSize'>) => (v: string) =>
+  const setBasic = (key: Exclude<keyof Basics, 'photoX' | 'photoY' | 'photoZoom' | 'photoSize' | 'photoShape'>) => (v: string) =>
     update((x) => {
       x.data.basics[key] = v;
     });

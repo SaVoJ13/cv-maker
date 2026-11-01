@@ -17,6 +17,8 @@ export type TemplateId =
   | 'nordic';
 export type AccentId = 'navy' | 'azure' | 'graphite' | 'emerald' | 'burgundy' | 'crimson';
 export type DensityId = 'compact' | 'normal' | 'airy';
+/** Форма фото. Для старих CV за замовчуванням circle, як було до цього. */
+export type PhotoShape = 'square' | 'rounded' | 'circle';
 export type RodoMode = 'current' | 'future';
 export type LangLevel = 'native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
 
@@ -40,6 +42,7 @@ export interface Basics {
   photoY: number;
   photoZoom: number;
   photoSize: number;
+  photoShape: PhotoShape;
 }
 
 export interface Experience {
@@ -71,6 +74,28 @@ export interface LanguageSkill {
   level: LangLevel;
 }
 
+/** Додаткові дані для галузевих шаблонів (Спринт 3). Усе необов'язкове. */
+export interface CvExtras {
+  driver?: {
+    categories: string[];
+    code95: boolean;
+    tachograph: boolean;
+    adr: boolean;
+    udt: boolean;
+    fleet: string;
+    routes: ('PL' | 'UE')[];
+  };
+  tech?: {
+    sep: string;
+    welding: string[];
+    cnc: string;
+    drawings: boolean;
+    bhp: boolean;
+    certs: string[];
+  };
+  qr?: { enabled: boolean; url: string; label: string };
+}
+
 export interface CvData {
   basics: Basics;
   summary: string;
@@ -81,6 +106,7 @@ export interface CvData {
   skillsSoft: string;
   languages: LanguageSkill[];
   interests: string;
+  extras: CvExtras;
 }
 
 export interface Cv {
@@ -96,6 +122,8 @@ export interface Cv {
   rodo: RodoMode;
   /** Stanowisko wpisane w klauzuli RODO */
   rodoTarget: string;
+  /** Автопідгонка під одну сторінку (PRO, Спринт 3) */
+  autoFit: boolean;
   example: boolean;
   data: CvData;
 }
