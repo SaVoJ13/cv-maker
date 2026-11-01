@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Basics, Cv, Education, Experience, LangLevel, LanguageSkill, RodoMode } from '../domain/types';
-import { LEVELS, TEMPLATE_META } from '../domain/constants';
+import { LEVELS } from '../domain/constants';
+import { TEMPLATE_META } from '../domain/templates';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
 import { CORE_SECTIONS, SECTION_IDS, completeness, sectionFilled, type SectionId } from '../domain/completeness';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';

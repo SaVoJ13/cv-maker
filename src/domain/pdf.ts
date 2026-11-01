@@ -1,5 +1,6 @@
 import type { Cv, TemplateId } from './types';
-import { ACCENTS, DENSITY, SIDEBAR } from './constants';
+import { ACCENTS, DENSITY } from './constants';
+import { SIDEBAR } from './templates';
 import { tint } from './color';
 import { DOC } from './docText';
 import {

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { AccentId, DensityId, DocLang, TemplateId } from '../domain/types';
-import { ACCENT_IDS, ACCENTS, DENSITY_IDS, TEMPLATES, TEMPLATE_META } from '../domain/constants';
+import { ACCENT_IDS, ACCENTS, DENSITY_IDS } from '../domain/constants';
+import { TEMPLATES, TEMPLATE_META } from '../domain/templates';
 import { qualityChecks } from '../domain/quality';
 import { useStore } from '../store/StoreProvider';
 import type { TabProps } from './ContentTab';

@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { PhotoCrop } from '../domain/photo';
 import { PhotoView } from './PhotoView';
 import type { Cv } from '../domain/types';
-import { ACCENTS, DENSITY, SIDEBAR } from '../domain/constants';
+import { ACCENTS, DENSITY } from '../domain/constants';
+import { SIDEBAR } from '../domain/templates';
 import { tint } from '../domain/color';
 import { DOC } from '../domain/docText';
 import {

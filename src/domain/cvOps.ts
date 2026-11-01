@@ -14,7 +14,8 @@ import type {
   TemplateId,
 } from './types';
 import { PHOTO_DEFAULT, normalizePhotoView } from './photo';
-import { ACCENTS, DENSITY, LEGACY_TEMPLATES, LEVELS, SIDEBAR, TEMPLATES, TEMPLATE_META } from './constants';
+import { ACCENTS, DENSITY, LEVELS } from './constants';
+import { LEGACY_TEMPLATES, SIDEBAR, TEMPLATES, TEMPLATE_META } from './templates';
 import { normalizeExtras } from './extras';
 import { DOC, rodoText, type DocStrings } from './docText';
 

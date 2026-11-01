@@ -22,7 +22,7 @@ import { DOC, rodoText } from '../src/domain/docText.ts';
 import { MESSAGES } from '../src/domain/i18n.ts';
 import { qualityChecks } from '../src/domain/quality.ts';
 import { buildPdfDocument, pdfFileName } from '../src/domain/pdf.ts';
-import { TEMPLATES, TEMPLATE_META } from '../src/domain/constants.ts';
+import { TEMPLATES, TEMPLATE_META } from '../src/domain/templates.ts';
 import { PHOTO_DEFAULT, fitWithin, normalizePhotoView, panBy, previewBox, squareCrop, zoomAt } from '../src/domain/photo.ts';
 import { loadState, saveState, STORAGE_KEY, type PersistedState } from '../src/store/persist.ts';
 import { reducer } from '../src/store/reducer.ts';

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AccentId, Cv, TemplateId } from '../domain/types';
-import { ACCENT_IDS, ACCENTS, TEMPLATES, TEMPLATE_META, type AtsLevel } from '../domain/constants';
+import { ACCENT_IDS, ACCENTS } from '../domain/constants';
+import { TEMPLATES, TEMPLATE_META, type AtsLevel } from '../domain/templates';
 import { useStore } from '../store/StoreProvider';
 import { Icon } from './Icon';
 import { Thumb } from './Thumb';

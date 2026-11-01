@@ -1,5 +1,5 @@
 import type { Cv } from './types';
-import { TEMPLATE_META } from './constants';
+import { TEMPLATE_META } from './templates';
 import { filledExperience, lines, list } from './cvOps';
 import type { MsgKey } from './i18n';
 

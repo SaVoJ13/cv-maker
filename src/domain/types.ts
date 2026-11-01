@@ -17,6 +17,18 @@ export type TemplateId =
   | 'nordic';
 export type AccentId = 'navy' | 'azure' | 'graphite' | 'emerald' | 'burgundy' | 'crimson';
 export type DensityId = 'compact' | 'normal' | 'airy';
+/** Рівень доступу: безкоштовно чи PRO. */
+export type Tier = 'free' | 'pro';
+/** Галузі для шаблонів і готових фраз. */
+export type IndustryId =
+  | 'logistics'
+  | 'drivers'
+  | 'construction'
+  | 'production_cnc'
+  | 'it'
+  | 'office'
+  | 'retail_food'
+  | 'students';
 /** Форма фото. Для старих CV за замовчуванням circle, як було до цього. */
 export type PhotoShape = 'square' | 'rounded' | 'circle';
 export type RodoMode = 'current' | 'future';
