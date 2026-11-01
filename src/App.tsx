@@ -30,6 +30,11 @@ function Shell() {
     window.scrollTo(0, 0);
   };
 
+  /* Мова сторінки для читачів екрана й перекладачів браузера. Код української в HTML: uk. */
+  useEffect(() => {
+    document.documentElement.lang = ui;
+  }, [ui]);
+
   /* Po zmianie ekranu fokus trafia na treść, żeby czytnik ekranu i klawiatura nie zostawały w poprzednim widoku. */
   useEffect(() => {
     if (firstView.current) {
@@ -73,6 +78,7 @@ function Shell() {
             onChange={setUi}
             options={[
               { value: 'pl', label: 'PL', ariaLabel: 'Polski' },
+              { value: 'uk', label: 'UA', ariaLabel: 'Українська' },
               { value: 'en', label: 'EN', ariaLabel: 'English' },
             ]}
           />

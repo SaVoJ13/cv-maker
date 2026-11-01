@@ -27,11 +27,11 @@ function Row({ title, desc, children, id, icon }: { title: string; desc?: string
 }
 
 /**
- * Ustawienia: tylko to, co aplikacja naprawdę ma (język interfejsu, motyw, kopia zapasowa, zgody na reklamy).
+ * Ustawienia: tylko to, co aplikacja naprawdę ma (motyw, kopia zapasowa, zgody na reklamy).
  * Aplikacja nie ma kont ani subskrypcji, więc nie pokazujemy profilu ani planu.
  */
 export function Settings() {
-  const { t, ui, setUi } = useStore();
+  const { t } = useStore();
   const [theme, setTheme] = useTheme();
   const notify = useToast();
 
@@ -45,17 +45,6 @@ export function Settings() {
       </div>
 
       <div className="set-card">
-        <Row id="set-lang" icon="globe" title={t('set_lang_title')} desc={t('set_lang_desc')}>
-          <Segmented
-            label={t('set_lang_title')}
-            value={ui}
-            onChange={setUi}
-            options={[
-              { value: 'pl', label: 'Polski' },
-              { value: 'en', label: 'English' },
-            ]}
-          />
-        </Row>
         <Row id="set-theme" icon={THEME_ICON[theme]} title={t('set_theme_title')} desc={t('set_theme_desc')}>
           <Segmented<ThemePref>
             label={t('set_theme_title')}
