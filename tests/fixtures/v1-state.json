@@ -1,0 +1,194 @@
+{
+  "cvs": [
+    {
+      "id": "k1a2b3c4",
+      "name": "Kierowca C+E – Trans-Bud",
+      "updated": 1745000000000,
+      "lang": "pl",
+      "tpl": "portrait",
+      "accent": "burgundy",
+      "density": "compact",
+      "rodo": "future",
+      "rodoTarget": "kierowca C+E",
+      "example": false,
+      "data": {
+        "basics": {
+          "name": "Jan Żółkiewski",
+          "title": "Kierowca C+E",
+          "email": "jan.zolkiewski@example.com",
+          "phone": "+48 600 111 222",
+          "city": "Łódź",
+          "link": "",
+          "address": "ul. Łąkowa 5, 90-001 Łódź",
+          "birthDate": "12.03.1985",
+          "birthPlace": "Łódź",
+          "license": "B, C, C+E",
+          "photo": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+          "photoPos": 40,
+          "photoZoom": 1.5,
+          "photoSize": 100
+        },
+        "summary": "Kierowca zawodowy z 12-letnim doświadczeniem w transporcie międzynarodowym. Zero wypadków z mojej winy, uprawnienia ADR i świadectwo kwalifikacji.",
+        "experience": [
+          {
+            "id": "e1",
+            "role": "Kierowca międzynarodowy",
+            "company": "Trans-Bud Sp. z o.o.",
+            "city": "Łódź",
+            "from": "03.2019",
+            "to": "",
+            "current": true,
+            "bullets": "Trasy PL–DE–NL, 120 tys. km rocznie\nRozliczanie tachografu i dokumentów CMR\nZero szkód transportowych w 5 lat"
+          },
+          {
+            "id": "e2",
+            "role": "Kierowca C",
+            "company": "Express-Trans",
+            "city": "Zgierz",
+            "from": "06.2013",
+            "to": "02.2019",
+            "current": false,
+            "bullets": "Dostawy krajowe do 24 t\nObsługa HDS"
+          }
+        ],
+        "education": [
+          {
+            "id": "d1",
+            "school": "Zespół Szkół Samochodowych",
+            "degree": "Technik",
+            "field": "Mechanik pojazdów",
+            "from": "2000",
+            "to": "2004"
+          }
+        ],
+        "skillsHard": "Tachograf cyfrowy, ADR, HDS, CMR, kod 95",
+        "skillsSoft": "Punktualność, odpowiedzialność",
+        "languages": [
+          {
+            "id": "l1",
+            "name": "Niemiecki",
+            "level": "B1"
+          },
+          {
+            "id": "l2",
+            "name": "Angielski",
+            "level": "A2"
+          }
+        ],
+        "interests": "Wędkarstwo, rowery"
+      }
+    },
+    {
+      "id": "f9e8d7c6",
+      "name": "Developer EN",
+      "updated": 1746000000000,
+      "lang": "en",
+      "tpl": "modern",
+      "accent": "crimson",
+      "density": "airy",
+      "rodo": "current",
+      "rodoTarget": "",
+      "example": false,
+      "data": {
+        "basics": {
+          "name": "Oksana Melnyk",
+          "title": "Frontend Developer",
+          "email": "oksana@example.com",
+          "phone": "+48 500 200 300",
+          "city": "Kraków",
+          "link": "linkedin.com/in/oksana-example",
+          "address": "",
+          "birthDate": "",
+          "birthPlace": "",
+          "license": "B",
+          "photo": "",
+          "photoX": 50,
+          "photoY": 30,
+          "photoZoom": 1,
+          "photoSize": 90
+        },
+        "summary": "Frontend developer with 5 years of experience building React apps for logistics and fintech.",
+        "experience": [
+          {
+            "id": "e3",
+            "role": "Frontend Developer",
+            "company": "LogiSoft",
+            "city": "Kraków",
+            "from": "01.2021",
+            "to": "",
+            "current": true,
+            "bullets": "Cut page load time by 40%\nLed migration to TypeScript\nMentored 3 juniors"
+          }
+        ],
+        "education": [],
+        "skillsHard": "React, TypeScript, Vite, Jest, CSS, Git",
+        "skillsSoft": "Teamwork",
+        "languages": [
+          {
+            "id": "l3",
+            "name": "Polish",
+            "level": "C1"
+          }
+        ],
+        "interests": ""
+      }
+    },
+    {
+      "id": "a0b0c0d0",
+      "name": "Frontend Developer – przykład",
+      "updated": 1746000000000,
+      "lang": "pl",
+      "tpl": "modern",
+      "accent": "crimson",
+      "density": "airy",
+      "rodo": "current",
+      "rodoTarget": "",
+      "example": true,
+      "data": {
+        "basics": {
+          "name": "Oksana Melnyk",
+          "title": "Frontend Developer",
+          "email": "oksana@example.com",
+          "phone": "+48 500 200 300",
+          "city": "Kraków",
+          "link": "linkedin.com/in/oksana-example",
+          "address": "",
+          "birthDate": "",
+          "birthPlace": "",
+          "license": "B",
+          "photo": "",
+          "photoX": 50,
+          "photoY": 30,
+          "photoZoom": 1,
+          "photoSize": 90
+        },
+        "summary": "Frontend developer with 5 years of experience building React apps for logistics and fintech.",
+        "experience": [
+          {
+            "id": "e3",
+            "role": "Frontend Developer",
+            "company": "LogiSoft",
+            "city": "Kraków",
+            "from": "01.2021",
+            "to": "",
+            "current": true,
+            "bullets": "Cut page load time by 40%\nLed migration to TypeScript\nMentored 3 juniors"
+          }
+        ],
+        "education": [],
+        "skillsHard": "React, TypeScript, Vite, Jest, CSS, Git",
+        "skillsSoft": "Teamwork",
+        "languages": [
+          {
+            "id": "l3",
+            "name": "Polish",
+            "level": "C1"
+          }
+        ],
+        "interests": ""
+      }
+    }
+  ],
+  "ui": "pl",
+  "currentId": "f9e8d7c6"
+}
