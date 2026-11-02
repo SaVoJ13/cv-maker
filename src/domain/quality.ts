@@ -27,3 +27,47 @@ export function qualityChecks(cv: Cv, pages: number): QualityCheck[] {
     { key: 'ck_ats', ok: TEMPLATE_META[cv.tpl].atsSafe },
   ];
 }
+
+/* ---------- поради рекрутера (м'які підказки, не помилки) ---------- */
+
+export type RecruiterTipId = 'phone_code' | 'metrics_where' | 'law_22_1';
+
+export interface RecruiterTip {
+  id: RecruiterTipId;
+  /** warn — варто виправити; info — довідка */
+  tone: 'warn' | 'info';
+  /** Для metrics_where: місця досвіду, де немає жодної цифри */
+  places?: { index: number; role: string; company: string }[];
+}
+
+/** Є код країни: +<код> або 00<код> (на початку, дужки й пробіли допускаються). */
+export function phoneHasCountryCode(phone: string): boolean {
+  return /^[\s(]*(\+|00)\s*\(?\d/.test(String(phone ?? ''));
+}
+
+/**
+ * Поради, яких немає в `qualityChecks`:
+ * - телефон без коду країни (будь-який код +<код> вважається нормальним, не лише +48);
+ * - місця в досвіді, де немає жодної цифри (без вигадування чисел: лише показуємо, де їх бракує);
+ * - довідка про art. 22¹ Kodeksu pracy (завжди; обов'язково з підписом «не юридична порада» в інтерфейсі).
+ */
+export function recruiterTips(cv: Cv): RecruiterTip[] {
+  const d = cv.data;
+  const tips: RecruiterTip[] = [];
+
+  if (d.basics.phone.trim() && !phoneHasCountryCode(d.basics.phone)) {
+    tips.push({ id: 'phone_code', tone: 'warn' });
+  }
+
+  const places = filledExperience(d)
+    .map((e, index) => ({ e, index }))
+    .filter(({ e }) => {
+      const b = lines(e.bullets);
+      return b.length > 0 && !b.some((x) => /\d/.test(x));
+    })
+    .map(({ e, index }) => ({ index, role: e.role.trim(), company: e.company.trim() }));
+  if (places.length > 0) tips.push({ id: 'metrics_where', tone: 'warn', places });
+
+  tips.push({ id: 'law_22_1', tone: 'info' });
+  return tips;
+}

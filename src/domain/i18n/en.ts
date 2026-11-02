@@ -343,4 +343,11 @@ export const en: Record<MsgKey, string> = {
   ats_h_low_score: 'Low score: review the missing words and add those that truly describe you.',
   ats_kind_hard: 'Hard skill',
   ats_kind_soft: 'Soft skill',
+  rec_title: 'Recruiter tips',
+  rec_phone_code: 'Add a country code, for example +48 (for a number from another country, use its code). Then a recruiter can call without guessing.',
+  rec_metrics_intro: 'There are no numbers in these places:',
+  rec_metrics_note: 'If you have real figures (clients, orders, team size, years), add them. Do not invent numbers.',
+  rec_law_title: 'What data an employer may ask for (Art. 22¹ Polish Labour Code)',
+  rec_law: 'Under Art. 22¹ of the Polish Labour Code, an employer may ask a candidate for: first and last name, date of birth, contact details, education, professional qualifications and employment history. Other data only if a separate law requires it. A photo is not on this list, so adding one is entirely voluntary.',
+  rec_law_disclaimer: 'For reference only, not legal advice.',
 };

@@ -344,6 +344,13 @@ export const pl = {
   ats_h_low_score: 'Niska ocena: przejrzyj brakujące słowa i dodaj te, które naprawdę Cię opisują.',
   ats_kind_hard: 'Umiejętność twarda',
   ats_kind_soft: 'Umiejętność miękka',
+  rec_title: 'Wskazówki rekrutera',
+  rec_phone_code: 'Dodaj kod kraju, na przykład +48 (dla numeru z innego kraju: jego kod). Rekruter zadzwoni wtedy bez zgadywania.',
+  rec_metrics_intro: 'W tych miejscach nie ma żadnej liczby:',
+  rec_metrics_note: 'Jeśli masz prawdziwe dane (liczba klientów, zamówień, osób w zespole, lat), dodaj je. Nie wymyślaj liczb.',
+  rec_law_title: 'Jakich danych może żądać pracodawca (art. 22¹ KP)',
+  rec_law: 'Zgodnie z art. 22¹ Kodeksu pracy pracodawca może żądać od kandydata: imienia i nazwiska, daty urodzenia, danych kontaktowych, wykształcenia, kwalifikacji zawodowych oraz przebiegu dotychczasowego zatrudnienia. Inne dane tylko wtedy, gdy wynika to z odrębnych przepisów. Zdjęcia nie ma na tej liście, więc dodajesz je wyłącznie dobrowolnie.',
+  rec_law_disclaimer: 'Informacja orientacyjna. To nie jest porada prawna.',
 } as const;
 
 export type MsgKey = keyof typeof pl;

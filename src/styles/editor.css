@@ -688,3 +688,21 @@
     padding: 12px 14px 2px;
   }
 }
+
+/* Поради рекрутера */
+.rec {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.rec-h {
+  margin: 0;
+  font-size: 1em;
+}
+.rec-places {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+.rec-disc {
+  font-weight: 700;
+}
