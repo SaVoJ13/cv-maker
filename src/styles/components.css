@@ -689,3 +689,53 @@ select {
     bottom: calc(var(--bottombar-h) + 12px + var(--safe-b));
   }
 }
+
+/* Готові фрази (вікно «Wstaw frazę») */
+.phr-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  max-height: 52vh;
+  overflow-y: auto;
+}
+.phr {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.phr:hover:not([disabled]) {
+  border-color: currentColor;
+}
+.phr[disabled] {
+  opacity: 0.65;
+  cursor: default;
+}
+.phr-t {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+.phr-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+.phr-x {
+  font-size: 0.9em;
+  opacity: 0.85;
+}

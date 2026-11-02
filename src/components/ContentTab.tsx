@@ -10,6 +10,7 @@ import { loadPhoto } from '../export/photo';
 import { moveItem, newEducation, newExperience, newLanguage, removeItem, sortExperience } from '../domain/cvOps';
 import { useStore } from '../store/StoreProvider';
 import { Icon } from './Icon';
+import { PhraseButton } from './PhrasePicker';
 import { Area, Check, Field, ItemTools, SelectField } from './ui';
 
 export interface TabProps {
@@ -287,7 +288,20 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       </Section>
 
       <Section {...sec('summary')}>
-        <p className="hint">{t('h_summary')}</p>
+        <div className="sh">
+          <p className="hint">{t('h_summary')}</p>
+          <PhraseButton
+            cv={cv}
+            section="summary"
+            idPrefix="f_summary"
+            value={d.summary}
+            onChange={(v) =>
+              update((x) => {
+                x.data.summary = v;
+              })
+            }
+          />
+        </div>
         <Area
           id="f_summary"
           ariaLabel={t('s_summary')}
@@ -363,6 +377,9 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
               />
             </div>
             <Check id={`exp_${e.id}_current`} label={t('f_current')} checked={e.current} onChange={(v) => patchExp(e.id, { current: v })} />
+            <div className="sh">
+              <PhraseButton cv={cv} section="experience" idPrefix={`exp_${e.id}`} value={e.bullets} onChange={(v) => patchExp(e.id, { bullets: v })} />
+            </div>
             <Area
               id={`exp_${e.id}_bullets`}
               label={t('f_bullets')}
@@ -445,6 +462,19 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       </Section>
 
       <Section {...sec('skills')}>
+        <div className="sh">
+          <PhraseButton
+            cv={cv}
+            section="skills"
+            idPrefix="f_hard"
+            value={d.skillsHard}
+            onChange={(v) =>
+              update((x) => {
+                x.data.skillsHard = v;
+              })
+            }
+          />
+        </div>
         <Area
           id="f_hard"
           label={t('f_hard')}
@@ -456,6 +486,19 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
             })
           }
         />
+        <div className="sh">
+          <PhraseButton
+            cv={cv}
+            section="skills"
+            idPrefix="f_soft"
+            value={d.skillsSoft}
+            onChange={(v) =>
+              update((x) => {
+                x.data.skillsSoft = v;
+              })
+            }
+          />
+        </div>
         <Area
           id="f_soft"
           label={t('f_soft')}

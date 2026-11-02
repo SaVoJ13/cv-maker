@@ -299,6 +299,20 @@ export const pl = {
   prev_empty_text: 'Widzisz wzór szablonu z danymi przykładowymi. Wpisz swoje dane, a pojawią się tutaj na żywo.',
   prev_empty_cta: 'Zacznij od danych',
   prog_done: 'Wszystko gotowe. Pobierz PDF albo dopracuj wygląd.',
+  phr_btn: 'Wstaw frazę',
+  phr_title: 'Gotowe frazy',
+  phr_industry: 'Branża',
+  phr_hint: 'Dotknij frazy, aby ją dodać. Potem ją dopasuj do siebie: zmień lub usuń to, co nie jest prawdą.',
+  phr_added: 'Dodano',
+  phr_done: 'Gotowe',
+  ind_logistics: 'Magazyn i logistyka',
+  ind_drivers: 'Kierowcy i transport',
+  ind_construction: 'Budownictwo',
+  ind_production_cnc: 'Produkcja i CNC',
+  ind_it: 'IT',
+  ind_office: 'Biuro i administracja',
+  ind_retail_food: 'Handel i gastronomia',
+  ind_students: 'Studenci i absolwenci',
 } as const;
 
 export type MsgKey = keyof typeof pl;
