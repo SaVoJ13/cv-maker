@@ -3,6 +3,7 @@ import type { AccentId, DensityId, DocLang, TemplateId } from '../domain/types';
 import { ACCENT_IDS, ACCENTS, DENSITY_IDS } from '../domain/constants';
 import { TEMPLATES, TEMPLATE_META } from '../domain/templates';
 import { qualityChecks } from '../domain/quality';
+import { AtsMatchButton } from './AtsMatch';
 import { useStore } from '../store/StoreProvider';
 import type { TabProps } from './ContentTab';
 import { Icon } from './Icon';
@@ -138,6 +139,7 @@ export function LookTab({ cv, update, pages, onChangeTemplate }: TabProps & { pa
           ))}
         </ul>
         <p className="hint">{t('ats_note')}</p>
+        <AtsMatchButton cv={cv} update={update} />
       </section>
     </div>
   );

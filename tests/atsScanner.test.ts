@@ -151,3 +151,23 @@ test('cvSearchText збирає основні поля CV', () => {
   const txt = cvSearchText(cv({ summary: 'Alfa', skillsSoft: 'Beta', interests: 'Gamma' }));
   for (const w of ['Alfa', 'Beta', 'Gamma']) assert.ok(txt.includes(w), w);
 });
+
+import { MESSAGES } from '../src/domain/i18n/index.ts';
+
+test('i18n: усі коди підказок перекладені, too_short і no_keywords називають польську й англійську', () => {
+  const codes = ['too_short', 'no_keywords', 'mixed_lang', 'doc_lang_differs', 'low_score'] as const;
+  for (const lang of ['pl', 'uk', 'en'] as const) {
+    for (const c of codes) {
+      const text = (MESSAGES[lang] as Record<string, string>)[`ats_h_${c}`];
+      assert.ok(text && text.length > 10, `${lang}/${c}`);
+    }
+    for (const c of ['too_short', 'no_keywords'] as const) {
+      const text = (MESSAGES[lang] as Record<string, string>)[`ats_h_${c}`];
+      const pl = /polsk|polish|польськ/i.test(text);
+      const en = /angiel|english|англійськ/i.test(text);
+      assert.ok(pl && en, `${lang}/${c}: немає згадки про польську й англійську`);
+    }
+  }
+  assert.match(MESSAGES.uk.ats_req_note, /Перевір, чи це в тебе є, і додай сам/);
+  assert.match(MESSAGES.uk.ats_score_label, /Орієнтовна оцінка/);
+});
