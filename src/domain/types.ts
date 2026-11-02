@@ -130,6 +130,8 @@ export interface CvData {
   skillsSoft: string;
   languages: LanguageSkill[];
   interests: string;
+  /** Курси й тренінги (шаблон Student, Спринт 3b). Необов'язкове, у редакторі з'явиться разом із шаблоном. */
+  courses: string;
   extras: CvExtras;
 }
 

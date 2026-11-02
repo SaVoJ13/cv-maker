@@ -95,6 +95,7 @@ export function cvSearchText(d: CvData): string {
     d.skillsHard,
     d.skillsSoft,
     d.interests,
+    d.courses,
     ...d.experience.flatMap((e) => [e.role, e.company, e.bullets]),
     ...d.education.flatMap((e) => [e.school, e.degree, e.field]),
     ...d.languages.map((l) => l.name),

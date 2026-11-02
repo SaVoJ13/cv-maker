@@ -150,6 +150,7 @@ export function blankCv(lang: DocLang = 'pl', name = '', opts: Partial<Pick<Cv, 
       skillsSoft: '',
       languages: [],
       interests: '',
+      courses: '',
       extras: {},
     },
   };
@@ -233,6 +234,7 @@ export function sampleCv(): Cv {
       { id: uid(), name: 'Niemiecki', level: 'A2' },
     ],
     interests: 'Bieganie, fotografia, wolontariat w fundacji uczącej programowania dzieci',
+    courses: '',
     extras: {},
   };
   return c;
@@ -313,6 +315,7 @@ export function normalizeCv(raw: unknown): Cv | null {
       level: oneOf<LangLevel>(l.level, LEVELS, 'B2'),
     })),
     interests: str(d.interests),
+    courses: str(d.courses),
     extras: normalizeExtras(d.extras),
   };
   return {

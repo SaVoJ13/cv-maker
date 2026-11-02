@@ -45,5 +45,6 @@ export function completeness(cv: Cv): { done: number; total: number } {
 export function isBlank(cv: Cv): boolean {
   const b = cv.data.basics;
   if ([b.name, b.title, b.email, b.phone, b.city, b.link, b.address, b.birthDate, b.birthPlace, b.license, b.photo].some((v) => v.trim())) return false;
+  if (cv.data.courses.trim()) return false;
   return SECTION_IDS.every((id) => id === 'rodo' || id === 'basics' || !sectionFilled(cv, id));
 }

@@ -4,7 +4,7 @@ import { normalizeCv } from './cvOps';
 /**
  * Версія формату збереженого стану (ключ `cvmaker.state`).
  * - v1: поля `schema` немає (усі збірки до Спринту 1).
- * - v2: `schema: 2`, у CV є `extras`, `photoShape`, `autoFit`.
+ * - v2: `schema: 2`, у CV є `extras`, `photoShape`, `autoFit`, `courses` (необов'язкові поля, `normalizeCv` дає порожні значення).
  * Нові необов'язкові поля додаємо без підвищення версії; версію піднімаємо, лише коли міняється зміст наявних полів.
  */
 export const CURRENT_SCHEMA = 2;
