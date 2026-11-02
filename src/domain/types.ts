@@ -15,7 +15,19 @@ export type TemplateId =
   | 'bold'
   | 'industrial'
   | 'nordic';
-export type AccentId = 'navy' | 'azure' | 'graphite' | 'emerald' | 'burgundy' | 'crimson';
+export type AccentId =
+  | 'navy'
+  | 'azure'
+  | 'graphite'
+  | 'emerald'
+  | 'burgundy'
+  | 'crimson'
+  | 'indigo'
+  | 'plum'
+  | 'forest'
+  | 'amber'
+  | 'brown'
+  | 'rose';
 export type DensityId = 'compact' | 'normal' | 'airy';
 /** Рівень доступу: безкоштовно чи PRO. */
 export type Tier = 'free' | 'pro';

@@ -7,6 +7,12 @@ export const ACCENTS: Record<AccentId, string> = {
   emerald: '#0E7C66',
   burgundy: '#7A1F3D',
   crimson: '#B3262E',
+  indigo: '#403AA4',
+  plum: '#6B2F7E',
+  forest: '#2F6B2F',
+  amber: '#9A4A0A',
+  brown: '#6B4226',
+  rose: '#A3286B',
 };
 
 export const ACCENT_IDS = Object.keys(ACCENTS) as AccentId[];
