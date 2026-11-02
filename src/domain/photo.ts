@@ -1,3 +1,5 @@
+import type { PhotoShape } from './types';
+
 /**
  * Kadrowanie zdjęcia do koła. Jedna geometria dla podglądu (CSS) i dla PDF (canvas),
  * żeby oba pokazywały ten sam kadr.
@@ -140,4 +142,33 @@ export const PHOTO_MAX_SIDE = 640;
 export function fitWithin(w: number, h: number, max: number): { w: number; h: number } {
   const scale = Math.min(1, max / Math.max(w, h));
   return { w: Math.max(1, Math.round(w * scale)), h: Math.max(1, Math.round(h * scale)) };
+}
+
+/* ---------- kształt zdjęcia ---------- */
+
+/**
+ * Promień zaokrąglenia jako ułamek boku kwadratu. Jedna tabela dla podglądu (CSS) i PDF (canvas),
+ * żeby oba kształty wyglądały tak samo.
+ */
+export const PHOTO_SHAPE_RADIUS: Record<PhotoShape, number> = { circle: 0.5, rounded: 0.18, square: 0 };
+
+/** Promień w pikselach dla kwadratu o boku `side`. */
+export function shapeRadiusPx(shape: PhotoShape, side: number): number {
+  return (PHOTO_SHAPE_RADIUS[shape] ?? PHOTO_SHAPE_RADIUS.circle) * side;
+}
+
+/** Wartość CSS `border-radius` dla podglądu (procent boku). */
+export function shapeRadiusCss(shape: PhotoShape): string {
+  return `${(PHOTO_SHAPE_RADIUS[shape] ?? PHOTO_SHAPE_RADIUS.circle) * 100}%`;
+}
+
+/** Największa średnica zdjęcia w PDF przy rozmiarze 100% (panel boczny), w punktach. */
+export const PDF_PHOTO_MAX_PT = 108;
+/** Zapas rozdzielczości: piksele PNG na punkt strony (wymagane ≥ 2). */
+export const PDF_PHOTO_SCALE = 4;
+
+/** Bok PNG dla PDF: co najmniej 2× największy rozmiar na stronie, w granicach 480–1024 px. */
+export function pdfPhotoPx(photoSize: number): number {
+  const pt = PDF_PHOTO_MAX_PT * (Math.min(SIZE_MAX, Math.max(SIZE_MIN, Number(photoSize) || 100)) / 100);
+  return Math.min(1024, Math.max(480, Math.ceil(pt * PDF_PHOTO_SCALE)));
 }

@@ -349,7 +349,7 @@
   flex: none;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 50%;
+  border-radius: var(--pr, 50%);
   background: var(--surface-3);
 }
 .photo-empty {

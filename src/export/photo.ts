@@ -1,4 +1,5 @@
-import { PHOTO_MAX_SIDE, fitWithin, squareCrop, type PhotoCrop } from '../domain/photo';
+import { PHOTO_MAX_SIDE, fitWithin, shapeRadiusPx, squareCrop, type PhotoCrop } from '../domain/photo';
+import type { PhotoShape } from '../domain/types';
 
 /* Obsługa zdjęcia w przeglądarce (canvas). Logika geometrii leży w src/domain/photo.ts i jest testowana osobno. */
 
@@ -40,11 +41,29 @@ export async function loadPhoto(file: File): Promise<string> {
   return canvas.toDataURL('image/jpeg', 0.85);
 }
 
+/** Ścieżka kształtu zdjęcia (koło, zaokrąglony kwadrat albo kwadrat) o boku `side` w punkcie (0, 0). */
+function traceShape(ctx: CanvasRenderingContext2D, shape: PhotoShape, side: number): void {
+  ctx.beginPath();
+  if (shape === 'circle') {
+    ctx.arc(side / 2, side / 2, side / 2, 0, Math.PI * 2);
+  } else {
+    const r = shapeRadiusPx(shape, side);
+    ctx.moveTo(r, 0);
+    ctx.arcTo(side, 0, side, side, r);
+    ctx.arcTo(side, side, 0, side, r);
+    ctx.arcTo(0, side, 0, 0, r);
+    ctx.arcTo(0, 0, side, 0, r);
+  }
+  ctx.closePath();
+}
+
 /**
- * Przycina zdjęcie do koła (kadr jak w podglądzie) i zwraca PNG z przezroczystym tłem.
- * PDF dostaje gotowy kształt, bo pdfmake nie przycina obrazów do okręgu.
+ * Przycina zdjęcie do wybranego kształtu (kadr jak w podglądzie) i zwraca PNG z przezroczystym tłem.
+ * PDF dostaje gotowy kształt, bo pdfmake nie przycina obrazów. Krawędź jest gładka: zdjęcie rysujemy
+ * w pełnym kwadracie, a kształt nakładamy maską (`destination-in`, wypełnienie z antyaliasingiem),
+ * zamiast ostrego `clip()`. Rozmiar `px` dobiera `pdfPhotoPx` (≥ 2× rozmiar na stronie).
  */
-export async function circlePng(dataUrl: string, crop: PhotoCrop, px = 480): Promise<string> {
+export async function shapedPng(dataUrl: string, crop: PhotoCrop, shape: PhotoShape, px = 480): Promise<string> {
   const img = await loadImage(dataUrl);
   const { sx, sy, size } = squareCrop(img.naturalWidth, img.naturalHeight, crop);
   const canvas = document.createElement('canvas');
@@ -52,11 +71,14 @@ export async function circlePng(dataUrl: string, crop: PhotoCrop, px = 480): Pro
   canvas.height = px;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('no_canvas');
-  ctx.beginPath();
-  ctx.arc(px / 2, px / 2, px / 2, 0, Math.PI * 2);
-  ctx.closePath();
-  ctx.clip();
+  ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(img, sx, sy, size, size, 0, 0, px, px);
+  if (shape !== 'square') {
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle = '#000';
+    traceShape(ctx, shape, px);
+    ctx.fill();
+  }
   return canvas.toDataURL('image/png');
 }

@@ -202,7 +202,7 @@
   flex: none;
   width: calc(112px * var(--ps, 1));
   height: calc(112px * var(--ps, 1));
-  border-radius: 50%;
+  border-radius: var(--pr, 50%);
   background: #e6e9ee;
 }
 .p-photo img,

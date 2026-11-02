@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Basics } from '../domain/types';
-import { panBy, previewBox, zoomAt, type PhotoCrop } from '../domain/photo';
+import { panBy, previewBox, shapeRadiusCss, zoomAt, type PhotoCrop } from '../domain/photo';
 
 interface PhotoViewProps {
   b: Basics;
@@ -44,10 +44,11 @@ export function PhotoView({ b, className = 'p-photo', fixed, onCrop, wheelZoom =
   const live = Boolean(onCrop);
 
   const box = previewBox(aspect, crop.current);
-  const frame: CSSProperties = {
+  const frame = {
     ...(fixed ? { width: fixed, height: fixed } : ({ '--ps': b.photoSize / 100 } as CSSProperties)),
+    '--pr': shapeRadiusCss(b.photoShape),
     ...(live ? { touchAction: 'none' } : null),
-  };
+  } as CSSProperties;
 
   const commit = (next: PhotoCrop) => {
     crop.current = next;

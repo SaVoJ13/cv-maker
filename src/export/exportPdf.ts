@@ -1,11 +1,12 @@
 import type { Cv } from '../domain/types';
 import { buildPdfDocument, pdfFileName } from '../domain/pdf';
 import { showsPhoto } from '../domain/cvOps';
+import { pdfPhotoPx } from '../domain/photo';
 import { Capacitor } from '@capacitor/core';
 import { PdfStageError } from './errors';
 import { saveToDevice, type SavedFile } from './deviceFile';
 import { downloadBlob } from './nativeShare';
-import { circlePng } from './photo';
+import { shapedPng } from './photo';
 import { vfsFromScript } from './vfs';
 
 interface PdfMakeLike {
@@ -47,7 +48,7 @@ export async function createPdfBlob(cv: Cv): Promise<Blob> {
   const engine = await stage('engine', loadEngine);
   const b = cv.data.basics;
   const photoPng = showsPhoto(cv)
-    ? await stage('photo', () => circlePng(b.photo, { x: b.photoX, y: b.photoY, zoom: b.photoZoom }))
+    ? await stage('photo', () => shapedPng(b.photo, { x: b.photoX, y: b.photoY, zoom: b.photoZoom }, b.photoShape, pdfPhotoPx(b.photoSize)))
     : undefined;
   return stage(
     'build',
