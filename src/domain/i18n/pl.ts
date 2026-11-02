@@ -345,7 +345,7 @@ export const pl = {
   ats_kind_hard: 'Umiejętność twarda',
   ats_kind_soft: 'Umiejętność miękka',
   rec_title: 'Wskazówki rekrutera',
-  rec_phone_code: 'Dodaj kod kraju, na przykład +48 (dla numeru z innego kraju: jego kod). Rekruter zadzwoni wtedy bez zgadywania.',
+  rec_phone_code: 'Dodaj kod kraju, na przykład +48 (dla numeru z innego kraju: jego kod). Dzięki temu rekruter będzie wiedział, jak się z Tobą skontaktować.',
   rec_metrics_intro: 'W tych miejscach nie ma żadnej liczby:',
   rec_metrics_note: 'Jeśli masz prawdziwe dane (liczba klientów, zamówień, osób w zespole, lat), dodaj je. Nie wymyślaj liczb.',
   rec_law_title: 'Jakich danych może żądać pracodawca (art. 22¹ KP)',

@@ -168,6 +168,6 @@ test('i18n: усі коди підказок перекладені, too_short �
       assert.ok(pl && en, `${lang}/${c}: немає згадки про польську й англійську`);
     }
   }
-  assert.match(MESSAGES.uk.ats_req_note, /Перевір, чи це в тебе є, і додай сам/);
+  assert.match(MESSAGES.uk.ats_req_note, /Перевірте, чи це у вас є, і додайте самостійно/);
   assert.match(MESSAGES.uk.ats_score_label, /Орієнтовна оцінка/);
 });

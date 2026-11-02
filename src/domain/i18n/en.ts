@@ -344,7 +344,7 @@ export const en: Record<MsgKey, string> = {
   ats_kind_hard: 'Hard skill',
   ats_kind_soft: 'Soft skill',
   rec_title: 'Recruiter tips',
-  rec_phone_code: 'Add a country code, for example +48 (for a number from another country, use its code). Then a recruiter can call without guessing.',
+  rec_phone_code: 'Add a country code, for example +48 (for a number from another country, use its code). This way a recruiter will know how to contact you.',
   rec_metrics_intro: 'There are no numbers in these places:',
   rec_metrics_note: 'If you have real figures (clients, orders, team size, years), add them. Do not invent numbers.',
   rec_law_title: 'What data an employer may ask for (Art. 22¹ Polish Labour Code)',
