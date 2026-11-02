@@ -1,11 +1,28 @@
 import type { DocLang, UiLang } from '../types';
+import { CONSTRUCTION } from './construction';
+import { DRIVERS } from './drivers';
+import { IT } from './it';
+import { LOGISTICS } from './logistics';
+import { OFFICE } from './office';
+import { PRODUCTION_CNC } from './production_cnc';
+import { RETAIL_FOOD } from './retail_food';
+import { STUDENTS } from './students';
 import { INDUSTRY_IDS, PHRASE_SECTIONS, type IndustryId, type Phrase, type PhraseSection } from './types';
 
 export { INDUSTRY_IDS, PHRASE_SECTIONS };
 export type { IndustryId, Phrase, PhraseSection };
 
 /** Усі фрази. Файли галузей підключаються тут. */
-export const ALL_PHRASES: readonly Phrase[] = [];
+export const ALL_PHRASES: readonly Phrase[] = [
+  ...LOGISTICS,
+  ...DRIVERS,
+  ...CONSTRUCTION,
+  ...PRODUCTION_CNC,
+  ...IT,
+  ...OFFICE,
+  ...RETAIL_FOOD,
+  ...STUDENTS,
+];
 
 export function phrasesFor(
   industry: IndustryId,
