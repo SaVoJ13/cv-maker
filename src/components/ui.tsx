@@ -117,17 +117,20 @@ export function Segmented<T extends string>({
   onChange,
   label,
   className = '',
+  disabled = false,
 }: {
   value: T;
   options: { value: T; label: ReactNode; icon?: IconName; ariaLabel?: string }[];
   onChange: (v: T) => void;
   label: string;
   className?: string;
+  /** Усі кнопки неактивні (налаштування не діє для поточного шаблону) */
+  disabled?: boolean;
 }) {
   return (
     <div className={`seg ${className}`.trim()} role="group" aria-label={label}>
       {options.map((o) => (
-        <button key={o.value} type="button" aria-pressed={value === o.value} aria-label={o.ariaLabel} onClick={() => onChange(o.value)}>
+        <button key={o.value} type="button" aria-pressed={value === o.value} aria-label={o.ariaLabel} disabled={disabled} onClick={() => onChange(o.value)}>
           {o.icon ? <Icon name={o.icon} size={16} /> : null}
           {o.label}
         </button>

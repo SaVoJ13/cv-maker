@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
-import type { AccentId, DensityId, DocLang, TemplateId } from '../domain/types';
+import type { CSSProperties, ReactNode } from 'react';
+import type { AccentId, DensityId, DocLang, PhotoShape, TemplateId } from '../domain/types';
+import { shapeRadiusCss } from '../domain/photo';
 import { ACCENT_IDS, ACCENTS, DENSITY_IDS } from '../domain/constants';
 import { TEMPLATES, TEMPLATE_META } from '../domain/templates';
 import { qualityChecks } from '../domain/quality';
@@ -9,6 +10,8 @@ import { useStore } from '../store/StoreProvider';
 import type { TabProps } from './ContentTab';
 import { Icon } from './Icon';
 import { Callout, Segmented } from './ui';
+
+const PHOTO_SHAPES: readonly PhotoShape[] = ['circle', 'rounded', 'square'];
 
 function Choice<T extends string>({
   value,
@@ -83,6 +86,35 @@ export function LookTab({ cv, update, pages, onChangeTemplate }: TabProps & { pa
             </Choice>
           ))}
         </div>
+      </section>
+
+      <section className="sec">
+        <h3>{t('s_pshape')}</h3>
+        <Segmented<PhotoShape>
+          className="full shapes"
+          label={t('s_pshape')}
+          value={cv.data.basics.photoShape}
+          disabled={!TEMPLATE_META[cv.tpl].photo}
+          onChange={(v) =>
+            update((x) => {
+              x.data.basics.photoShape = v;
+            })
+          }
+          options={PHOTO_SHAPES.map((k) => ({
+            value: k,
+            label: (
+              <>
+                <span className="shape-sw" style={{ '--pr': shapeRadiusCss(k) } as CSSProperties} aria-hidden="true" />
+                {t(`pshape_${k}` as const)}
+              </>
+            ),
+          }))}
+        />
+        {!TEMPLATE_META[cv.tpl].photo ? (
+          <Callout tone="info">{t('pshape_no_photo')}</Callout>
+        ) : !cv.data.basics.photo ? (
+          <p className="hint">{t('pshape_no_file')}</p>
+        ) : null}
       </section>
 
       <section className="sec">

@@ -73,3 +73,14 @@ test('стилі прев’ю беруть радіус зі змінної --p
   assert.match(paper, /\.paper \.p-photo \{[^}]*border-radius: var\(--pr, 50%\)/s);
   assert.match(editor, /\.photobox \.pthumb \{[^}]*border-radius: var\(--pr, 50%\)/s);
 });
+
+import { MESSAGES } from '../src/domain/i18n/index.ts';
+import { TEMPLATES, TEMPLATE_META } from '../src/domain/templates.ts';
+
+test('вкладка «Wygląd»: тексти блоку «Форма фото» є в PL/UA/EN, є шаблони з фото і без нього', () => {
+  const keys = ['s_pshape', 'pshape_circle', 'pshape_rounded', 'pshape_square', 'pshape_no_photo', 'pshape_no_file'];
+  for (const lang of ['pl', 'uk', 'en'] as const)
+    for (const k of keys) assert.ok((MESSAGES[lang] as Record<string, string>)[k]?.length > 2, `${lang}/${k}`);
+  assert.ok(TEMPLATES.some((k) => TEMPLATE_META[k].photo), 'є шаблон з фото');
+  assert.ok(TEMPLATES.some((k) => !TEMPLATE_META[k].photo), 'є шаблон без фото (блок неактивний)');
+});

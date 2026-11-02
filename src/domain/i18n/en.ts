@@ -356,4 +356,10 @@ export const en: Record<MsgKey, string> = {
   rec_law_title: 'What data an employer may ask for (Art. 22¹ Polish Labour Code)',
   rec_law: 'Under Art. 22¹ of the Polish Labour Code, an employer may ask a candidate for: first and last name, date of birth, contact details, education, professional qualifications and employment history. Other data only if a separate law requires it. A photo is not on this list, so adding one is entirely voluntary.',
   rec_law_disclaimer: 'For reference only, not legal advice.',
+  s_pshape: 'Photo shape',
+  pshape_circle: 'Circle',
+  pshape_rounded: 'Rounded',
+  pshape_square: 'Square',
+  pshape_no_photo: 'The selected template does not show a photo, so the shape has no effect here. Pick a template with the “photo” badge in the gallery.',
+  pshape_no_file: 'No photo added yet (Content → Photo). The shape will apply once you add one.',
 };

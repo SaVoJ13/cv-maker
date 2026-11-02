@@ -879,3 +879,32 @@ select {
 .ats-req-note {
   font-weight: 600;
 }
+
+/* Блок «Форма фото» у вкладці «Wygląd» */
+.shape-sw {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-radius: var(--pr, 50%);
+}
+.seg button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.seg button:disabled:hover {
+  color: var(--muted);
+}
+.seg.shapes {
+  border-radius: var(--r-xl);
+}
+.seg.shapes button {
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 4px;
+  border-radius: var(--r-lg, 16px);
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+}

@@ -357,6 +357,12 @@ export const pl = {
   rec_law_title: 'Jakich danych może żądać pracodawca (art. 22¹ KP)',
   rec_law: 'Zgodnie z art. 22¹ Kodeksu pracy pracodawca może żądać od kandydata: imienia i nazwiska, daty urodzenia, danych kontaktowych, wykształcenia, kwalifikacji zawodowych oraz przebiegu dotychczasowego zatrudnienia. Inne dane tylko wtedy, gdy wynika to z odrębnych przepisów. Zdjęcia nie ma na tej liście, więc dodajesz je wyłącznie dobrowolnie.',
   rec_law_disclaimer: 'Informacja orientacyjna. To nie jest porada prawna.',
+  s_pshape: 'Kształt zdjęcia',
+  pshape_circle: 'Koło',
+  pshape_rounded: 'Zaokrąglony',
+  pshape_square: 'Kwadrat',
+  pshape_no_photo: 'Wybrany szablon nie pokazuje zdjęcia, więc kształt nie ma tu wpływu. Wybierz szablon ze znacznikiem „zdjęcie” w galerii.',
+  pshape_no_file: 'Zdjęcia jeszcze nie dodano (Treść → Zdjęcie). Kształt zastosuje się po jego dodaniu.',
 } as const;
 
 export type MsgKey = keyof typeof pl;
