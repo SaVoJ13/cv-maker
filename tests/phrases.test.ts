@@ -54,3 +54,32 @@ test('польські summary гендерно нейтральні: без с�
   for (const p of ALL_PHRASES.filter((x) => x.section === 'summary'))
     assert.ok(!/\bjestem\b/i.test(p.text.pl), `${p.id}: ${p.text.pl}`);
 });
+
+import { insertPhrase, insertText, isInserted } from '../src/domain/phrases/insert.ts';
+
+test('вставка summary: порожнє поле, новий абзац у кінці, повтор не дублюється', () => {
+  assert.equal(insertText('summary', '', 'Abc.'), 'Abc.');
+  assert.equal(insertText('summary', 'Pierwszy.\n', 'Drugi.'), 'Pierwszy.\n\nDrugi.');
+  assert.equal(insertText('summary', 'Pierwszy.\n\nDrugi.', 'drugi.'), 'Pierwszy.\n\nDrugi.');
+});
+
+test('вставка experience: один пункт на рядок, повтор не дублюється', () => {
+  assert.equal(insertText('experience', '', 'A'), 'A');
+  assert.equal(insertText('experience', 'A\n', 'B'), 'A\nB');
+  assert.equal(insertText('experience', 'A\nB', ' b '), 'A\nB');
+});
+
+test('вставка skills: через кому, без дублікатів, зберігає наявні', () => {
+  assert.equal(insertText('skills', '', 'a, b'), 'a, b');
+  assert.equal(insertText('skills', 'Excel; Word', 'excel, Outlook'), 'Excel, Word, Outlook');
+  assert.equal(insertText('skills', 'a, b', 'B, A'), 'a, b');
+  assert.equal(insertText('skills', 'a\nb', 'c, c'), 'a, b, c');
+});
+
+test('insertPhrase бере текст мовою документа, isInserted визначає повтор', () => {
+  const p = mk({ section: 'skills', text: { pl: 'x, y', en: 'p, q' } });
+  assert.equal(insertPhrase('', p, 'pl'), 'x, y');
+  assert.equal(insertPhrase('', p, 'en'), 'p, q');
+  assert.equal(isInserted('x, y, z', p, 'pl'), true);
+  assert.equal(isInserted('x', p, 'pl'), false);
+});
