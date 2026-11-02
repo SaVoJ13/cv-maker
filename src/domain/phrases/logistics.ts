@@ -6,11 +6,11 @@ const k = group('logistics', 'skills');
 
 export const LOGISTICS = [
   s(1, ['Pracownik magazynu', 'Працівник складу', 'Warehouse worker'], [
-    'Rzetelny pracownik magazynu, który dba o porządek, dokładność i terminowe wykonywanie zadań. Dobrze pracuje w zespole i szybko uczy się nowych procedur.',
+    'Osoba rzetelna, dbająca o porządek, dokładność i terminowe wykonywanie zadań. Dobrze pracuje w zespole i szybko uczy się nowych procedur.',
     'Reliable warehouse worker who values order, accuracy and meeting deadlines. Works well in a team and learns new procedures quickly.',
   ]),
   s(2, ['Kompletacja zamówień', 'Комплектація замовлень', 'Order picking'], [
-    'Doświadczenie w kompletacji zamówień i pracy z dokumentacją magazynową. Skupiony na jakości, bezpieczeństwie i dokładności.',
+    'Doświadczenie w kompletacji zamówień i pracy z dokumentacją magazynową. Nastawienie na jakość, bezpieczeństwo i dokładność.',
     'Experience in order picking and handling warehouse documentation. Focused on quality, safety and accuracy.',
   ]),
   s(3, ['Koordynator logistyki', 'Координатор логістики', 'Logistics coordinator'], [
@@ -18,7 +18,7 @@ export const LOGISTICS = [
     'Organised professional focused on smooth goods flow and good communication with suppliers and carriers. Able to work under time pressure.',
   ]),
   s(4, ['Szukam pracy w magazynie', 'Шукаю роботу на складі', 'Seeking warehouse role'], [
-    'Szukam pracy w magazynie lub logistyce. Jestem odpowiedzialny, punktualny i gotowy do pracy zmianowej.',
+    'Szukam pracy w magazynie lub logistyce. Cechuje mnie odpowiedzialność, punktualność i gotowość do pracy zmianowej.',
     'Looking for a role in a warehouse or logistics. I am responsible, punctual and ready for shift work.',
   ]),
   e(1, ['Kompletacja i pakowanie', 'Комплектація і пакування', 'Picking and packing'], [

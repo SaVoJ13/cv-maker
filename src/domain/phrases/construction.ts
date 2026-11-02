@@ -6,7 +6,7 @@ const k = group('construction', 'skills');
 
 export const CONSTRUCTION = [
   s(1, ['Pracownik budowlany', 'Будівельник', 'Construction worker'], [
-    'Pracowity i dokładny pracownik budowlany. Dba o jakość wykonania, bezpieczeństwo na budowie i terminowość.',
+    'Osoba pracowita i dokładna, dbająca o jakość wykonania, bezpieczeństwo na budowie i terminowość.',
     'Hard-working and precise construction worker. Cares about quality of work, site safety and meeting deadlines.',
   ]),
   s(2, ['Prace wykończeniowe', 'Оздоблювальні роботи', 'Finishing work'], [
@@ -18,7 +18,7 @@ export const CONSTRUCTION = [
     'Works well in a team, follows the site manager’s instructions and learns new tasks quickly.',
   ]),
   s(4, ['Szukam pracy na budowie', 'Шукаю роботу на будові', 'Seeking site work'], [
-    'Szukam pracy w branży budowlanej. Jestem sumienny, wytrzymały fizycznie i gotowy do pracy w różnych lokalizacjach.',
+    'Szukam pracy w branży budowlanej. Cechuje mnie sumienność, wytrzymałość fizyczna i gotowość do pracy w różnych lokalizacjach.',
     'Looking for work in construction. I am conscientious, physically fit and ready to work at different locations.',
   ]),
   e(1, ['Roboty budowlane', 'Будівельні роботи', 'Building work'], [

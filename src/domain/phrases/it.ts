@@ -6,7 +6,7 @@ const k = group('it', 'skills');
 
 export const IT = [
   s(1, ['Programista', 'Програміст', 'Software developer'], [
-    'Programista nastawiony na tworzenie czytelnego, dobrze przetestowanego kodu. Lubi rozwiązywać problemy i uczyć się nowych technologii.',
+    'Osoba nastawiona na tworzenie czytelnego, dobrze przetestowanego kodu. Lubi rozwiązywać problemy i uczyć się nowych technologii.',
     'Developer focused on writing readable, well-tested code. Enjoys solving problems and learning new technologies.',
   ]),
   s(2, ['Wsparcie IT', 'ІТ-підтримка', 'IT support'], [

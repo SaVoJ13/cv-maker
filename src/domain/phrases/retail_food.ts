@@ -6,7 +6,7 @@ const k = group('retail_food', 'skills');
 
 export const RETAIL_FOOD = [
   s(1, ['Sprzedawca', 'Продавець', 'Sales assistant'], [
-    'Uprzejmy sprzedawca, który dba o zadowolenie klientów i estetykę stanowiska. Szybko się uczy i dobrze pracuje w zespole.',
+    'Osoba uprzejma, dbająca o zadowolenie klientów i estetykę stanowiska. Szybko się uczy i dobrze pracuje w zespole.',
     'Courteous sales assistant who cares about customer satisfaction and a tidy sales area. Learns quickly and works well in a team.',
   ]),
   s(2, ['Kelner / barista', 'Офіціант / бариста', 'Waiter / barista'], [
@@ -18,7 +18,7 @@ export const RETAIL_FOOD = [
     'Dedicated kitchen worker who cares about hygiene, food quality and a smooth team workflow.',
   ]),
   s(4, ['Szukam pracy w handlu', 'Шукаю роботу в торгівлі', 'Seeking retail role'], [
-    'Szukam pracy w handlu lub gastronomii. Jestem uśmiechnięty, punktualny i gotowy do pracy zmianowej.',
+    'Szukam pracy w handlu lub gastronomii. Cechuje mnie życzliwość, punktualność i gotowość do pracy zmianowej.',
     'Looking for a job in retail or hospitality. I am friendly, punctual and ready for shift work.',
   ]),
   e(1, ['Obsługa klienta', 'Обслуговування клієнтів', 'Customer service'], [

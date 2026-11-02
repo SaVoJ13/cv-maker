@@ -6,19 +6,19 @@ const k = group('drivers', 'skills');
 
 export const DRIVERS = [
   s(1, ['Kierowca zawodowy', 'Водій-професіонал', 'Professional driver'], [
-    'Odpowiedzialny kierowca, który dba o bezpieczeństwo, punktualność i dobry stan pojazdu. Zna zasady pracy w transporcie i dobrze organizuje trasę.',
+    'Osoba odpowiedzialna, dbająca o bezpieczeństwo, punktualność i dobry stan pojazdu. Zna zasady pracy w transporcie i dobrze organizuje trasę.',
     'Responsible driver who cares about safety, punctuality and vehicle condition. Familiar with transport work rules and plans routes well.',
   ]),
   s(2, ['Transport krajowy i międzynarodowy', 'Перевезення по країні й за кордон', 'Domestic and international transport'], [
-    'Kierowca gotowy do pracy w transporcie krajowym i międzynarodowym. Samodzielny, komunikatywny i odporny na długie trasy.',
+    'Gotowość do pracy w transporcie krajowym i międzynarodowym. Samodzielność, komunikatywność i dobre radzenie sobie na długich trasach.',
     'Driver ready for domestic and international transport. Independent, communicative and comfortable with long routes.',
   ]),
   s(3, ['Kierowca dostawczy', 'Водій на доставці', 'Delivery driver'], [
-    'Kierowca nastawiony na terminowe dostawy i dobry kontakt z klientem. Dokładny w pracy z dokumentami przewozowymi.',
+    'Nastawienie na terminowe dostawy i dobry kontakt z klientem. Dokładność w pracy z dokumentami przewozowymi.',
     'Driver focused on on-time deliveries and good customer contact. Careful with transport documents.',
   ]),
   s(4, ['Szukam pracy jako kierowca', 'Шукаю роботу водія', 'Seeking driver role'], [
-    'Szukam pracy kierowcy. Jestem punktualny, zdyscyplinowany i gotowy do pracy w systemie zmianowym lub w trasie.',
+    'Szukam pracy kierowcy. Cechuje mnie punktualność, dyscyplina i gotowość do pracy w systemie zmianowym lub w trasie.',
     'Looking for a driver position. I am punctual, disciplined and ready to work shifts or on the road.',
   ]),
   e(1, ['Przewóz towarów', 'Перевезення вантажів', 'Freight transport'], [

@@ -6,19 +6,19 @@ const k = group('students', 'skills');
 
 export const STUDENTS = [
   s(1, ['Student – pierwsza praca', 'Студент – перша робота', 'Student – first job'], [
-    'Student poszukujący pierwszego doświadczenia zawodowego. Szybko się uczę, jestem zaangażowany i chętnie podejmuję nowe zadania.',
+    'Szukam pierwszego doświadczenia zawodowego. Szybko się uczę, cechuje mnie zaangażowanie i chętnie podejmuję nowe zadania.',
     'Student looking for first work experience. I learn fast, I am committed and I take on new tasks willingly.',
   ]),
   s(2, ['Praca dorywcza', 'Підробіток', 'Part-time work'], [
-    'Szukam pracy dorywczej, którą mogę łączyć ze studiami. Jestem elastyczny, punktualny i odpowiedzialny.',
+    'Szukam pracy dorywczej, którą mogę łączyć ze studiami. Cechuje mnie elastyczność, punktualność i odpowiedzialność.',
     'Looking for part-time work that fits around my studies. I am flexible, punctual and responsible.',
   ]),
   s(3, ['Staż / praktyka', 'Стажування / практика', 'Internship'], [
-    'Szukam stażu lub praktyki, aby wykorzystać wiedzę ze studiów w praktyce. Ciekawy świata, otwarty na uwagi i rozwój.',
+    'Szukam stażu lub praktyki, aby wykorzystać wiedzę ze studiów w praktyce. Cechuje mnie ciekawość świata oraz otwartość na uwagi i rozwój.',
     'Looking for an internship to apply my university knowledge in practice. Curious, open to feedback and keen to grow.',
   ]),
   s(4, ['Absolwent', 'Випускник', 'Graduate'], [
-    'Absolwent z solidnymi podstawami teoretycznymi, gotowy do rozpoczęcia kariery. Dobrze organizuje pracę i potrafi współpracować w grupie.',
+    'Osoba po studiach, z solidnymi podstawami teoretycznymi, gotowa do rozpoczęcia kariery. Dobrze organizuje pracę i potrafi współpracować w grupie.',
     'Graduate with solid theoretical foundations, ready to start a career. Organises work well and collaborates easily in a group.',
   ]),
   e(1, ['Projekty na studiach', 'Навчальні проєкти', 'University projects'], [

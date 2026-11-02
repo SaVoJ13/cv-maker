@@ -49,3 +49,8 @@ test('фрази experience: один пункт на фразу, без пер�
   for (const p of ALL_PHRASES.filter((x) => x.section === 'experience'))
     for (const l of ['pl', 'en'] as const) assert.ok(!p.text[l].includes('\n'), p.id);
 });
+
+test('польські summary гендерно нейтральні: без слова «Jestem»', () => {
+  for (const p of ALL_PHRASES.filter((x) => x.section === 'summary'))
+    assert.ok(!/\bjestem\b/i.test(p.text.pl), `${p.id}: ${p.text.pl}`);
+});

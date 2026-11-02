@@ -6,7 +6,7 @@ const k = group('production_cnc', 'skills');
 
 export const PRODUCTION_CNC = [
   s(1, ['Operator produkcji', 'Оператор виробництва', 'Production operator'], [
-    'Dokładny operator produkcji, który dba o jakość wyrobów i bezpieczeństwo na stanowisku. Dobrze pracuje w systemie zmianowym.',
+    'Osoba dokładna, dbająca o jakość wyrobów i bezpieczeństwo na stanowisku. Dobrze pracuje w systemie zmianowym.',
     'Careful production operator who cares about product quality and workplace safety. Works well on shifts.',
   ]),
   s(2, ['Operator maszyn', 'Оператор верстатів', 'Machine operator'], [
@@ -18,7 +18,7 @@ export const PRODUCTION_CNC = [
     'Meticulous person focused on quality control. Able to read technical documentation and report non-conformities.',
   ]),
   s(4, ['Szukam pracy na produkcji', 'Шукаю роботу на виробництві', 'Seeking production role'], [
-    'Szukam pracy na produkcji lub przy obsłudze maszyn. Jestem sumienny, chętny do nauki i gotowy do pracy zmianowej.',
+    'Szukam pracy na produkcji lub przy obsłudze maszyn. Cechuje mnie sumienność, chęć do nauki i gotowość do pracy zmianowej.',
     'Looking for a production or machine operation role. I am conscientious, keen to learn and ready for shift work.',
   ]),
   e(1, ['Obsługa maszyn', 'Робота на верстатах', 'Machine operation'], [
