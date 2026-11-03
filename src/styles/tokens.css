@@ -191,3 +191,9 @@
 :root[data-theme='light'] {
   color-scheme: light;
 }
+
+/* Fraunces не має кирилиці (літери підставлялися з Georgia). Для українського інтерфейсу заголовки
+   набираємо Lora (локальний @fontsource); Fraunces лишається запасним для польських літер із latin-ext. */
+html[lang='uk'] {
+  --font-display: 'Lora', 'Fraunces', 'Iowan Old Style', Georgia, serif;
+}

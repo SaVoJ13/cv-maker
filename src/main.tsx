@@ -17,6 +17,11 @@ import '@fontsource/fraunces/latin-600.css';
 import '@fontsource/fraunces/latin-ext-600.css';
 import '@fontsource/fraunces/latin-700.css';
 import '@fontsource/fraunces/latin-ext-700.css';
+// Fraunces не має кирилиці: для заголовків українського інтерфейсу беремо Lora (лише кирилиця й латиниця, 600 і 700)
+import '@fontsource/lora/cyrillic-600.css';
+import '@fontsource/lora/latin-600.css';
+import '@fontsource/lora/cyrillic-700.css';
+import '@fontsource/lora/latin-700.css';
 import '@fontsource/roboto/latin-400.css';
 import '@fontsource/roboto/latin-ext-400.css';
 import '@fontsource/roboto/cyrillic-400.css';
