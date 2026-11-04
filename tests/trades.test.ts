@@ -209,3 +209,10 @@ test('uk.ts: у рядках «Водія» і «Майстра» той сам�
     assert.ok(!v.includes('’') && !v.includes("'"), k);
   }
 });
+
+test('uk.ts: у всьому словнику лише апостроф U+02BC: жодного ’ (U+2019) і жодного прямого \'', () => {
+  for (const [k, v] of Object.entries(MESSAGES.uk)) {
+    assert.ok(!v.includes('\u2019'), `${k}: ’`);
+    assert.ok(!v.includes("'"), `${k}: прямий '`);
+  }
+});
