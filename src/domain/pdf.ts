@@ -34,8 +34,6 @@ export interface PdfDocDefinition {
   info: Record<string, string>;
   footer: (currentPage: number, pageCount: number) => unknown;
   background?: (currentPage: number) => unknown;
-  /** Заголовок розділу не лишається сам унизу сторінки (використовує лише Fachowiec) */
-  pageBreakBefore?: (node: { headlineLevel?: number }, followingNodesOnPage: unknown[]) => boolean;
 }
 
 const INK = '#1b1f24';
@@ -342,8 +340,6 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
               paddingBottom: () => 3,
               fillColor: () => tint(ac),
             },
-            unbreakable: true,
-            headlineLevel: 1,
             margin: [0, top, 0, 7],
           },
         ];
@@ -361,8 +357,6 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
               paddingTop: () => 2,
               paddingBottom: () => 2,
             },
-            unbreakable: true,
-            headlineLevel: 1,
             margin: [0, top, 0, 7],
           },
         ];
@@ -400,8 +394,18 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
     }
   };
 
+  /**
+   * Розділ: заголовок і перший елемент — один неподільний блок, тож заголовок не лишається сам
+   * унизу сторінки (headlineLevel 1 позначає такий блок для перевірки в тестах).
+   */
   const section = (title: string, nodes: Node[]): void => {
-    content.push(...heading(title), ...nodes);
+    const head = heading(title);
+    const [first, ...rest] = nodes;
+    if (first === undefined) {
+      content.push(...head);
+      return;
+    }
+    content.push({ stack: [...head, first], unbreakable: true, headlineLevel: 1 }, ...rest);
   };
 
   const markerColor = tpl === 'ats' ? '#111111' : tpl === 'executive' ? GOLD : tpl === 'elegant' ? GOLD_LINE : ac;
@@ -571,7 +575,6 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
       pageCount > 1
         ? { text: `${currentPage} / ${pageCount}`, alignment: 'center', fontSize: 8, color: '#999999', margin: [0, 14, 0, 0] }
         : { text: '', fontSize: 1 },
-    ...(tpl === 'trades' || tpl === 'student' ? { pageBreakBefore: (node: { headlineLevel?: number }, following: unknown[]) => node.headlineLevel === 1 && following.length === 0 } : {}),
     ...(needsBackground ? { background: (currentPage: number) => ({ stack: layers(currentPage) }) } : {}),
   };
 }
