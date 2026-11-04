@@ -3,7 +3,8 @@ import type { Basics, Cv, Education, Experience, LangLevel, LanguageSkill, RodoM
 import { LEVELS } from '../domain/constants';
 import { TEMPLATE_META } from '../domain/templates';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
-import { CORE_SECTIONS, SECTION_IDS, completeness, sectionFilled, type SectionId } from '../domain/completeness';
+import { CORE_SECTIONS, completeness, sectionFilled, sectionIds, type SectionId } from '../domain/completeness';
+import { EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, emptyDriver, toggleCategory } from '../domain/extras';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';
 import { PhotoView } from './PhotoView';
 import { loadPhoto } from '../export/photo';
@@ -18,11 +19,12 @@ export interface TabProps {
   update: (mutate: (draft: Cv) => void) => void;
 }
 
-const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'interests'];
+const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'interests'];
 const TITLE_KEY = {
   basics: 's_basics',
   photo: 's_photo',
   extra: 's_extra',
+  driver: 's_driver',
   summary: 's_summary',
   exp: 's_exp',
   edu: 's_edu',
@@ -46,8 +48,9 @@ function Section({
   children: ReactNode;
 }) {
   const { t } = useStore();
-  const index = SECTION_IDS.indexOf(id);
-  const next = SECTION_IDS[index + 1];
+  const ids = sectionIds(cv);
+  const index = ids.indexOf(id);
+  const next = ids[index + 1];
   const filled = sectionFilled(cv, id) && id !== 'rodo';
   return (
     <section className={`acc${open ? ' open' : ''}`} id={`sec-${id}`}>
@@ -193,6 +196,14 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       if (e) Object.assign(e, patch);
     });
 
+  /** Змінює блок водія; дані інших блоків і самого CV не чіпає. */
+  const patchDriver = (mutate: (x: NonNullable<Cv['data']['extras']['driver']>) => void) =>
+    update((x) => {
+      const drv = x.data.extras.driver ?? emptyDriver();
+      mutate(drv);
+      x.data.extras.driver = drv;
+    });
+
   const sec = (id: SectionId) => ({ id, cv, open: open === id, onOpen });
   const summaryLen = d.summary.trim().length;
 
@@ -286,6 +297,58 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
         </div>
         <Field id="f_license" label={t('f_license')} value={b.license} onChange={setBasic('license')} />
       </Section>
+
+      {sectionIds(cv).includes('driver') ? (
+        <Section {...sec('driver')}>
+          <p className="hint">{t('h_driver')}</p>
+          <fieldset className="dgroup">
+            <legend>{t('f_dr_cats')}</legend>
+            <div className="dgrid cats">
+              {LICENCE_CATEGORIES.map((c) => (
+                <Check
+                  key={c}
+                  id={`dr_cat_${c}`}
+                  label={c}
+                  checked={(d.extras.driver?.categories ?? []).includes(c)}
+                  onChange={() => patchDriver((x) => (x.categories = toggleCategory(x.categories, c)))}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className="dgroup">
+            <legend>{t('f_dr_permits')}</legend>
+            <div className="dgrid two">
+              <Check id="dr_code95" label={t('f_dr_code95')} checked={d.extras.driver?.code95 ?? false} onChange={(v) => patchDriver((x) => (x.code95 = v))} />
+              <Check id="dr_adr" label={t('f_dr_adr')} checked={d.extras.driver?.adr ?? false} onChange={(v) => patchDriver((x) => (x.adr = v))} />
+              <Check id="dr_card" label={t('f_dr_card')} checked={d.extras.driver?.tachograph ?? false} onChange={(v) => patchDriver((x) => (x.tachograph = v))} />
+              <Check id="dr_udt" label={t('f_dr_udt')} checked={d.extras.driver?.udt ?? false} onChange={(v) => patchDriver((x) => (x.udt = v))} />
+            </div>
+          </fieldset>
+          <Field
+            id="dr_fleet"
+            label={t('f_dr_fleet')}
+            value={d.extras.driver?.fleet ?? ''}
+            placeholder={t('f_dr_fleet_ph')}
+            hint={t('f_dr_fleet_hint')}
+            maxLength={EXTRAS_MAX_VALUE}
+            onChange={(v) => patchDriver((x) => (x.fleet = v))}
+          />
+          <fieldset className="dgroup">
+            <legend>{t('f_dr_routes')}</legend>
+            <div className="dgrid two">
+              {(['PL', 'UE'] as const).map((r) => (
+                <Check
+                  key={r}
+                  id={`dr_route_${r}`}
+                  label={t(r === 'PL' ? 'f_dr_route_pl' : 'f_dr_route_eu')}
+                  checked={(d.extras.driver?.routes ?? []).includes(r)}
+                  onChange={(v) => patchDriver((x) => (x.routes = (['PL', 'UE'] as const).filter((k) => (k === r ? v : x.routes.includes(k)))))}
+                />
+              ))}
+            </div>
+          </fieldset>
+        </Section>
+      ) : null}
 
       <Section {...sec('summary')}>
         <div className="sh">

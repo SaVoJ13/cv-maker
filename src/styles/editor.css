@@ -706,3 +706,31 @@
 .rec-disc {
   font-weight: 700;
 }
+
+/* Dane kierowcy: компактні групи чекбоксів (360 px: 4 категорії в рядку, дозволи й маршрути по 2) */
+.dgroup {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.dgroup legend {
+  padding: 0;
+  margin-bottom: 2px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.dgrid {
+  display: grid;
+  gap: 0 8px;
+}
+.dgrid.cats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.dgrid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.dgrid .chk {
+  gap: 6px;
+  line-height: 1.25;
+}

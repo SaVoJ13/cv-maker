@@ -672,3 +672,24 @@
 .photobox .pthumb.live {
   touch-action: none;
 }
+
+/* ---------- Kierowca: jedna kolumna, gruba linia pod nagłówkiem, bloki z uprawnieniami ---------- */
+.t-driver .p-head {
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 4px solid var(--ac);
+}
+.t-driver h1 {
+  font-size: 31px;
+  font-weight: 800;
+}
+.t-driver .p-sec h2 {
+  border-bottom: 0;
+  padding: 1px 0 1px 10px;
+  border-left: 5px solid var(--ac);
+  color: #1b1f24;
+}
+.paper .p-rows p {
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
+}

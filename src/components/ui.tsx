@@ -15,9 +15,10 @@ interface FieldProps {
   /** Komunikat o błędzie: pokazujemy go dopiero po opuszczeniu pola, żeby nie krzyczeć w trakcie pisania. */
   error?: string | false;
   hint?: string;
+  maxLength?: number;
 }
 
-export function Field({ id, label, value, onChange, type = 'text', placeholder, disabled, error, hint }: FieldProps) {
+export function Field({ id, label, value, onChange, type = 'text', placeholder, disabled, error, hint, maxLength }: FieldProps) {
   const [touched, setTouched] = useState(false);
   const showError = Boolean(error) && touched;
   const msgId = showError ? `${id}-err` : hint ? `${id}-hint` : undefined;
@@ -30,6 +31,7 @@ export function Field({ id, label, value, onChange, type = 'text', placeholder, 
         value={value}
         placeholder={placeholder}
         disabled={disabled}
+        maxLength={maxLength}
         autoComplete="off"
         aria-invalid={showError || undefined}
         aria-describedby={msgId}

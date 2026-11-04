@@ -124,6 +124,6 @@ test('шаблони: безкоштовні рівно classic, minimal, ats, i
   const { TEMPLATES, TEMPLATE_META, FREE_TEMPLATES, templateTier } = await import('../src/domain/templates.ts');
   assert.deepEqual([...FREE_TEMPLATES].sort(), ['ats', 'classic', 'industrial', 'minimal']);
   for (const k of TEMPLATES) assert.ok(TEMPLATE_META[k].tier === 'free' || TEMPLATE_META[k].tier === 'pro', k);
-  assert.equal(TEMPLATES.filter((k) => templateTier(k) === 'pro').length, 8);
+  assert.equal(TEMPLATES.filter((k) => templateTier(k) === 'pro').length, 9);
   assert.equal(templateTier('nieznany' as never), 'pro');
 });

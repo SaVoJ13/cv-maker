@@ -28,8 +28,8 @@ function full(tpl: string, lang: DocLang = 'pl'): Cv {
   return cv;
 }
 
-test('шаблони без блоків (усі наявні) нічого не друкують, навіть із повними даними', () => {
-  for (const tpl of TEMPLATES) {
+test('шаблони без блоків нічого не друкують, навіть із повними даними', () => {
+  for (const tpl of TEMPLATES.filter((k) => templateBlocks(k).length === 0)) {
     const v = extrasView(full(tpl));
     assert.deepEqual(v, { driver: null, tech: null, courses: null }, tpl);
     assert.equal(hasPrintedExtras(full(tpl)), false, tpl);

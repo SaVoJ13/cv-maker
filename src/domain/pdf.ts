@@ -3,6 +3,7 @@ import { ACCENTS, DENSITY } from './constants';
 import { SIDEBAR } from './templates';
 import { tint } from './color';
 import { DOC } from './docText';
+import { extrasView } from './extrasView';
 import {
   dateRange,
   documentClause,
@@ -167,6 +168,10 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
         { h: 9, color: ac },
       ),
     );
+  } else if (tpl === 'driver') {
+    const stack = stackOf({ text: b.name, fontSize: 25, bold: true, color: INK }, b.title, { fontSize: 12.5, color: ac }, '#444444', GREY);
+    content.push(photo ? { columns: [{ width: '*', stack }, photoNode(headD)], columnGap: 16 } : { stack });
+    content.push(rule(3, ac, [0, 10, 0, 0]));
   } else if (tpl === 'elegant') {
     const mid = contentW / 2;
     content.push({ text: b.name.toUpperCase(), fontSize: 22, characterSpacing: 3.5, alignment: 'center', color: INK });
@@ -294,6 +299,16 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
             margin: [0, top, 0, 6],
           },
         ];
+      case 'driver':
+        return [
+          {
+            columns: [
+              { width: 9, canvas: [{ type: 'rect', x: 0, y: 0, w: 4, h: 13, color: ac }] },
+              { width: '*', text: up, fontSize: 10.5, bold: true, color: INK, characterSpacing: 1.2 },
+            ],
+            margin: [0, top, 0, 6],
+          },
+        ];
       case 'industrial':
         return [
           {
@@ -367,6 +382,16 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
 
   /* ---------- treść ---------- */
   if (d.summary.trim()) section(L.summary, [{ text: d.summary.trim() }]);
+
+  // блоки з додаткових даних: що саме друкується, вирішує extrasView (так само, як у прев'ю)
+  const ex = extrasView(cv);
+  for (const blk of [ex.driver, ex.tech]) {
+    if (!blk) continue;
+    section(
+      blk.title,
+      blk.rows.map((r) => ({ text: [{ text: `${r.label}: `, bold: true }, r.value], margin: [0, 0, 0, 3] })),
+    );
+  }
 
   const exp = filledExperience(d);
   if (exp.length) {

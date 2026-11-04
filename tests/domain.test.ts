@@ -104,7 +104,7 @@ test('словник uk: справді український текст, а н
     (k) => MESSAGES.uk[k as keyof typeof MESSAGES.pl] === MESSAGES.pl[k as keyof typeof MESSAGES.pl],
   );
   // Допустимі збіги: назви, які однакові в усіх мовах
-  assert.deepEqual(same.sort(), ['f_email', 'tpl_executive']);
+  assert.deepEqual(same.sort(), ['f_dr_adr', 'f_dr_udt', 'f_email', 'tpl_executive']);
   // жодних російських літер ы, э, ъ, ё
   for (const [k, v] of Object.entries(MESSAGES.uk)) assert.ok(!/[ыэъё]/i.test(v), k);
   // у значеннях немає латинських літер, вставлених усередину українських слів
@@ -351,12 +351,12 @@ test('fitWithin: zmniejsza, ale nie powiększa', () => {
   assert.deepEqual(fitWithin(10000, 1, 640), { w: 640, h: 1 });
 });
 
-test('szablony: 12 sztuk, zdjęcie tylko w czterech, dwie kolumny tylko w trzech', () => {
-  assert.equal(TEMPLATES.length, 12);
-  assert.equal(new Set(TEMPLATES).size, 12);
+test('szablony: 13 sztuk, zdjęcie tylko w pięciu, dwie kolumny tylko w trzech', () => {
+  assert.equal(TEMPLATES.length, 13);
+  assert.equal(new Set(TEMPLATES).size, 13);
   assert.deepEqual(
     TEMPLATES.filter((k) => TEMPLATE_META[k].photo),
-    ['modern', 'executive', 'panel', 'nordic'],
+    ['modern', 'executive', 'panel', 'nordic', 'driver'],
   );
   assert.deepEqual(
     TEMPLATES.filter((k) => !TEMPLATE_META[k].atsSafe),

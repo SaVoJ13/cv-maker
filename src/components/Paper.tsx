@@ -6,6 +6,7 @@ import { ACCENTS, DENSITY } from '../domain/constants';
 import { SIDEBAR } from '../domain/templates';
 import { tint } from '../domain/color';
 import { DOC } from '../domain/docText';
+import { extrasView } from '../domain/extrasView';
 import {
   dateRange,
   documentClause,
@@ -119,6 +120,8 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
   const extra = extraDetails(b, L);
   const side = SIDEBAR[cv.tpl];
   const has = mainHas(cv.tpl);
+  const ex = extrasView(cv);
+  const rowBlocks = [ex.driver, ex.tech].filter((x) => x !== null);
 
   const sections = (
     <>
@@ -127,6 +130,18 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
           <p>{d.summary}</p>
         </Section>
       ) : null}
+
+      {rowBlocks.map((blk) => (
+        <Section key={blk.title} title={blk.title}>
+          <div className="p-rows">
+            {blk.rows.map((r) => (
+              <p key={r.label}>
+                <b>{r.label}:</b> {r.value}
+              </p>
+            ))}
+          </div>
+        </Section>
+      ))}
 
       {exp.length ? (
         <Section title={L.exp}>
