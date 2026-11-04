@@ -351,12 +351,12 @@ test('fitWithin: zmniejsza, ale nie powiększa', () => {
   assert.deepEqual(fitWithin(10000, 1, 640), { w: 640, h: 1 });
 });
 
-test('szablony: 13 sztuk, zdjęcie tylko w pięciu, dwie kolumny tylko w trzech', () => {
-  assert.equal(TEMPLATES.length, 13);
-  assert.equal(new Set(TEMPLATES).size, 13);
+test('szablony: 14 sztuk, zdjęcie tylko w sześciu, dwie kolumny tylko w trzech', () => {
+  assert.equal(TEMPLATES.length, 14);
+  assert.equal(new Set(TEMPLATES).size, 14);
   assert.deepEqual(
     TEMPLATES.filter((k) => TEMPLATE_META[k].photo),
-    ['modern', 'executive', 'panel', 'nordic', 'driver'],
+    ['modern', 'executive', 'panel', 'nordic', 'driver', 'trades'],
   );
   assert.deepEqual(
     TEMPLATES.filter((k) => !TEMPLATE_META[k].atsSafe),

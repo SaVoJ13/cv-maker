@@ -235,9 +235,10 @@ export function sampleCv(): Cv {
     ],
     interests: 'Bieganie, fotografia, wolontariat w fundacji uczącej programowania dzieci',
     courses: '',
-    // демо-дані для шаблону Kierowca (друкуються лише в ньому): галерея й порожній попередній перегляд показують блок з дозволами
+    // демо-дані для шаблонів Kierowca і Fachowiec (кожен друкує лише свій блок): галерея й порожній попередній перегляд показують блок з дозволами
     extras: {
       driver: { categories: ['B', 'C', 'CE'], code95: true, tachograph: true, adr: false, udt: false, fleet: 'Ciągnik siodłowy z naczepą', routes: ['PL', 'UE'] },
+      tech: { sep: 'E do 1 kV', welding: ['MIG', 'MAG', 'TIG'], cnc: '', drawings: true, bhp: true, certs: ['Operator suwnic'] },
     },
   };
   return c;

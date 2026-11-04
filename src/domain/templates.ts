@@ -15,6 +15,7 @@ export const TEMPLATES: readonly TemplateId[] = [
   'industrial',
   'nordic',
   'driver',
+  'trades',
 ];
 
 /** Dawne nazwy szablonów, które nadal wczytujemy ze starych zapisów i kopii zapasowych. */
@@ -49,6 +50,7 @@ export const TEMPLATE_META: Record<TemplateId, TemplateMeta> = {
   industrial: { photo: false, ats: 'medium', atsSafe: true, tier: 'free', industry: 'production_cnc' },
   nordic: { photo: true, ats: 'low', atsSafe: false, tier: 'pro' },
   driver: { photo: true, ats: 'medium', atsSafe: true, tier: 'pro', industry: 'drivers' },
+  trades: { photo: true, ats: 'medium', atsSafe: true, tier: 'pro', industry: 'construction' },
 };
 
 /** Szablony z paskiem bocznym (dwie kolumny) i strona paska. */

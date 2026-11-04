@@ -171,7 +171,7 @@ export const EXTRAS_DOC: Record<DocLang, ExtrasDocStrings> = {
     sep: 'SEP qualifications',
     welding: 'Welding',
     cnc: 'CNC',
-    alsoTech: 'Also',
+    alsoTech: 'Other skills',
     certs: 'Certificates',
     drawings: 'Reading technical drawings',
     bhp: 'Health & safety (BHP)',

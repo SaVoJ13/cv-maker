@@ -4,7 +4,7 @@ import { LEVELS } from '../domain/constants';
 import { TEMPLATE_META } from '../domain/templates';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
 import { CORE_SECTIONS, completeness, sectionFilled, sectionIds, type SectionId } from '../domain/completeness';
-import { EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, emptyDriver, toggleCategory } from '../domain/extras';
+import { EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, WELDING_METHODS, certsFromText, emptyDriver, emptyTech, toggleCategory, toggleWelding } from '../domain/extras';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';
 import { PhotoView } from './PhotoView';
 import { loadPhoto } from '../export/photo';
@@ -19,12 +19,13 @@ export interface TabProps {
   update: (mutate: (draft: Cv) => void) => void;
 }
 
-const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'interests'];
+const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'tech', 'interests'];
 const TITLE_KEY = {
   basics: 's_basics',
   photo: 's_photo',
   extra: 's_extra',
   driver: 's_driver',
+  tech: 's_trades',
   summary: 's_summary',
   exp: 's_exp',
   edu: 's_edu',
@@ -204,6 +205,14 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       x.data.extras.driver = drv;
     });
 
+  /** Змінює блок майстра; дані інших блоків і самого CV не чіпає. */
+  const patchTech = (mutate: (x: NonNullable<Cv['data']['extras']['tech']>) => void) =>
+    update((x) => {
+      const t = x.data.extras.tech ?? emptyTech();
+      mutate(t);
+      x.data.extras.tech = t;
+    });
+
   const sec = (id: SectionId) => ({ id, cv, open: open === id, onOpen });
   const summaryLen = d.summary.trim().length;
 
@@ -347,6 +356,59 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
               ))}
             </div>
           </fieldset>
+        </Section>
+      ) : null}
+
+      {sectionIds(cv).includes('tech') ? (
+        <Section {...sec('tech')}>
+          <p className="hint">{t('h_trades')}</p>
+          <Field
+            id="tr_sep"
+            label={t('f_tr_sep')}
+            value={d.extras.tech?.sep ?? ''}
+            placeholder={t('f_tr_sep_ph')}
+            hint={t('f_tr_limit')}
+            maxLength={EXTRAS_MAX_VALUE}
+            onChange={(v) => patchTech((x) => (x.sep = v))}
+          />
+          <fieldset className="dgroup">
+            <legend>{t('f_tr_weld')}</legend>
+            <div className="dgrid cats">
+              {WELDING_METHODS.map((m) => (
+                <Check
+                  key={m}
+                  id={`tr_weld_${m}`}
+                  label={m}
+                  checked={(d.extras.tech?.welding ?? []).includes(m)}
+                  onChange={() => patchTech((x) => (x.welding = toggleWelding(x.welding, m)))}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <Field
+            id="tr_cnc"
+            label={t('f_tr_cnc')}
+            value={d.extras.tech?.cnc ?? ''}
+            placeholder={t('f_tr_cnc_ph')}
+            hint={t('f_tr_limit')}
+            maxLength={EXTRAS_MAX_VALUE}
+            onChange={(v) => patchTech((x) => (x.cnc = v))}
+          />
+          <fieldset className="dgroup">
+            <legend>{t('f_tr_more')}</legend>
+            <div className="dgrid">
+              <Check id="tr_drawings" label={t('f_tr_drawings')} checked={d.extras.tech?.drawings ?? false} onChange={(v) => patchTech((x) => (x.drawings = v))} />
+              <Check id="tr_bhp" label={t('f_tr_bhp')} checked={d.extras.tech?.bhp ?? false} onChange={(v) => patchTech((x) => (x.bhp = v))} />
+            </div>
+          </fieldset>
+          <Area
+            id="tr_certs"
+            label={t('f_tr_certs')}
+            rows={4}
+            value={(d.extras.tech?.certs ?? []).join('\n')}
+            onChange={(v) => patchTech((x) => (x.certs = certsFromText(v)))}
+          />
+          <p className="hint">{t('f_tr_certs_hint')}</p>
         </Section>
       ) : null}
 

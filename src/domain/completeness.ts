@@ -3,13 +3,13 @@ import { filledEducation, filledExperience, filledLanguages, list } from './cvOp
 import { extrasBlockFilled, hasPrintedExtras, templateBlocks } from './extrasView';
 
 /** Sekcje formularza w kolejności wypełniania. */
-export const SECTION_IDS = ['basics', 'photo', 'extra', 'driver', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo'] as const;
+export const SECTION_IDS = ['basics', 'photo', 'extra', 'driver', 'tech', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo'] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
-/** Секції редактора для цього CV: «Dane kierowcy» є лише в шаблоні, який друкує блок водія. */
+/** Секції редактора для цього CV: «Dane kierowcy» і «Uprawnienia i certyfikaty» є лише в шаблонах, які друкують свій блок. */
 export function sectionIds(cv: Pick<Cv, 'tpl'>): readonly SectionId[] {
-  const driver = templateBlocks(cv.tpl).includes('driver');
-  return SECTION_IDS.filter((id) => id !== 'driver' || driver);
+  const blocks = templateBlocks(cv.tpl);
+  return SECTION_IDS.filter((id) => (id !== 'driver' || blocks.includes('driver')) && (id !== 'tech' || blocks.includes('tech')));
 }
 
 /** Czy sekcja ma jakąkolwiek treść (do kropek „wypełnione" w edytorze). Sekcje z samymi ustawieniami (RODO) liczymy jako gotowe. */
@@ -25,6 +25,8 @@ export function sectionFilled(cv: Cv, id: SectionId): boolean {
       return Boolean(b.address.trim() || b.birthDate.trim() || b.birthPlace.trim() || b.license.trim());
     case 'driver':
       return extrasBlockFilled(cv, 'driver');
+    case 'tech':
+      return extrasBlockFilled(cv, 'tech');
     case 'summary':
       return Boolean(d.summary.trim());
     case 'exp':

@@ -89,7 +89,7 @@ test('Fachowiec (PL і EN): SEP, спосіб зварювання, CNC, дод�
   ]);
   const en = extrasView(full('trades', 'en')).tech;
   assert.equal(en?.title, 'Qualifications & certificates');
-  assert.deepEqual(en?.rows.map((r) => r.label), ['SEP qualifications', 'Welding', 'CNC', 'Also', 'Certificates']);
+  assert.deepEqual(en?.rows.map((r) => r.label), ['SEP qualifications', 'Welding', 'CNC', 'Other skills', 'Certificates']);
   assert.equal(en?.rows[3].value, 'Reading technical drawings · Health & safety (BHP)');
   // шаблон trades не показує блок водія й курси
   assert.equal(extrasView(full('trades')).driver, null);

@@ -15,7 +15,8 @@ export type TemplateId =
   | 'bold'
   | 'industrial'
   | 'nordic'
-  | 'driver';
+  | 'driver'
+  | 'trades';
 export type AccentId =
   | 'navy'
   | 'azure'

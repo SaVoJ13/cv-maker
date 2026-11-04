@@ -26,19 +26,39 @@ export function emptyDriver(): Driver {
   return { categories: [], code95: false, tachograph: false, adr: false, udt: false, fleet: '', routes: [] };
 }
 
-/** Додає або прибирає категорію; позначені йдуть у стандартному порядку, незнайомі (з даних) лишаються в кінці. */
-export function toggleCategory(current: readonly string[], cat: string): string[] {
-  const has = current.includes(cat);
-  const next = has ? current.filter((c) => c !== cat) : [...current, cat];
+/** Методи зварювання, які пропонує редактор (у цьому порядку й друкуються). */
+export const WELDING_METHODS = ['MIG', 'MAG', 'TIG', 'MMA'] as const;
+
+type Tech = NonNullable<CvExtras['tech']>;
+
+export function emptyTech(): Tech {
+  return { sep: '', welding: [], cnc: '', drawings: false, bhp: false, certs: [] };
+}
+
+/** Додає або прибирає значення; позначені йдуть у заданому порядку, незнайомі (з даних) лишаються в кінці. */
+function toggleOrdered(current: readonly string[], item: string, order: readonly string[]): string[] {
+  const has = current.includes(item);
+  const next = has ? current.filter((c) => c !== item) : [...current, item];
   const rank = (c: string): number => {
-    const i = (LICENCE_CATEGORIES as readonly string[]).indexOf(c);
-    return i === -1 ? LICENCE_CATEGORIES.length : i;
+    const i = order.indexOf(c);
+    return i === -1 ? order.length : i;
   };
   return next
     .map((c, i) => ({ c, i }))
     .sort((a, b) => rank(a.c) - rank(b.c) || a.i - b.i)
     .map((x) => x.c)
     .slice(0, EXTRAS_MAX_ITEMS);
+}
+
+/** Категорії прав: стандартний порядок. */
+export const toggleCategory = (current: readonly string[], cat: string): string[] => toggleOrdered(current, cat, LICENCE_CATEGORIES);
+
+/** Методи зварювання: MIG, MAG, TIG, MMA. */
+export const toggleWelding = (current: readonly string[], method: string): string[] => toggleOrdered(current, method, WELDING_METHODS);
+
+/** Текст «по рядку на запис» → список: не більше 8 записів, кожен до 80 символів. Порожні рядки лишаються (щоб Enter у кінці не зникав). */
+export function certsFromText(text: string): string[] {
+  return text.split(/\r?\n/).slice(0, EXTRAS_MAX_ITEMS).map((x) => clampValue(x));
 }
 
 /** Приводить будь-який JSON до безпечного CvExtras. Відсутні блоки лишаються відсутніми. */

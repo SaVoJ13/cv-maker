@@ -34,6 +34,8 @@ export interface PdfDocDefinition {
   info: Record<string, string>;
   footer: (currentPage: number, pageCount: number) => unknown;
   background?: (currentPage: number) => unknown;
+  /** Заголовок розділу не лишається сам унизу сторінки (використовує лише Fachowiec) */
+  pageBreakBefore?: (node: { headlineLevel?: number }, followingNodesOnPage: unknown[]) => boolean;
 }
 
 const INK = '#1b1f24';
@@ -90,13 +92,19 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
   const photoNode = (diam: number): Node => ({ width: diam, image: photo, fit: [diam, diam] });
 
   /** Nagłówek na całą szerokość arkusza (ujemne marginesy równoważą marginesy strony). */
-  const bleed = (bg: string, stack: Node[], stripe?: { h: number; color: string }): Node => {
+  const bleed = (bg: string, stack: Node[], stripe?: { h: number; color: string; top?: boolean }): Node => {
     const cell: Node = photo
       ? { columns: [{ width: '*', stack }, photoNode(headD)], columnGap: 16 }
       : { stack };
     const body: Node[][] = [[cell]];
-    if (stripe) body.push([{ text: '', fontSize: 1 }]);
+    // смуга акценту: знизу (за замовчуванням) або зверху (top)
+    const top = Boolean(stripe?.top);
+    if (stripe) {
+      if (top) body.unshift([{ text: '', fontSize: 1 }]);
+      else body.push([{ text: '', fontSize: 1 }]);
+    }
     const half = stripe ? (stripe.h - 1.25) / 2 : 0;
+    const isMain = (i: number): boolean => i === (top ? 1 : 0);
     return {
       table: { widths: ['*'], body },
       margin: [-margins[0], -margins[1], -margins[2], 0],
@@ -105,9 +113,9 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
         vLineWidth: () => 0,
         paddingLeft: () => margins[0],
         paddingRight: () => margins[2],
-        paddingTop: (i: number) => (i === 0 ? 34 : half),
-        paddingBottom: (i: number) => (i === 0 ? 18 : half),
-        fillColor: (i: number) => (i === 0 ? bg : stripe?.color ?? bg),
+        paddingTop: (i: number) => (isMain(i) ? (top ? 22 : 34) : half),
+        paddingBottom: (i: number) => (isMain(i) ? 18 : half),
+        fillColor: (i: number) => (isMain(i) ? bg : stripe?.color ?? bg),
       },
     };
   };
@@ -172,6 +180,14 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
     const stack = stackOf({ text: b.name, fontSize: 25, bold: true, color: INK }, b.title, { fontSize: 12.5, color: ac }, '#444444', GREY);
     content.push(photo ? { columns: [{ width: '*', stack }, photoNode(headD)], columnGap: 16 } : { stack });
     content.push(rule(3, ac, [0, 10, 0, 0]));
+  } else if (tpl === 'trades') {
+    content.push(
+      bleed(
+        tint(ac),
+        stackOf({ text: b.name, fontSize: 26, bold: true, color: INK }, b.title.toUpperCase(), { fontSize: 11.5, bold: true, color: ac, characterSpacing: 1.1 }, '#444444', GREY),
+        { h: 14, color: ac, top: true },
+      ),
+    );
   } else if (tpl === 'elegant') {
     const mid = contentW / 2;
     content.push({ text: b.name.toUpperCase(), fontSize: 22, characterSpacing: 3.5, alignment: 'center', color: INK });
@@ -307,6 +323,25 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
               { width: '*', text: up, fontSize: 10.5, bold: true, color: INK, characterSpacing: 1.2 },
             ],
             margin: [0, top, 0, 6],
+          },
+        ];
+      case 'trades':
+        return [
+          {
+            table: { widths: ['auto'], body: [[{ text: up, fontSize: 10.5, bold: true, color: ac, characterSpacing: 1.1 }]] },
+            layout: {
+              hLineWidth: () => 1.2,
+              vLineWidth: () => 1.2,
+              hLineColor: () => ac,
+              vLineColor: () => ac,
+              paddingLeft: () => 7,
+              paddingRight: () => 7,
+              paddingTop: () => 2,
+              paddingBottom: () => 2,
+            },
+            unbreakable: true,
+            headlineLevel: 1,
+            margin: [0, top, 0, 7],
           },
         ];
       case 'industrial':
@@ -502,6 +537,7 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
       pageCount > 1
         ? { text: `${currentPage} / ${pageCount}`, alignment: 'center', fontSize: 8, color: '#999999', margin: [0, 14, 0, 0] }
         : { text: '', fontSize: 1 },
+    ...(tpl === 'trades' ? { pageBreakBefore: (node: { headlineLevel?: number }, following: unknown[]) => node.headlineLevel === 1 && following.length === 0 } : {}),
     ...(needsBackground ? { background: (currentPage: number) => ({ stack: layers(currentPage) }) } : {}),
   };
 }
