@@ -112,12 +112,17 @@ test('права й допуски з даних користувача врах
   const none = scanAts(ad, cv());
   for (const n of ['Prawo jazdy', 'Kod 95', 'ADR']) assert.ok(none.missing.some((k) => k.display === n), n);
   const base = blankCv().data;
-  const have = scanAts(ad, {
+  const data = {
     ...base,
     basics: { ...base.basics, license: 'B, C' },
-    extras: { driver: { categories: ['C'], code95: true, tachograph: false, adr: true, udt: false, fleet: '', routes: [] } },
-  });
+    extras: { driver: { categories: ['C'], code95: true, tachograph: false, adr: true, udt: false, fleet: '', routes: [] as ('PL' | 'UE')[] } },
+  };
+  // блок «Kierowca» друкується лише в шаблоні driver, тому лише там extras враховуються
+  const have = scanAts(ad, data, { tpl: 'driver' });
   for (const n of ['Prawo jazdy', 'Kod 95', 'ADR']) assert.ok(have.matched.some((k) => k.display === n), n);
+  const other = scanAts(ad, data, { tpl: 'classic' });
+  assert.ok(other.matched.some((k) => k.display === 'Prawo jazdy'), 'поле prawo jazdy друкується в усіх шаблонах');
+  for (const n of ['Kod 95', 'ADR']) assert.ok(other.missing.some((k) => k.display === n), n + ' не друкується в classic');
 });
 
 test('вимоги не додаються в навички автоматично (addTo відсутнє)', () => {

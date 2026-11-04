@@ -93,10 +93,12 @@ test('дублювання CV копіює courses', () => {
   assert.equal(duplicateCv(cv, 'kopia').data.courses, 'Kurs B');
 });
 
-test('isBlank: CV лише з courses не вважається порожнім; ATS бачить courses у тексті CV', () => {
+test('isBlank і ATS рахують courses лише там, де шаблон їх друкує (дані при цьому не змінюються)', () => {
   const cv = blankCv();
-  assert.equal(isBlank(cv), true);
   cv.data.courses = 'Kurs obsługi wózka widłowego';
-  assert.equal(isBlank(cv), false);
-  assert.match(cvSearchText(cv.data), /wózka widłowego/);
+  assert.equal(isBlank(cv), true, 'classic не друкує курси');
+  assert.doesNotMatch(cvSearchText(cv.data), /wózka widłowego/);
+  assert.equal(cv.data.courses, 'Kurs obsługi wózka widłowego');
+  const student = { ...cv, tpl: 'student' as never };
+  assert.equal(isBlank(student), false, 'student друкує курси');
 });

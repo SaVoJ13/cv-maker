@@ -56,7 +56,7 @@ function AtsMatchDialog({ cv, update, onClose }: { cv: Cv; update: (mutate: (dra
   const hasText = job.trim().length > 0;
 
   const result = useMemo(
-    () => (deferred.trim() ? scanAts(deferred, cv.data, { docLang: cv.lang }) : null),
+    () => (deferred.trim() ? scanAts(deferred, cv.data, { docLang: cv.lang, tpl: cv.tpl }) : null),
     // перераховуємо, коли змінилися лише поля, що впливають на збіг
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [deferred, cv.data, cv.lang],

@@ -97,3 +97,83 @@ export function rodoText(cv: RodoCv, withPhoto = false): string {
   }
   return s;
 }
+
+/**
+ * Тексти блоків із додаткових даних (extras, courses) у самому документі CV. Шаблони «Kierowca», «Fachowiec» і «Student»
+ * друкують рядки «підпис: значення» або текст через « · »; підписи одні для прев'ю й PDF.
+ */
+export interface ExtrasDocStrings {
+  /** Заголовки блоків у документі */
+  driverTitle: string;
+  techTitle: string;
+  coursesTitle: string;
+  /** Kierowca: підписи рядків */
+  licCategories: string;
+  permits: string;
+  fleet: string;
+  routes: string;
+  /** Kierowca: пункти в рядку «permits» (друкуються лише позначені) */
+  code95: string;
+  driverCard: string;
+  adr: string;
+  udt: string;
+  /** Kierowca: значення в рядку «routes» */
+  routePL: string;
+  routeEU: string;
+  /** Fachowiec: підписи рядків */
+  sep: string;
+  welding: string;
+  cnc: string;
+  alsoTech: string;
+  certs: string;
+  /** Fachowiec: пункти в рядку «alsoTech» (друкуються лише позначені) */
+  drawings: string;
+  bhp: string;
+}
+
+export const EXTRAS_DOC: Record<DocLang, ExtrasDocStrings> = {
+  pl: {
+    driverTitle: 'Uprawnienia i kwalifikacje',
+    techTitle: 'Uprawnienia i certyfikaty',
+    coursesTitle: 'Kursy i projekty',
+    licCategories: 'Kategorie prawa jazdy',
+    permits: 'Dokumenty zawodowe',
+    fleet: 'Pojazdy',
+    routes: 'Trasy',
+    code95: 'Kod 95',
+    driverCard: 'Karta kierowcy (tachograf)',
+    adr: 'ADR',
+    udt: 'UDT',
+    routePL: 'Polska',
+    routeEU: 'UE',
+    sep: 'Uprawnienia SEP',
+    welding: 'Spawanie',
+    cnc: 'CNC',
+    alsoTech: 'Dodatkowo',
+    certs: 'Certyfikaty',
+    drawings: 'Czytanie rysunku technicznego',
+    bhp: 'BHP',
+  },
+  en: {
+    driverTitle: 'Licences & qualifications',
+    techTitle: 'Qualifications & certificates',
+    coursesTitle: 'Courses & projects',
+    licCategories: 'Licence categories',
+    permits: 'Professional documents',
+    fleet: 'Vehicles',
+    routes: 'Routes',
+    code95: 'Code 95 (CPC)',
+    driverCard: 'Driver card (tachograph)',
+    adr: 'ADR',
+    udt: 'UDT',
+    routePL: 'Poland',
+    routeEU: 'EU',
+    sep: 'SEP qualifications',
+    welding: 'Welding',
+    cnc: 'CNC',
+    alsoTech: 'Also',
+    certs: 'Certificates',
+    drawings: 'Reading technical drawings',
+    bhp: 'Health & safety (BHP)',
+  },
+};

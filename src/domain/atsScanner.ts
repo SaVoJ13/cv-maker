@@ -1,4 +1,5 @@
 import type { CvData, DocLang } from './types';
+import { printedExtrasText } from './extrasView';
 import { ATS_DICTIONARY, tokenize, type AtsEntry, type AtsForm, type AtsKeyword, type Matcher } from './atsDictionary';
 
 export type { AtsKeyword };
@@ -18,6 +19,8 @@ export interface AtsScanResult {
 export interface AtsScanOptions {
   /** Мова документа CV: якщо оголошення іншою мовою, додається підказка */
   docLang?: DocLang;
+  /** Id шаблону: від нього залежить, які блоки extras/courses друкуються й тому враховуються */
+  tpl?: string;
 }
 
 /** Довші оголошення обрізаємо: сканер має лишатися швидким на телефоні. */
@@ -84,38 +87,24 @@ function entryPresent(tokens: readonly string[], e: AtsEntry): boolean {
 }
 
 /**
- * Текст CV для пошуку збігів: назва посади, резюме, досвід, освіта, навички, мови, інтереси.
- * Заповнені «допуски» і права (за даними користувача) додаються як слова, щоб оголошення
- * з «prawo jazdy» чи «ADR» бачило, що користувач це вказав.
+ * Текст CV для пошуку збігів: назва посади, резюме, досвід, освіта, навички, мови, інтереси
+ * і блоки додаткових даних, які друкуються для поточного шаблону (`extrasText`, див. extrasView).
+ * Права з поля «prawo jazdy» додаються як слова, щоб оголошення з «prawo jazdy» бачило, що користувач це вказав.
+ * Дані, які в документі не друкуються (напр., курси в шаблоні без блоку курсів), не враховуються.
  */
-export function cvSearchText(d: CvData): string {
+export function cvSearchText(d: CvData, extrasText = ''): string {
   const parts: string[] = [
     d.basics.title,
     d.summary,
     d.skillsHard,
     d.skillsSoft,
     d.interests,
-    d.courses,
     ...d.experience.flatMap((e) => [e.role, e.company, e.bullets]),
     ...d.education.flatMap((e) => [e.school, e.degree, e.field]),
     ...d.languages.map((l) => l.name),
+    extrasText,
   ];
   if (d.basics.license.trim()) parts.push('prawo jazdy driving licence');
-  const x = d.extras ?? {};
-  if (x.driver) {
-    if (x.driver.code95) parts.push('kod 95');
-    if (x.driver.tachograph) parts.push('tachograf');
-    if (x.driver.adr) parts.push('adr');
-    if (x.driver.udt) parts.push('udt');
-  }
-  if (x.tech) {
-    if (x.tech.bhp) parts.push('bhp');
-    if (x.tech.sep.trim()) parts.push('uprawnienia sep');
-    if (x.tech.welding.length > 0) parts.push('spawanie');
-    if (x.tech.cnc.trim()) parts.push('cnc');
-    if (x.tech.drawings) parts.push('rysunki techniczne');
-    parts.push(...x.tech.certs);
-  }
   return parts.join('\n');
 }
 
@@ -130,7 +119,7 @@ export function scanAts(
   dict: readonly AtsEntry[] = ATS_DICTIONARY,
 ): AtsScanResult {
   const jobTokens = tokenize(String(jobText ?? '').slice(0, MAX_JOB_CHARS));
-  const cvTokens = tokenize(cvSearchText(data));
+  const cvTokens = tokenize(cvSearchText(data, printedExtrasText({ tpl: opts.tpl ?? '', lang: opts.docLang ?? 'pl', data })));
   const jobLang = detectJobLang(jobTokens);
 
   const matched: AtsKeyword[] = [];

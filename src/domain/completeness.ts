@@ -1,5 +1,6 @@
 import type { Cv } from './types';
 import { filledEducation, filledExperience, filledLanguages, list } from './cvOps';
+import { hasPrintedExtras } from './extrasView';
 
 /** Sekcje formularza w kolejności wypełniania. */
 export const SECTION_IDS = ['basics', 'photo', 'extra', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo'] as const;
@@ -45,6 +46,7 @@ export function completeness(cv: Cv): { done: number; total: number } {
 export function isBlank(cv: Cv): boolean {
   const b = cv.data.basics;
   if ([b.name, b.title, b.email, b.phone, b.city, b.link, b.address, b.birthDate, b.birthPlace, b.license, b.photo].some((v) => v.trim())) return false;
-  if (cv.data.courses.trim()) return false;
+  // додаткові блоки (extras, courses) рахуються, лише якщо шаблон їх друкує
+  if (hasPrintedExtras(cv)) return false;
   return SECTION_IDS.every((id) => id === 'rodo' || id === 'basics' || !sectionFilled(cv, id));
 }
