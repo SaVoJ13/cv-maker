@@ -1,25 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
-import { blankCv, sampleCv, showsPhoto } from '../src/domain/cvOps.ts';
+import { blankCv, sampleCv } from '../src/domain/cvOps.ts';
 import { TEMPLATES } from '../src/domain/templates.ts';
 import { buildPdfDocument } from '../src/domain/pdf.ts';
+import { PNG, layoutPages, orphanHeadings } from './pdfLayout.ts';
 import type { Cv, DocLang, TemplateId } from '../src/domain/types.ts';
 
 /**
  * Перевірка всієї галереї: PDF для кожного шаблону × PL/EN × (порожнє CV, приклад, довге CV на 2+ сторінки)
- * справді проходить розкладку pdfmake (Node), а заголовок розділу ніколи не лишається сам унизу сторінки.
+ * проходить справжню розкладку pdfmake (Node), а заголовок розділу ніколи не лишається сам унизу сторінки.
  */
-const require = createRequire(import.meta.url);
-const pdfMake = require('pdfmake/build/pdfmake.js') as {
-  vfs: unknown;
-  createPdf: (doc: unknown) => { getBuffer: (cb: (b: Uint8Array) => void) => void };
-};
-const fonts = require('pdfmake/build/vfs_fonts.js') as { pdfMake?: { vfs: unknown } };
-pdfMake.vfs = fonts.pdfMake ? fonts.pdfMake.vfs : fonts;
-
-// 1×1 PNG: достатньо, щоб шаблони з фото намалювали місце під зображення
-const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
 type Kind = 'empty' | 'sample' | 'long';
 
@@ -52,65 +42,32 @@ function makeCv(tpl: TemplateId, lang: DocLang, kind: Kind): Cv {
   return cv;
 }
 
-interface ProbeNode {
-  headlineLevel?: number;
-  pageNumbers?: number[];
-  startPosition?: { pageNumber: number };
-}
-
-/** Прогоняє документ крізь реальну розкладку pdfmake; повертає кількість сторінок і сторінки заголовків. */
-function layout(cv: Cv): Promise<{ pages: number; headingPages: number[][] }> {
-  const photo = showsPhoto(cv) ? PNG : undefined;
-  const doc = buildPdfDocument(cv, photo) as unknown as Record<string, unknown>;
-  const headingPages: number[][] = [];
-  let pages = 1;
-  doc.pageBreakBefore = (node: ProbeNode): boolean => {
-    const n = node.pageNumbers?.length ? node.pageNumbers : node.startPosition ? [node.startPosition.pageNumber] : [];
-    for (const p of n) pages = Math.max(pages, p);
-    if (node.headlineLevel === 1) headingPages.push(n);
-    return false;
-  };
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('timeout')), 20_000);
-    try {
-      pdfMake.createPdf(doc).getBuffer((buf) => {
-        clearTimeout(timer);
-        assert.ok(buf.length > 1000);
-        resolve({ pages, headingPages });
-      });
-    } catch (e) {
-      clearTimeout(timer);
-      reject(e);
-    }
-  });
-}
-
-test('галерея: у ній 15 шаблонів, і кожен має заголовки розділів у неподільних блоках', () => {
+test('галерея: у ній 15 шаблонів; кожен розділ склеює заголовок із першим рядком (неподільна група) або позначає заголовок і абзац для pageBreakBefore', () => {
   assert.equal(TEMPLATES.length, 15);
   for (const tpl of TEMPLATES) {
     for (const lang of ['pl', 'en'] as const) {
       const doc = buildPdfDocument(makeCv(tpl, lang, 'long'), PNG);
-      const blocks = (doc.content as Array<{ headlineLevel?: number; unbreakable?: boolean; stack?: unknown[] }>).filter((n) => n.headlineLevel === 1);
-      assert.ok(blocks.length >= 3, `${tpl}/${lang}: заголовків ${blocks.length}`);
-      for (const b of blocks) {
-        assert.equal(b.unbreakable, true, `${tpl}/${lang}`);
-        assert.ok((b.stack?.length ?? 0) >= 2, `${tpl}/${lang}: заголовок разом з першим елементом`);
-      }
+      const nodes = doc.content as Array<{ headlineLevel?: number; unbreakable?: boolean; stack?: unknown[] }>;
+      // розділ = або склеєна неподільна група (заголовок + перший рядок), або заголовок (1) і за ним абзац (2)
+      const glued = nodes.filter((n) => n.unbreakable === true && n.headlineLevel === undefined && (n.stack?.length ?? 0) >= 2).length;
+      const heads = nodes.map((n, i) => (n.headlineLevel === 1 ? i : -1)).filter((i) => i >= 0);
+      for (const i of heads) assert.equal(nodes[i + 1]?.headlineLevel, 2, `${tpl}/${lang}: за заголовком не йде абзац з позначкою 2`);
+      assert.ok(glued + heads.length >= 3, `${tpl}/${lang}: розділів ${glued + heads.length}`);
+      assert.equal(typeof doc.pageBreakBefore, 'function');
     }
   }
 });
 
-test('галерея: PDF для всіх шаблонів × PL/EN × (порожнє, приклад, довге) будується без помилок; довге CV займає 2+ сторінки; заголовки не розриваються', async () => {
+test('галерея: PDF для всіх шаблонів × PL/EN × (порожнє, приклад, довге) будується без помилок; довге CV займає 2+ сторінки; заголовки не лишаються самі', async () => {
   let checked = 0;
   for (const tpl of TEMPLATES) {
     for (const lang of ['pl', 'en'] as const) {
       for (const kind of ['empty', 'sample', 'long'] as const) {
-        const cv = makeCv(tpl, lang, kind);
-        const r = await layout(cv);
+        const pages = await layoutPages(makeCv(tpl, lang, kind));
         const id = `${tpl}/${lang}/${kind}`;
-        if (kind !== 'empty') assert.ok(r.headingPages.length >= 3, `${id}: проба не бачила заголовків (${r.headingPages.length})`);
-        if (kind === 'long') assert.ok(r.pages >= 2, `${id}: сторінок ${r.pages}`);
-        for (const p of r.headingPages) assert.equal(new Set(p).size, 1, `${id}: блок заголовка розірвано між сторінками ${p.join(',')}`);
+        if (kind === 'long') assert.ok(pages.length >= 2, `${id}: сторінок ${pages.length}`);
+        if (kind !== 'empty') assert.ok(pages[0].lines.length > 5, `${id}: на першій сторінці немає тексту`);
+        assert.deepEqual(orphanHeadings(pages, tpl, lang), [], id);
         checked += 1;
       }
     }

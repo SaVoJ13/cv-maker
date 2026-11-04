@@ -33,6 +33,7 @@ export interface PdfDocDefinition {
   defaultStyle: Record<string, unknown>;
   info: Record<string, string>;
   footer: (currentPage: number, pageCount: number) => unknown;
+  pageBreakBefore: (node: LaidOutNode, followingNodesOnPage: LaidOutNode[]) => boolean;
   background?: (currentPage: number) => unknown;
 }
 
@@ -55,6 +56,31 @@ const SIDE_GAP = 26;
 const OUTER = 34;
 
 type Node = Record<string, unknown>;
+
+/** Абзац довший за це не склеюється із заголовком цілим (див. `section`). */
+const GLUE_MAX_CHARS = 1200;
+
+/** Кількість символів тексту вузла (рядок або масив фрагментів). */
+function plainLength(n: unknown): number {
+  const t = (n as { text?: unknown }).text;
+  if (typeof t === 'string') return t.length;
+  if (Array.isArray(t)) return t.reduce((sum: number, p) => sum + (typeof p === 'string' ? p.length : typeof (p as { text?: unknown }).text === 'string' ? ((p as { text: string }).text.length) : 0), 0);
+  return 0;
+}
+
+/** Мінімальний вигляд вузла pdfmake для `pageBreakBefore`. */
+interface LaidOutNode {
+  headlineLevel?: number;
+}
+
+/**
+ * Заголовок розділу (headlineLevel 1) не лишається сам унизу сторінки: якщо на цій сторінці
+ * після нього не починається перший елемент розділу (headlineLevel 2), заголовок переходить
+ * на наступну сторінку. Параметр `followingNodesOnPage` потрібен, щоб pdfmake його заповнив.
+ */
+export function keepHeadingWithContent(node: LaidOutNode, followingNodesOnPage: LaidOutNode[]): boolean {
+  return node.headlineLevel === 1 && !followingNodesOnPage.some((n) => n.headlineLevel === 2);
+}
 
 export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
   const L = DOC[cv.lang];
@@ -395,17 +421,42 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
   };
 
   /**
-   * Розділ: заголовок і перший елемент — один неподільний блок, тож заголовок не лишається сам
-   * унизу сторінки (headlineLevel 1 позначає такий блок для перевірки в тестах).
+   * Розділ: заголовок не лишається сам унизу сторінки, а великий перший елемент не склеюється
+   * цілим, тож не створює порожнини й не обрізається. Неподільною є лише пара «заголовок + перший
+   * рядок/пункт першого елемента»:
+   *  - запис (досвід, освіта): заголовок + перший рядок запису (посада й дати), решта запису вільно;
+   *  - список (курси): заголовок + перший пункт;
+   *  - короткий неподільний блок (Minimalist): заголовок + цей блок;
+   *  - короткий абзац (до 1200 символів, це кілька рядків): заголовок + абзац;
+   *  - дуже довгий абзац не склеюємо (неподільний блок вищий за сторінку обрізався б): заголовок
+   *    позначено headlineLevel 1, абзац — 2, і `pageBreakBefore` переносить заголовок, якщо перший
+   *    рядок абзацу вже не вміщується на цій сторінці.
    */
   const section = (title: string, nodes: Node[]): void => {
-    const head = heading(title);
     const [first, ...rest] = nodes;
     if (first === undefined) {
-      content.push(...head);
+      content.push(...heading(title));
       return;
     }
-    content.push({ stack: [...head, first], unbreakable: true, headlineLevel: 1 }, ...rest);
+    const f = first as { unbreakable?: boolean; stack?: Node[]; ul?: unknown[]; margin?: number[] };
+    if (f.unbreakable === true) {
+      content.push({ stack: [...heading(title), first], unbreakable: true }, ...rest);
+    } else if (Array.isArray(f.stack) && f.stack.length > 0) {
+      const tail = f.stack.slice(1);
+      content.push({ stack: [...heading(title), f.stack[0]], unbreakable: true, ...(tail.length ? {} : { margin: f.margin }) });
+      if (tail.length) content.push({ ...f, stack: tail }, ...rest);
+      else content.push(...rest);
+    } else if (Array.isArray(f.ul) && f.ul.length > 0) {
+      const more = f.ul.slice(1);
+      const lead = { ...f, ul: [f.ul[0]], ...(more.length && f.margin ? { margin: [f.margin[0], f.margin[1], f.margin[2], 0] } : {}) };
+      content.push({ stack: [...heading(title), lead], unbreakable: true });
+      if (more.length) content.push({ ...f, ul: more }, ...rest);
+      else content.push(...rest);
+    } else if (plainLength(first) <= GLUE_MAX_CHARS) {
+      content.push({ stack: [...heading(title), first], unbreakable: true }, ...rest);
+    } else {
+      content.push({ stack: heading(title), unbreakable: true, headlineLevel: 1 }, { ...first, headlineLevel: 2 }, ...rest);
+    }
   };
 
   const markerColor = tpl === 'ats' ? '#111111' : tpl === 'executive' ? GOLD : tpl === 'elegant' ? GOLD_LINE : ac;
@@ -416,16 +467,23 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
     const roleStack: Node[] = [{ text: role, bold: true, fontSize: 10.5 }];
     if (org) roleStack.push({ text: org, color: orgColor, fontSize: 10, italics: tpl === 'panel' });
     if (tpl === 'minimal') {
-      const inner: Node[] = roleStack.slice();
-      if (bullets.length) inner.push({ ul: bullets, markerColor, margin: [0, 3, 0, 0] });
-      return {
+      const head = (inner: Node[]): Node => ({
         columns: [
           { width: 82, text: dates, fontSize: 9, color: GREY, margin: [0, 1, 0, 0] },
           { width: '*', stack: inner },
         ],
         columnGap: 10,
+      });
+      // короткий запис (до 4 пунктів) не розривається між сторінками
+      if (bullets.length <= 4) {
+        const inner: Node[] = roleStack.slice();
+        if (bullets.length) inner.push({ ul: bullets, markerColor, margin: [0, 3, 0, 0] });
+        return { ...head(inner), margin: [0, 0, 0, 8 * k], unbreakable: true };
+      }
+      // великий запис: рядок із датою й посадою окремо, пункти нижче (з тим самим відступом), тож пункти переносяться вільно
+      return {
+        stack: [{ ...head(roleStack), unbreakable: true }, { ul: bullets, markerColor, margin: [92, 3, 0, 0] }],
         margin: [0, 0, 0, 8 * k],
-        unbreakable: true,
       };
     }
     const stack: Node[] = [
@@ -570,6 +628,7 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
     pageMargins: margins,
     content,
     defaultStyle: { font: 'Roboto', fontSize: tpl === 'ats' ? 10.5 : 10, lineHeight: 1.25, color: INK },
+    pageBreakBefore: keepHeadingWithContent,
     info: { title: `CV ${b.name}`.trim(), author: b.name, subject: 'CV' },
     footer: (currentPage, pageCount) =>
       pageCount > 1
