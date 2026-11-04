@@ -58,9 +58,9 @@ test('секція «Dane kierowcy» є в редакторі лише для ш
   }
   // порядок інших секцій не змінюється
   (cv as { tpl: string }).tpl = 'classic';
-  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
+  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'qr', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
   (cv as { tpl: string }).tpl = 'driver';
-  assert.deepEqual(sectionIds(cv).slice(0, 5), ['basics', 'photo', 'extra', 'driver', 'summary']);
+  assert.deepEqual(sectionIds(cv).slice(0, 6), ['basics', 'photo', 'extra', 'qr', 'driver', 'summary']);
   // крапка «заповнено» залежить від того, що друкується
   assert.equal(sectionFilled(cv, 'driver'), false);
   cv.data.extras.driver = { ...emptyDriver(), categories: ['B'] };

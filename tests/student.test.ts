@@ -62,7 +62,7 @@ test('секція «Kursy i projekty» є в редакторі лише для
   cv.data.courses = 'Kurs Excel';
   assert.equal(sectionFilled(cv, 'courses'), true);
   (cv as { tpl: string }).tpl = 'classic';
-  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
+  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'qr', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
 });
 
 test('clampLines і normalizeCv: до 8 рядків по 80 символів, Enter у кінці не губиться, короткий текст не змінюється', () => {

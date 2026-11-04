@@ -1,9 +1,10 @@
 import type { Cv } from './types';
 import { filledEducation, filledExperience, filledLanguages, list } from './cvOps';
 import { extrasBlockFilled, hasPrintedExtras, templateBlocks } from './extrasView';
+import { qrView } from './qrView';
 
 /** Sekcje formularza w kolejności wypełniania. */
-export const SECTION_IDS = ['basics', 'photo', 'extra', 'driver', 'tech', 'summary', 'exp', 'edu', 'courses', 'skills', 'lang', 'interests', 'rodo'] as const;
+export const SECTION_IDS = ['basics', 'photo', 'extra', 'qr', 'driver', 'tech', 'summary', 'exp', 'edu', 'courses', 'skills', 'lang', 'interests', 'rodo'] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
 /** Секції редактора для цього CV: «Dane kierowcy» і «Uprawnienia i certyfikaty» є лише в шаблонах, які друкують свій блок. */
@@ -23,6 +24,8 @@ export function sectionFilled(cv: Cv, id: SectionId): boolean {
       return Boolean(b.photo);
     case 'extra':
       return Boolean(b.address.trim() || b.birthDate.trim() || b.birthPlace.trim() || b.license.trim());
+    case 'qr':
+      return qrView(cv) !== null;
     case 'driver':
       return extrasBlockFilled(cv, 'driver');
     case 'tech':

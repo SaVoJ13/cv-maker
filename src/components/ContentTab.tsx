@@ -4,6 +4,7 @@ import { LEVELS } from '../domain/constants';
 import { TEMPLATE_META } from '../domain/templates';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
 import { CORE_SECTIONS, completeness, sectionFilled, sectionIds, type SectionId } from '../domain/completeness';
+import { QR_LABEL_MAX, QR_URL_MAX, validateQrUrl } from '../domain/qrUrl';
 import { clampLines, EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, WELDING_METHODS, certsFromText, emptyDriver, emptyTech, toggleCategory, toggleWelding } from '../domain/extras';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';
 import { PhotoView } from './PhotoView';
@@ -19,11 +20,12 @@ export interface TabProps {
   update: (mutate: (draft: Cv) => void) => void;
 }
 
-const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'tech', 'courses', 'interests'];
+const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'qr', 'driver', 'tech', 'courses', 'interests'];
 const TITLE_KEY = {
   basics: 's_basics',
   photo: 's_photo',
   extra: 's_extra',
+  qr: 's_qr',
   driver: 's_driver',
   tech: 's_trades',
   courses: 's_student',
@@ -214,6 +216,17 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
       x.data.extras.tech = t;
     });
 
+  /** Змінює налаштування QR; решту даних не чіпає. */
+  const patchQr = (mutate: (x: NonNullable<Cv['data']['extras']['qr']>) => void) =>
+    update((x) => {
+      const q = x.data.extras.qr ?? { enabled: false, url: '', label: '' };
+      mutate(q);
+      x.data.extras.qr = q;
+    });
+  const qrOn = d.extras.qr?.enabled ?? false;
+  const qrCheck = validateQrUrl(d.extras.qr?.url ?? '');
+  const qrErrorKey = qrCheck.ok ? null : (`qr_err_${qrCheck.reason}` as const);
+
   const sec = (id: SectionId) => ({ id, cv, open: open === id, onOpen });
   const summaryLen = d.summary.trim().length;
 
@@ -306,6 +319,34 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
           <Field id="f_birth_place" label={t('f_birth_place')} value={b.birthPlace} onChange={setBasic('birthPlace')} />
         </div>
         <Field id="f_license" label={t('f_license')} value={b.license} onChange={setBasic('license')} />
+      </Section>
+
+      <Section {...sec('qr')}>
+        <p className="hint">{t('h_qr')}</p>
+        <Check id="qr_on" label={t('f_qr_on')} checked={qrOn} onChange={(v) => patchQr((x) => (x.enabled = v))} />
+        {qrOn ? (
+          <>
+            <Field
+              id="qr_url"
+              label={t('f_qr_url')}
+              value={d.extras.qr?.url ?? ''}
+              placeholder={t('f_qr_url_ph')}
+              hint={qrCheck.ok ? t('f_qr_ok') : t('f_qr_limit')}
+              error={qrErrorKey ? t(qrErrorKey) : undefined}
+              maxLength={QR_URL_MAX}
+              onChange={(v) => patchQr((x) => (x.url = v))}
+            />
+            <Field
+              id="qr_label"
+              label={t('f_qr_label')}
+              value={d.extras.qr?.label ?? ''}
+              placeholder={t('f_qr_label_ph')}
+              hint={t('f_qr_label_limit')}
+              maxLength={QR_LABEL_MAX}
+              onChange={(v) => patchQr((x) => (x.label = v))}
+            />
+          </>
+        ) : null}
       </Section>
 
       {sectionIds(cv).includes('driver') ? (

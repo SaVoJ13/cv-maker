@@ -59,12 +59,12 @@ test('секція «Uprawnienia i certyfikaty» є в редакторі лиш
     assert.equal(sectionIds(cv).includes('driver'), tpl === 'driver', tpl);
   }
   (cv as { tpl: string }).tpl = 'trades';
-  assert.deepEqual(sectionIds(cv).slice(0, 5), ['basics', 'photo', 'extra', 'tech', 'summary']);
+  assert.deepEqual(sectionIds(cv).slice(0, 6), ['basics', 'photo', 'extra', 'qr', 'tech', 'summary']);
   assert.equal(sectionFilled(cv, 'tech'), false);
   cv.data.extras.tech = { ...emptyTech(), welding: ['TIG'] };
   assert.equal(sectionFilled(cv, 'tech'), true);
   (cv as { tpl: string }).tpl = 'classic';
-  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
+  assert.deepEqual(sectionIds(cv), ['basics', 'photo', 'extra', 'qr', 'summary', 'exp', 'edu', 'skills', 'lang', 'interests', 'rodo']);
 });
 
 test('toggleWelding: порядок MIG, MAG, TIG, MMA; повтор знімає; незнайомі в кінці; не більше 8', () => {
