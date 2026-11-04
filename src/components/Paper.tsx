@@ -123,6 +123,30 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
   const ex = extrasView(cv);
   const rowBlocks = [ex.driver, ex.tech].filter((x) => x !== null);
 
+  const eduSection = edu.length ? (
+      <Section title={L.edu}>
+        {edu.map((e) => (
+          <Entry
+            key={e.id}
+            role={[e.degree, e.field].filter(Boolean).join(', ') || e.school}
+            org={e.degree || e.field ? e.school : ''}
+            dates={dateRange({ from: e.from, to: e.to }, L)}
+            bullets={[]}
+          />
+        ))}
+      </Section>
+) : null;
+  const student = cv.tpl === 'student';
+  const coursesSection = ex.courses ? (
+    <Section title={ex.courses.title}>
+      <ul>
+        {ex.courses.lines.map((c, i) => (
+          <li key={i}>{c}</li>
+        ))}
+      </ul>
+    </Section>
+  ) : null;
+
   const sections = (
     <>
       {d.summary.trim() ? (
@@ -143,6 +167,13 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
         </Section>
       ))}
 
+      {student ? (
+        <>
+          {eduSection}
+          {coursesSection}
+        </>
+      ) : null}
+
       {exp.length ? (
         <Section title={L.exp}>
           {exp.map((e) => (
@@ -157,20 +188,7 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
         </Section>
       ) : null}
 
-      {edu.length ? (
-        <Section title={L.edu}>
-          {edu.map((e) => (
-            <Entry
-              key={e.id}
-              role={[e.degree, e.field].filter(Boolean).join(', ') || e.school}
-              org={e.degree || e.field ? e.school : ''}
-              dates={dateRange({ from: e.from, to: e.to }, L)}
-              bullets={[]}
-            />
-          ))}
-        </Section>
-      ) : null}
-
+      {!student ? eduSection : null}
       {has.skills && (hard.length || soft.length) ? (
         <Section title={L.skills}>
           {hard.length ? (

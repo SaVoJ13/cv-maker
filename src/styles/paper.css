@@ -715,6 +715,27 @@
   padding: 2px 9px;
   font-size: 11.5px;
 }
+/* Student: kompaktowy nagłówek z cienką linią, nagłówki sekcji jako jasne pasy */
+.t-student .p-head {
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d5d9df;
+}
+.t-student h1 {
+  font-size: 27px;
+  font-weight: 800;
+}
+.t-student .p-title {
+  color: var(--ac);
+  font-weight: 600;
+}
+.t-student .p-sec h2 {
+  background: var(--tint);
+  color: var(--ac);
+  border-bottom: 0;
+  padding: 3px 9px;
+  font-size: 11.5px;
+}
 .paper .p-rows p {
   margin: 0 0 3px;
   overflow-wrap: anywhere;

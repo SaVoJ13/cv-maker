@@ -188,6 +188,10 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
         { h: 14, color: ac, top: true },
       ),
     );
+  } else if (tpl === 'student') {
+    const stack = stackOf({ text: b.name, fontSize: 24, bold: true, color: INK }, b.title, { fontSize: 12, bold: true, color: ac }, '#444444', GREY);
+    content.push(photo ? { columns: [{ width: '*', stack }, photoNode(headD)], columnGap: 16 } : { stack });
+    content.push(rule(0.8, '#D5D9DF', [0, 8, 0, 0]));
   } else if (tpl === 'elegant') {
     const mid = contentW / 2;
     content.push({ text: b.name.toUpperCase(), fontSize: 22, characterSpacing: 3.5, alignment: 'center', color: INK });
@@ -325,6 +329,24 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
             margin: [0, top, 0, 6],
           },
         ];
+      case 'student':
+        return [
+          {
+            table: { widths: ['*'], body: [[{ text: up, fontSize: 10.5, bold: true, color: ac, characterSpacing: 1.1 }]] },
+            layout: {
+              hLineWidth: () => 0,
+              vLineWidth: () => 0,
+              paddingLeft: () => 8,
+              paddingRight: () => 8,
+              paddingTop: () => 3,
+              paddingBottom: () => 3,
+              fillColor: () => tint(ac),
+            },
+            unbreakable: true,
+            headlineLevel: 1,
+            margin: [0, top, 0, 7],
+          },
+        ];
       case 'trades':
         return [
           {
@@ -429,15 +451,17 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
   }
 
   const exp = filledExperience(d);
-  if (exp.length) {
+  const addExp = (): void => {
+    if (!exp.length) return;
     section(
       L.exp,
       exp.map((e) => entry(e.role, [e.company, e.city].filter(Boolean).join(', '), dateRange(e, L), lines(e.bullets))),
     );
-  }
+  };
 
   const edu = filledEducation(d);
-  if (edu.length) {
+  const addEdu = (): void => {
+    if (!edu.length) return;
     section(
       L.edu,
       edu.map((e) => {
@@ -446,6 +470,16 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
         return entry(title, org, dateRange({ from: e.from, to: e.to }, L), []);
       }),
     );
+  };
+
+  // Student: освіта, потім курси й проєкти, потім досвід; в інших шаблонах досвід, потім освіта
+  if (tpl === 'student') {
+    addEdu();
+    if (ex.courses) section(ex.courses.title, [{ ul: ex.courses.lines, markerColor, margin: [8, 0, 0, 3] }]);
+    addExp();
+  } else {
+    addExp();
+    addEdu();
   }
 
   const hard = list(d.skillsHard);
@@ -537,7 +571,7 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
       pageCount > 1
         ? { text: `${currentPage} / ${pageCount}`, alignment: 'center', fontSize: 8, color: '#999999', margin: [0, 14, 0, 0] }
         : { text: '', fontSize: 1 },
-    ...(tpl === 'trades' ? { pageBreakBefore: (node: { headlineLevel?: number }, following: unknown[]) => node.headlineLevel === 1 && following.length === 0 } : {}),
+    ...(tpl === 'trades' || tpl === 'student' ? { pageBreakBefore: (node: { headlineLevel?: number }, following: unknown[]) => node.headlineLevel === 1 && following.length === 0 } : {}),
     ...(needsBackground ? { background: (currentPage: number) => ({ stack: layers(currentPage) }) } : {}),
   };
 }

@@ -56,6 +56,11 @@ export const toggleCategory = (current: readonly string[], cat: string): string[
 /** Методи зварювання: MIG, MAG, TIG, MMA. */
 export const toggleWelding = (current: readonly string[], method: string): string[] => toggleOrdered(current, method, WELDING_METHODS);
 
+/** Курси й проєкти (поле courses): не більше 8 рядків, кожен до 80 символів. Порожні рядки лишаються (щоб Enter у кінці не зникав). */
+export function clampLines(text: string): string {
+  return text.split(/\r?\n/).slice(0, EXTRAS_MAX_ITEMS).map((x) => clampValue(x)).join('\n');
+}
+
 /** Текст «по рядку на запис» → список: не більше 8 записів, кожен до 80 символів. Порожні рядки лишаються (щоб Enter у кінці не зникав). */
 export function certsFromText(text: string): string[] {
   return text.split(/\r?\n/).slice(0, EXTRAS_MAX_ITEMS).map((x) => clampValue(x));

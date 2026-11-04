@@ -4,7 +4,7 @@ import { LEVELS } from '../domain/constants';
 import { TEMPLATE_META } from '../domain/templates';
 import { PHOTO_DEFAULT, type PhotoCrop } from '../domain/photo';
 import { CORE_SECTIONS, completeness, sectionFilled, sectionIds, type SectionId } from '../domain/completeness';
-import { EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, WELDING_METHODS, certsFromText, emptyDriver, emptyTech, toggleCategory, toggleWelding } from '../domain/extras';
+import { clampLines, EXTRAS_MAX_VALUE, LICENCE_CATEGORIES, WELDING_METHODS, certsFromText, emptyDriver, emptyTech, toggleCategory, toggleWelding } from '../domain/extras';
 import { emailProblem, monthProblem, rangeProblem, yearProblem } from '../domain/validation';
 import { PhotoView } from './PhotoView';
 import { loadPhoto } from '../export/photo';
@@ -19,13 +19,14 @@ export interface TabProps {
   update: (mutate: (draft: Cv) => void) => void;
 }
 
-const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'tech', 'interests'];
+const OPTIONAL: readonly SectionId[] = ['photo', 'extra', 'driver', 'tech', 'courses', 'interests'];
 const TITLE_KEY = {
   basics: 's_basics',
   photo: 's_photo',
   extra: 's_extra',
   driver: 's_driver',
   tech: 's_trades',
+  courses: 's_student',
   summary: 's_summary',
   exp: 's_exp',
   edu: 's_edu',
@@ -585,6 +586,24 @@ export function ContentTab({ cv, update, open, onOpen }: TabProps & { open: Sect
           {t('add_edu')}
         </button>
       </Section>
+
+      {sectionIds(cv).includes('courses') ? (
+        <Section {...sec('courses')}>
+          <p className="hint">{t('h_student')}</p>
+          <Area
+            id="st_courses"
+            ariaLabel={t('s_student')}
+            rows={5}
+            value={d.courses}
+            onChange={(v) =>
+              update((x) => {
+                x.data.courses = clampLines(v);
+              })
+            }
+          />
+          <p className="hint">{t('f_st_hint')}</p>
+        </Section>
+      ) : null}
 
       <Section {...sec('skills')}>
         <div className="sh">

@@ -19,9 +19,9 @@ function memStorage(initial: Record<string, string> = {}) {
   };
 }
 
-test('courses: нові й приклад CV мають порожнє значення за замовчуванням', () => {
+test('courses: нове CV порожнє; демо-дані лише в прикладі (друкуються тільки в шаблоні Student)', () => {
   assert.equal(blankCv().data.courses, '');
-  assert.equal(sampleCv().data.courses, '');
+  assert.match(sampleCv().data.courses, /Kurs Excel/);
 });
 
 test('normalizeCv: старе CV без courses отримує порожній рядок, інші поля не змінюються', () => {
