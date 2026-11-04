@@ -1,4 +1,5 @@
 import type { CvExtras } from './types';
+import { QR_LABEL_MAX } from './qrUrl';
 
 type Obj = Record<string, unknown>;
 const isObj = (v: unknown): v is Obj => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -95,7 +96,8 @@ export function normalizeExtras(raw: unknown): CvExtras {
   }
   if (isObj(raw.qr)) {
     const q = raw.qr;
-    out.qr = { enabled: q.enabled === true, url: String(typeof q.url === 'string' ? q.url : ''), label: String(typeof q.label === 'string' ? q.label : '') };
+    // посилання не обрізаємо (обрізане посилання вело б не туди): завелике просто не друкується (див. validateQrUrl)
+    out.qr = { enabled: q.enabled === true, url: typeof q.url === 'string' ? q.url : '', label: typeof q.label === 'string' ? clampValue(q.label, QR_LABEL_MAX) : '' };
   }
   return out;
 }
