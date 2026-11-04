@@ -4,6 +4,8 @@ import { SIDEBAR } from './templates';
 import { tint } from './color';
 import { DOC } from './docText';
 import { extrasView } from './extrasView';
+import { qrView } from './qrView';
+import { QR_OVERLAP_PT, darkRuns, qrGeometry } from './qrLayout';
 import {
   dateRange,
   documentClause,
@@ -556,6 +558,28 @@ export function buildPdfDocument(cv: Cv, photoPng?: string): PdfDocDefinition {
     section(L.lang, [{ text: langs.map((l) => `${l.name} – ${levelLabel(l.level, L)}`).join('   •   ') }]);
   }
   if (has.interests && d.interests.trim()) section(L.interests, [{ text: d.interests.trim() }]);
+
+  // QR: в кінці основної колонки, однаково в усіх шаблонах; векторний, із суцільними горизонтальними серіями
+  const qr = qrView(cv);
+  if (qr) {
+    const g = qrGeometry(qr.matrix.size);
+    const rects: Node[] = [{ type: 'rect', x: 0, y: 0, w: g.total, h: g.total, color: '#FFFFFF' }];
+    for (const r of darkRuns(qr.matrix)) {
+      rects.push({ type: 'rect', x: g.quiet + r.col * g.module, y: g.quiet + r.row * g.module, w: r.len * g.module, h: g.module + QR_OVERLAP_PT, color: '#000000' });
+    }
+    const caption: Node[] = [];
+    if (qr.label) caption.push({ text: qr.label, bold: true, margin: [0, 0, 0, 2] });
+    caption.push({ text: qr.display, link: qr.url, color: ac, decoration: 'underline', fontSize: 9.5 });
+    content.push({
+      columns: [
+        { width: g.total, canvas: rects },
+        { width: '*', stack: caption, margin: [0, g.quiet, 0, 0] },
+      ],
+      columnGap: 10,
+      unbreakable: true,
+      margin: [0, 12 * k, 0, 0],
+    });
+  }
 
   content.push(rule(0.5, tpl === 'elegant' ? '#D9CFB8' : '#D5D9DF', [0, 18 * k, 0, 6]));
   content.push({ text: documentClause(cv), fontSize: 8, italics: true, color: '#666666' });

@@ -736,6 +736,30 @@
   padding: 3px 9px;
   font-size: 11.5px;
 }
+/* Kod QR: na końcu kolumny głównej, ten sam układ we wszystkich szablonach */
+.paper .p-qr {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: calc(14px * var(--d));
+  break-inside: avoid;
+}
+.paper .p-qrsvg {
+  flex: none;
+  display: block;
+}
+.paper .p-qrtext {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+}
+.paper .p-qrtext a {
+  color: var(--ac);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
 .paper .p-rows p {
   margin: 0 0 3px;
   overflow-wrap: anywhere;

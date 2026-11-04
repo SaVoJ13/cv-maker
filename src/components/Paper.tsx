@@ -7,6 +7,8 @@ import { SIDEBAR } from '../domain/templates';
 import { tint } from '../domain/color';
 import { DOC } from '../domain/docText';
 import { extrasView } from '../domain/extrasView';
+import { qrView } from '../domain/qrView';
+import { QR_OVERLAP_PT, darkRuns, qrGeometry } from '../domain/qrLayout';
 import {
   dateRange,
   documentClause,
@@ -121,6 +123,8 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
   const side = SIDEBAR[cv.tpl];
   const has = mainHas(cv.tpl);
   const ex = extrasView(cv);
+  const qr = qrView(cv);
+  const qrGeo = qr ? qrGeometry(qr.matrix.size) : null;
   const rowBlocks = [ex.driver, ex.tech].filter((x) => x !== null);
 
   const eduSection = edu.length ? (
@@ -214,6 +218,38 @@ export function Paper({ cv, innerRef, overlay, onPhotoCrop }: PaperProps) {
         <Section title={L.interests}>
           <p>{d.interests}</p>
         </Section>
+      ) : null}
+
+      {qr && qrGeo ? (
+        <div className="p-qr">
+          <svg
+            className="p-qrsvg"
+            width={qrGeo.total}
+            height={qrGeo.total}
+            viewBox={`0 0 ${qrGeo.total} ${qrGeo.total}`}
+            role="img"
+            aria-label={qr.display}
+            shapeRendering="crispEdges"
+          >
+            <rect width={qrGeo.total} height={qrGeo.total} fill="#fff" />
+            {darkRuns(qr.matrix).map((r) => (
+              <rect
+                key={`${r.row}-${r.col}`}
+                x={qrGeo.quiet + r.col * qrGeo.module}
+                y={qrGeo.quiet + r.row * qrGeo.module}
+                width={r.len * qrGeo.module}
+                height={qrGeo.module + QR_OVERLAP_PT}
+                fill="#000"
+              />
+            ))}
+          </svg>
+          <div className="p-qrtext" style={{ paddingTop: qrGeo.quiet }}>
+            {qr.label ? <b>{qr.label}</b> : null}
+            <a href={qr.url} target="_blank" rel="noopener noreferrer">
+              {qr.display}
+            </a>
+          </div>
+        </div>
       ) : null}
 
       <div className="p-rodo">{documentClause(cv)}</div>
