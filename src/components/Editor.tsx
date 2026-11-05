@@ -3,7 +3,7 @@ import type { Cv } from '../domain/types';
 import type { SectionId } from '../domain/completeness';
 import { errorText } from '../export/errors';
 import { downloadPdf } from '../export/exportPdf';
-import { AdGateDialog } from '../monetization/AdGateDialog';
+import { ExportGateDialog } from '../monetization/ExportGateDialog';
 import { useExportGate } from '../monetization/useExportGate';
 import { useCvUpdater, useSaveStatus, useStore } from '../store/StoreProvider';
 import { useBackup } from './BackupBox';
@@ -42,9 +42,12 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
   const [pages, setPages] = useState(1);
   const [pdfBusy, setPdfBusy] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
+  /** Прогрес першої реклами в момент відкриття вікна (щоб вікно не міняло початок посеред потоку) */
+  const [ad1Done, setAd1Done] = useState(false);
   const gate = useExportGate();
 
   const onPages = useCallback((n: number) => setPages(n), []);
+  const closeGate = useCallback(() => setGateOpen(false), []);
 
   const runExport = async (useCredit: boolean) => {
     setPdfBusy(true);
@@ -65,17 +68,25 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
     if (pdfBusy) return;
     const decision = gate.decide();
     if (decision.mode === 'ads' && decision.adsRequired > 0) {
+      setAd1Done(decision.adsRequired === 1);
       setGateOpen(true);
       return;
     }
     await runExport(decision.mode === 'ads');
   };
 
-  /** Reklama obejrzona: dopisujemy kredyt i od razu pobieramy PDF (kredyt znika po udanym zapisie). */
-  const adWatched = () => {
+  /** Nagroda przyznana (dwie reklamy albo odliczanie): zamykamy okno i pobieramy PDF. Nagroda znika dopiero po udanym zapisie. */
+  const rewardGranted = () => {
     gate.grant();
     setGateOpen(false);
     void runExport(true);
+  };
+
+  /** Pass kupiony: pobieranie bez reklam. */
+  const passBought = (until: number) => {
+    gate.applyPass(until);
+    setGateOpen(false);
+    void runExport(false);
   };
 
   /** Pusty podgląd: przejdź do formularza i ustaw kursor w pierwszym polu. */
@@ -211,7 +222,9 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
         </button>
       </div>
 
-      {gateOpen ? <AdGateDialog onWatched={adWatched} onClose={() => setGateOpen(false)} /> : null}
+      {gateOpen ? (
+        <ExportGateDialog ad1Done={ad1Done} onAd1={gate.ad1} onGranted={rewardGranted} onPass={passBought} onClose={closeGate} />
+      ) : null}
     </div>
   );
 }

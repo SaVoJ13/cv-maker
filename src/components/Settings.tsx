@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
-import { adsActive, openAdPrivacyOptions } from '../monetization/ads';
+import { adsActive, gateActive, openAdPrivacyOptions } from '../monetization/ads';
+import { passActive } from '../domain/access';
+import { fmt } from '../domain/i18n/fmt';
+import { loadAccess } from '../store/accessPersist';
+import { browserStorage } from '../store/persist';
 import { errorText } from '../export/errors';
 import { THEME_PREFS, type ThemePref } from '../domain/theme';
 import { useStore } from '../store/StoreProvider';
@@ -56,6 +60,18 @@ export function Settings() {
         <Row id="set-data" icon="database" title={t('backup_title')} desc={t('backup_desc')}>
           <BackupBox />
         </Row>
+        {gateActive() ? (
+          <Row id="set-pdf" icon="download" title={t('set_pdf_title')} desc={t('gate_offline_note')}>
+            <p className="hint" id="passStatus">
+              {(() => {
+                const a = loadAccess(browserStorage());
+                return passActive(a, Date.now()) && a.passUntil !== null
+                  ? fmt(t('pass_active'), { date: new Date(a.passUntil).toLocaleDateString() })
+                  : t('pass_none');
+              })()}
+            </p>
+          </Row>
+        ) : null}
         {adsActive() ? (
           <Row id="set-ads" icon="shield" title={t('set_ads_title')} desc={t('set_ads_desc')}>
             <button

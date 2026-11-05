@@ -10,12 +10,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:dev": "tsc --noEmit && vite build --mode dev",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "test:slow": "tsx --test tests/*.slow.ts",
     "test:all": "npm test && npm run test:slow",
     "android:sync": "npm run build && cap sync android && node scripts/install-native.mjs",
+    "android:sync:dev": "npm run build:dev && cap sync android && node scripts/install-native.mjs",
     "android:open": "cap open android",
     "android:icons": "npx --yes @capacitor/assets generate --android",
     "android:native": "node scripts/install-native.mjs"

@@ -577,6 +577,26 @@ select {
 .dlg-err {
   color: var(--bad);
 }
+/* okno przed pobraniem PDF: status reklamy i pasek odliczania */
+.gate-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.gate-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--line, #d8d2c4);
+  overflow: hidden;
+}
+.gate-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+  transition: width 0.25s linear;
+}
 .dlg-act {
   display: flex;
   flex-wrap: wrap;

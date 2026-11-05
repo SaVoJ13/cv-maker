@@ -116,12 +116,6 @@ export function createAdsPort(): AdsPort {
   };
 }
 
-/** Stara jednorazowa reklama (okno z jedną reklamą); zastąpi ją okno z dwiema reklamami w kroku 5a.4. */
-export async function showRewardedAd(): Promise<boolean> {
-  await admobPort.load();
-  return (await admobPort.show()) === 'completed';
-}
-
 /** Formularz zgód reklamowych. Użytkownik w UE musi mieć możliwość zmiany decyzji. */
 export async function openAdPrivacyOptions(): Promise<void> {
   try {
