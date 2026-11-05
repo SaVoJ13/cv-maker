@@ -1,11 +1,14 @@
 // Перевірка виробничих збірок: у профілях closed і production не має бути інструментів розробника.
 // Збирає кожен профіль у тимчасову папку, шукає знаки в усіх файлах і завершується з кодом 1 при збігу.
-// Крок 5a.5 доповнить скрипт перевіркою config (testAds тощо).
+// Додатково перевіряє конфігурацію монетизації для профілю: production провалюється при testAds:true,
+// closed дозволяє testAds:true. Код 1 = для публікації збірка НЕ готова.
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { MONETIZATION } from '../src/monetization/config.ts';
+import { configProblems } from '../src/monetization/profile.ts';
 
 /** Знаки, яких немає у closed і production (кнопка скидання, заглушки billing і реклам). */
 export const FORBIDDEN = [
@@ -34,6 +37,7 @@ export function findForbidden(files, read = (p) => readFileSync(p, 'utf8')) {
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   const vite = join('node_modules', 'vite', 'bin', 'vite.js');
   let failed = false;
+  console.log(`testAds зараз: ${MONETIZATION.testAds}`);
   for (const mode of ['closed', 'production']) {
     const out = mkdtempSync(join(tmpdir(), `cvmaker-${mode}-`));
     try {
@@ -44,9 +48,13 @@ if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) 
         continue;
       }
       const hits = findForbidden(walk(out));
+      const cfg = configProblems(mode, MONETIZATION);
+      for (const p of cfg) console.error(`✗ ${mode}: конфігурація: ${p}`);
+      if (cfg.length) failed = true;
       for (const h of hits) console.error(`✗ ${mode}: знайдено «${h.mark}» (${h.what}) у ${h.file}`);
       if (hits.length) failed = true;
-      else console.log(`✓ ${mode}: інструментів розробника немає`);
+      else console.log(`✓ ${mode}: інструментів розробника і заглушок у збірці немає`);
+      if (!cfg.length) console.log(`✓ ${mode}: конфігурація монетизації відповідає профілю`);
     } finally {
       rmSync(out, { recursive: true, force: true });
     }

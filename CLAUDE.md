@@ -15,6 +15,8 @@
 - `npm run test:all` — обидва набори; **обов'язково перед кожним комітом кроку й перед пушем**
 - `npm run build` — перевірка типів + збірка
 - `npm run android:sync` — збірка веб-частини, `cap sync`, встановлення нативного плагіна
+- `npm run check:prod` — збирає профілі closed і production, шукає в них заглушки/кнопку розробника й перевіряє конфігурацію монетизації; **код 1 = збірка не готова до публікації** (production провалюється, поки `testAds: true`; перед релізом у магазин має проходити)
+- `npm run android:sync:dev` / `android:sync:closed` / `android:sync` — збірка для Android у профілі dev / closed / production
 - `npm run android:icons` — іконки з `assets/`
 
 ## Архітектура
@@ -26,6 +28,11 @@
 - Зворотна сумісність: старі CV та бекапи мають мігрувати без втрати даних (див. `docs/plan-pro.md`).
 - Нативний код живе в `native/*.tpl`, у `android/` його ставить `scripts/install-native.mjs`.
 - Шрифти тільки локальні (`@fontsource/*`), жодних запитів до Google Fonts.
+
+## Профілі збірки (Vite --mode)
+- **dev** (`build:dev`, `npm run dev`): заглушка billing, симулятор реклам (лише `npm run dev`), кнопка «Resetuj Pass i reklamy»; для перевірки на телефоні.
+- **closed** (`build:closed`): закритий тест у Google Play; справжній Billing (з 5b), `testAds: true` дозволено; жодних заглушок.
+- **production** (`npm run build`, `android:sync`): випуск; `testAds: false`, жодних заглушок. Правила профілів — у `src/monetization/profile.ts`, перевіряє `check:prod`.
 
 ## Безпека (суворо)
 - Ніколи не додавай у git ключ підпису (`*.jks`, `*.keystore`), `keystore.properties`, `*.aab`, `*.apk`.
