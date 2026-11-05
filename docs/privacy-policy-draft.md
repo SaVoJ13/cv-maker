@@ -31,7 +31,7 @@ W Europejskim Obszarze Gospodarczym, Wielkiej Brytanii i Szwajcarii przed pierws
 Podstawa prawna: zgoda (art. 6 ust. 1 lit. a RODO) w zakresie wymagającym zgody; w pozostałym zakresie odpowiada Google jako niezależny administrator.
 
 ### 4. Pass 30 dni i płatności (Google Play Billing)
-W aplikacji planowany jest (lub dostępny, jeśli wprowadzony) **Pass 30 dni**: jednorazowy zakup, **bez subskrypcji i bez automatycznego odnawiania**, który zastępuje oglądanie reklam przed pobraniem PDF. Płatność obsługuje wyłącznie **Google Play (Google Play Billing)**. **Nie otrzymujemy ani nie przechowujemy danych karty ani innych danych płatniczych.** Na urządzeniu zapisujemy wyłącznie informację o terminie ważności Pass, aby aplikacja mogła go rozpoznać. Zakup możesz przywrócić na tym samym koncie Google Play.
+W aplikacji planowany jest (lub dostępny, jeśli wprowadzony) **Pass 30 dni**: płatny dostęp na 30 dni, **bez automatycznego odnawiania**, który zastępuje oglądanie reklam przed pobraniem PDF. Płatność obsługuje wyłącznie **Google Play (Google Play Billing)**. **Nie otrzymujemy ani nie przechowujemy danych karty ani innych danych płatniczych.** Na urządzeniu zapisujemy wyłącznie informację o terminie ważności Pass, aby aplikacja mogła go rozpoznać. Zakup możesz przywrócić na tym samym koncie Google Play.
 
 ### 5. Przechowywanie, bezpieczeństwo i usuwanie
 Dane CV i ustawienia są przechowywane na urządzeniu do czasu ich usunięcia przez Ciebie (usunięcie CV w aplikacji, wyczyszczenie danych aplikacji lub jej odinstalowanie). Ponieważ nie mamy kopii na serwerze, nie możemy ich odtworzyć. Zadbaj o własną kopię zapasową.
@@ -75,7 +75,7 @@ In the European Economic Area, the United Kingdom and Switzerland we show Google
 Legal basis: consent (Art. 6(1)(a) GDPR) where consent is required; otherwise Google is responsible as an independent controller.
 
 ### 4. 30-day Pass and payments (Google Play Billing)
-The app offers (or will offer) a **30-day Pass**: a one-time purchase, **not a subscription and with no automatic renewal**, that replaces watching ads before downloading a PDF. Payment is handled solely by **Google Play (Google Play Billing)**. **We do not receive or store card or other payment details.** On the device we store only the Pass expiry date so that the app can recognise it. You can restore the purchase on the same Google Play account.
+The app offers (or will offer) a **30-day Pass**: paid access for 30 days, **with no automatic renewal**, that replaces watching ads before downloading a PDF. Payment is handled solely by **Google Play (Google Play Billing)**. **We do not receive or store card or other payment details.** On the device we store only the Pass expiry date so that the app can recognise it. You can restore the purchase on the same Google Play account.
 
 ### 5. Retention, security and deletion
 CV data and settings stay on your device until you remove them (delete the CV in the app, clear the app's data or uninstall it). Because we hold no server copy, we cannot restore them. Please keep your own backup.
