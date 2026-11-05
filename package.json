@@ -17,6 +17,7 @@
     "test:slow": "tsx --test tests/*.slow.ts",
     "test:all": "npm test && npm run test:slow",
     "check:prod": "tsx scripts/check-prod.mjs",
+    "check:closed": "tsx scripts/check-prod.mjs closed --android",
     "android:sync": "npm run build && cap sync android && node scripts/install-native.mjs",
     "build:closed": "tsc --noEmit && vite build --mode closed",
     "android:sync:closed": "npm run build:closed && cap sync android && node scripts/install-native.mjs",

@@ -16,6 +16,7 @@
 - `npm run build` — перевірка типів + збірка
 - `npm run android:sync` — збірка веб-частини, `cap sync`, встановлення нативного плагіна
 - `npm run check:prod` — збирає профілі closed і production, шукає в них заглушки/кнопку розробника й перевіряє конфігурацію монетизації; **код 1 = збірка не готова до публікації** (production провалюється, поки `testAds: true`; перед релізом у магазин має проходити)
+- `npm run check:closed` — після `android:sync:closed`: перевіряє профіль closed і файли, що справді підуть в Android (assets/public); докладна інструкція зі збірки .aab — `docs/closed-test-release.md`
 - `npm run android:sync:dev` / `android:sync:closed` / `android:sync` — збірка для Android у профілі dev / closed / production
 - `npm run android:icons` — іконки з `assets/`
 
