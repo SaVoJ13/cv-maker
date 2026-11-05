@@ -140,3 +140,11 @@ export function normalizeAccess(raw: unknown): AccessState {
   const seen = Math.max(lastSeen, num(o.ad1At) ?? 0, num(o.rewardAt) ?? 0);
   return { v: 3, passUntil: stamps[0], lastSeen: seen, ad1At: stamps[1], rewardAt: stamps[2] };
 }
+
+/**
+ * Стан після скидання розробника: passUntil, lastSeen, ad1At, rewardAt — як у нового користувача.
+ * Лише для інструмента розробника (dev-збірка); у виробничих збірках кнопки скидання немає.
+ */
+export function resetAccess(): AccessState {
+  return FREE_ACCESS;
+}

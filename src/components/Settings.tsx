@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Suspense, lazy, type ReactNode } from 'react';
 import { adsActive, gateActive, openAdPrivacyOptions } from '../monetization/ads';
 import { passActive } from '../domain/access';
 import { fmt } from '../domain/i18n/fmt';
@@ -34,6 +34,9 @@ function Row({ title, desc, children, id, icon }: { title: string; desc?: string
  * Ustawienia: tylko to, co aplikacja naprawdę ma (motyw, kopia zapasowa, zgody na reklamy).
  * Aplikacja nie ma kont ani subskrypcji, więc nie pokazujemy profilu ani planu.
  */
+/** Кнопка скидання Pass і реклам існує лише в профілі dev: у closed і production імпорт відкидається при збірці. */
+const DevResetButton = import.meta.env.DEV || import.meta.env.MODE === 'dev' ? lazy(() => import('../monetization/DevResetButton').then((m) => ({ default: m.DevResetButton }))) : null;
+
 export function Settings() {
   const { t } = useStore();
   const [theme, setTheme] = useTheme();
@@ -70,6 +73,11 @@ export function Settings() {
                   : t('pass_none');
               })()}
             </p>
+            {DevResetButton ? (
+              <Suspense fallback={null}>
+                <DevResetButton />
+              </Suspense>
+            ) : null}
           </Row>
         ) : null}
         {adsActive() ? (

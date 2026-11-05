@@ -16,6 +16,7 @@
     "test": "tsx --test tests/*.test.ts",
     "test:slow": "tsx --test tests/*.slow.ts",
     "test:all": "npm test && npm run test:slow",
+    "check:prod": "node scripts/check-prod.mjs",
     "android:sync": "npm run build && cap sync android && node scripts/install-native.mjs",
     "android:sync:dev": "npm run build:dev && cap sync android && node scripts/install-native.mjs",
     "android:open": "cap open android",
