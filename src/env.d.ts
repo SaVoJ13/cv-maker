@@ -6,3 +6,8 @@ declare module 'pdfmake/build/vfs_fonts.js?raw' {
   const source: string;
   export default source;
 }
+
+// Змінні Vite: DEV/PROD для режимів розробки й релізу (див. monetization/ads.ts)
+interface ImportMeta {
+  readonly env: { readonly DEV: boolean; readonly PROD: boolean; readonly MODE: string };
+}

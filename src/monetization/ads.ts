@@ -18,6 +18,16 @@ export function adsActive(): boolean {
   return MONETIZATION.adsEnabled && Capacitor.isNativePlatform();
 }
 
+/**
+ * Zamek na eksporcie PDF działa tylko w aplikacji Android. W przeglądarce go nie ma;
+ * wyjątek: tryb deweloperski (npm run dev) z parametrem ?gate w adresie, do testów okna.
+ */
+export function gateActive(): boolean {
+  if (!MONETIZATION.gatingEnabled) return false;
+  if (Capacitor.isNativePlatform()) return true;
+  return import.meta.env.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).has('gate');
+}
+
 let sdkReady: Promise<void> | null = null;
 
 /** Zgoda (Google UMP, wymagana w UE) i uruchomienie SDK. Wykonuje się raz, przed pierwszą reklamą. */

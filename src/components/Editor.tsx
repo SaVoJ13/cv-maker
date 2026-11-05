@@ -64,11 +64,11 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
   const exportPdf = async () => {
     if (pdfBusy) return;
     const decision = gate.decide();
-    if (decision === 'needs-ad') {
+    if (decision.mode === 'ads' && decision.adsRequired > 0) {
       setGateOpen(true);
       return;
     }
-    await runExport(decision === 'credit');
+    await runExport(decision.mode === 'ads');
   };
 
   /** Reklama obejrzona: dopisujemy kredyt i od razu pobieramy PDF (kredyt znika po udanym zapisie). */

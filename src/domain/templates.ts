@@ -31,7 +31,7 @@ export interface TemplateMeta {
   ats: AtsLevel;
   /** Nie dwie kolumny: nie wyświetlamy ostrzeżenia o ATS */
   atsSafe: boolean;
-  /** Darmowy czy PRO. Wpływa dopiero na eksport PDF (paywall w Sprincie 5), edytować można każdy. */
+  /** Poziom szablonu: dane na przyszłość. Od Sprintu 5 wszystkie szablony są darmowe, a access.ts tego pola nie używa. */
   tier: Tier;
   /** Branża, dla której szablon jest przeznaczony; brak = uniwersalny. */
   industry?: IndustryId;

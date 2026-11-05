@@ -32,8 +32,6 @@ import { PdfStageError, errorText, isUnimplementedError } from '../src/export/er
 import { vfsFromScript } from '../src/export/vfs.ts';
 import { mixHex, tint } from '../src/domain/color.ts';
 import { BACKUP_APP, backupFileName, parseBackup, planImport, serializeBackup } from '../src/domain/backup.ts';
-import { FREE_ACCESS, consumeCredit, decideExport, grantCredit, normalizeAccess } from '../src/domain/access.ts';
-import { ACCESS_KEY, loadAccess, saveAccess } from '../src/store/accessPersist.ts';
 
 test('lines i list czyszczą tekst', () => {
   assert.deepEqual(lines('• Jeden\n- Dwa\r\n\n  * Trzy  '), ['Jeden', 'Dwa', 'Trzy']);
@@ -715,35 +713,7 @@ test('kopia zapasowa: ponowne wczytanie nie dubluje, inna wersja nie nadpisuje',
   assert.equal(backupFileName(new Date(2026, 9, 5).getTime()), 'cv-maker-kopia-2026-10-05.json');
 });
 
-test('dostęp do PDF: reklama, kredyt, premium i wersja bez blokady', () => {
-  assert.equal(decideExport(FREE_ACCESS, false), 'free');
-  assert.equal(decideExport(FREE_ACCESS, true), 'needs-ad');
-  assert.equal(decideExport({ ...FREE_ACCESS, pro: true }, true), 'premium');
-  let s = grantCredit(FREE_ACCESS, 3);
-  assert.equal(decideExport(s, true), 'credit');
-  s = consumeCredit(s);
-  assert.equal(decideExport(s, true), 'needs-ad');
-  assert.equal(consumeCredit(s).credits, 0); // nie schodzi poniżej zera
-  let many = FREE_ACCESS;
-  for (let i = 0; i < 10; i++) many = grantCredit(many, 3);
-  assert.equal(many.credits, 3); // limit zapasu
-});
-
-test('dostęp do PDF: uszkodzony zapis nigdy nie daje darmowego dostępu ani błędu', () => {
-  assert.deepEqual(normalizeAccess(null, 3), FREE_ACCESS);
-  assert.deepEqual(normalizeAccess('x', 3), FREE_ACCESS);
-  assert.deepEqual(normalizeAccess({ premium: 'yes', credits: -4 }, 3), FREE_ACCESS);
-  assert.deepEqual(normalizeAccess({ premium: true, credits: 99.9 }, 3), { ...FREE_ACCESS, pro: true, credits: 3 });
-  assert.deepEqual(normalizeAccess({ credits: NaN }, 3), FREE_ACCESS);
-  const mem = new Map<string, string>();
-  const st = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v) };
-  assert.deepEqual(loadAccess(st, 3), FREE_ACCESS);
-  saveAccess(st, { ...FREE_ACCESS, credits: 2 });
-  assert.deepEqual(loadAccess(st, 3), { ...FREE_ACCESS, credits: 2 });
-  mem.set(ACCESS_KEY, '{oops');
-  assert.deepEqual(loadAccess(st, 3), FREE_ACCESS);
-  assert.deepEqual(loadAccess(null, 3), FREE_ACCESS);
-});
+/* Dostęp do PDF (Pass, dwie reklamy, zegar): tests/access.test.ts */
 
 /* ---------- redesign interfejsu: czysta logika pomocnicza ---------- */
 

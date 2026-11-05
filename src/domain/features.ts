@@ -1,6 +1,6 @@
 import type { Cv, Tier } from './types';
 
-/** Функції, які можуть бути доступні лише в PRO (або розблоковані токеном). */
+/** Функції з позначками рівня. Дані на майбутнє: від Sprint 5 усі функції безкоштовні, а access.ts цей модуль не використовує. */
 export type FeatureId =
   | 'tpl_pro'
   | 'accent_extra'
@@ -24,7 +24,7 @@ export const FEATURE_IDS: readonly FeatureId[] = [
   'no_ads',
 ];
 
-/** Матриця «функція → рівень». Зміни тут вносити лише за згодою власника (docs/plan-pro.md). */
+/** Матриця «функція → рівень». Лише дані (не застосовується), зміни — за згодою власника. */
 export const FEATURE_TIER: Readonly<Record<FeatureId, Tier>> = {
   tpl_pro: 'pro',
   accent_extra: 'pro',

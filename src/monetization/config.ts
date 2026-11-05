@@ -9,7 +9,9 @@
  * się wyłącznie reklamy testowe i nie ma ryzyka zablokowania konta za własne kliknięcia.
  */
 export const MONETIZATION = {
-  /** Wyłącz, żeby aplikacja w ogóle nie pokazywała reklam i nie blokowała pobierania PDF. */
+  /** Zamek na eksporcie PDF (Pass albo 2 reklamy). false = pobieranie zawsze wolne, bez okien. */
+  gatingEnabled: true,
+  /** Reklamy są dostępne (AdMob). true + gatingEnabled=false: reklam nie pokazujemy; false + gatingEnabled=true: tylko tryb deweloperski z reklamami symulowanymi. */
   adsEnabled: true,
   /** true = zawsze testowe reklamy Google. Nigdy nie klikaj prawdziwych reklam we własnej aplikacji. */
   testAds: true,
@@ -17,6 +19,4 @@ export const MONETIZATION = {
   admobAppId: 'ca-app-pub-2983570541795370~6308389405',
   /** Blok „Nagradzana” (ze ukośnikiem). Testowy Google: ca-app-pub-3940256099942544/5224354917 */
   rewardedAdUnitId: 'ca-app-pub-2983570541795370/4915204657',
-  /** Maksymalnie tyle obejrzanych, a jeszcze niewykorzystanych reklam można mieć „na zapas”. */
-  maxCredits: 3,
 } as const;
