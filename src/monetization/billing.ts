@@ -29,6 +29,15 @@ export function isStubBilling(): boolean {
   return import.meta.env.DEV || import.meta.env.MODE === 'dev';
 }
 
+/**
+ * Чи доступна купівля Pass у цій збірці. false: звичайна й closed до кроку 5b (там немає Billing) —
+ * тоді вікно експорту й Налаштування не згадують Pass. З кроком 5b ця функція повертає true для збірок
+ * зі справжнім Google Play Billing (і лишається true для dev із заглушкою).
+ */
+export function billingAvailable(): boolean {
+  return isStubBilling();
+}
+
 export function getBilling(): BillingPort {
   if (import.meta.env.DEV || import.meta.env.MODE === 'dev') {
     let inner: Promise<BillingPort> | null = null;

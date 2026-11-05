@@ -1,5 +1,6 @@
 import { Suspense, lazy, type ReactNode } from 'react';
 import { adsActive, gateActive, openAdPrivacyOptions } from '../monetization/ads';
+import { billingAvailable } from '../monetization/billing';
 import { passActive } from '../domain/access';
 import { fmt } from '../domain/i18n/fmt';
 import { loadAccess } from '../store/accessPersist';
@@ -63,7 +64,7 @@ export function Settings() {
         <Row id="set-data" icon="database" title={t('backup_title')} desc={t('backup_desc')}>
           <BackupBox />
         </Row>
-        {gateActive() ? (
+        {gateActive() && billingAvailable() ? (
           <Row id="set-pdf" icon="download" title={t('set_pdf_title')} desc={t('gate_offline_note')}>
             <p className="hint" id="passStatus">
               {(() => {

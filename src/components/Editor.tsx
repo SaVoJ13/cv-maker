@@ -3,6 +3,7 @@ import type { Cv } from '../domain/types';
 import type { SectionId } from '../domain/completeness';
 import { errorText } from '../export/errors';
 import { downloadPdf } from '../export/exportPdf';
+import { PdfHint } from '../monetization/PdfHint';
 import { ExportGateDialog } from '../monetization/ExportGateDialog';
 import { useExportGate } from '../monetization/useExportGate';
 import { useCvUpdater, useSaveStatus, useStore } from '../store/StoreProvider';
@@ -138,10 +139,13 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
             <Icon name="layout" size={17} />
             <span className="lbl">{t('change_tpl')}</span>
           </button>
-          <button type="button" id="pdfBtn" className="btn primary pdf-desktop" disabled={pdfBusy} onClick={() => void exportPdf()}>
-            {pdfIcon}
-            {pdfLabel}
-          </button>
+          <div className="pdf-cta pdf-desktop">
+            <button type="button" id="pdfBtn" className="btn primary" disabled={pdfBusy} onClick={() => void exportPdf()}>
+              {pdfIcon}
+              {pdfLabel}
+            </button>
+            <PdfHint />
+          </div>
         </div>
       </div>
 
@@ -216,10 +220,13 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
             </button>
           ))}
         </div>
-        <button type="button" id="pdfBtnBar" className="btn primary" disabled={pdfBusy} onClick={() => void exportPdf()}>
-          {pdfIcon}
-          {pdfLabel}
-        </button>
+        <div className="pdf-cta">
+          <button type="button" id="pdfBtnBar" className="btn primary" disabled={pdfBusy} onClick={() => void exportPdf()}>
+            {pdfIcon}
+            {pdfLabel}
+          </button>
+          <PdfHint />
+        </div>
       </div>
 
       {gateOpen ? (

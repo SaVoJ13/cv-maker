@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { PASS_DURATION_MS } from '../src/domain/access.ts';
 import { COUNTDOWN_MS, GATE_IDLE, adGate, type GateState } from '../src/domain/adGate.ts';
@@ -102,4 +103,26 @@ test('ціна береться з магазину: у текстах нема�
     const m = MESSAGES[l] as Record<string, string>;
     for (const k of ['gate_req', 'pass_text', 'gate_pass_note', 'gate_consent', 'gate_price_unknown']) assert.doesNotMatch(m[k], /\d+[,.]\d{2}/, `${l}.${k}`);
   }
+});
+
+test('варіант без Pass (billingAvailable=false): тексти лише про реклами, без Pass, ціни й плейсхолдерів', () => {
+  for (const l of ['pl', 'uk', 'en'] as const) {
+    const m = MESSAGES[l] as Record<string, string>;
+    for (const k of ['gate_req_ads', 'gate_offline_ads', 'gate_consent_ads', 'pdf_hint_ads']) {
+      assert.ok(m[k]?.trim(), `${l}.${k}`);
+      assert.doesNotMatch(m[k], /Pass|\{\w+\}/, `${l}.${k}`);
+    }
+    assert.match(m.pdf_hint, /Pass/, l);
+    assert.match(m.pdf_hint_ads, /2/, l);
+  }
+  assert.equal(MESSAGES.pl.pdf_hint, '2 reklamy lub Pass 30 dni');
+  assert.equal(MESSAGES.pl.pdf_hint_ads, '2 reklamy');
+  assert.equal(MESSAGES.uk.gate_no_reward, 'Рекламу закрито достроково, тому винагороду не нараховано. Перегляньте її повністю.');
+});
+
+test('billingAvailable: у цій версії дорівнює наявності заглушки (dev); справжній Billing у 5b зробить true і для closed/prod', () => {
+  const src = readFileSync('src/monetization/billing.ts', 'utf8');
+  assert.match(src, /export function billingAvailable\(\): boolean \{\s*return isStubBilling\(\);/);
+  assert.match(readFileSync('src/monetization/ExportGateDialog.tsx', 'utf8'), /billingAvailable\(\)/);
+  assert.match(readFileSync('src/components/Settings.tsx', 'utf8'), /gateActive\(\) && billingAvailable\(\)/);
 });

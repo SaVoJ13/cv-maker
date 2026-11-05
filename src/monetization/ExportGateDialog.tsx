@@ -5,7 +5,7 @@ import { fmt } from '../domain/i18n/fmt';
 import { useStore } from '../store/StoreProvider';
 import { errorText } from '../export/errors';
 import { openAdPrivacyOptions } from './ads';
-import { BillingUnavailable, getBilling, isStubBilling } from './billing';
+import { BillingUnavailable, billingAvailable, getBilling, isStubBilling } from './billing';
 import { gateView } from './gateView';
 import { useAdGate } from './useAdGate';
 
@@ -29,6 +29,7 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
   const { t } = useStore();
   const gate = useAdGate({ ad1Done, onAd1Rewarded: onAd1, onGranted });
   const billing = useMemo(() => getBilling(), []);
+  const withPass = useMemo(() => billingAvailable(), []);
   const [view, setView] = useState<'ads' | 'pass'>('ads');
   const [price, setPrice] = useState<string | null>(null);
   const [buying, setBuying] = useState(false);
@@ -39,11 +40,12 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
 
   useEffect(() => {
     let alive = true;
+    if (!withPass) return;
     billing.price().then((p) => alive && setPrice(p), () => alive && setPrice(null));
     return () => {
       alive = false;
     };
-  }, [billing]);
+  }, [billing, withPass]);
 
   const priceText = price ?? t('gate_price_unknown');
   const close = () => {
@@ -72,7 +74,7 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
   };
 
   /* ---------- Pass ---------- */
-  if (view === 'pass') {
+  if (view === 'pass' && withPass) {
     return (
       <Dialog
         title={t('pass_title')}
@@ -117,7 +119,7 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
   if (v.phase === 'loading') status = fmt(t('gate_loading_n'), { n: v.adIndex });
   else if (v.phase === 'showing') status = fmt(t('gate_showing_n'), { n: v.adIndex });
   else if (v.phase === 'countdown') status = v.paused ? t('gate_countdown_paused') : fmt(t('gate_countdown'), { s: v.seconds ?? 0 });
-  else if (v.phase === 'failed') error = v.reason === 'consent' ? t('gate_consent') : t('gate_fail');
+  else if (v.phase === 'failed') error = v.reason === 'consent' ? t(withPass ? 'gate_consent' : 'gate_consent_ads') : t('gate_fail');
   else if (v.phase === 'early') error = t('gate_no_reward');
 
   return (
@@ -137,7 +139,7 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
           <button type="button" id="adCancel" className="btn" disabled={v.phase === 'showing'} onClick={close}>
             {t('gate_cancel')}
           </button>
-          {!working && v.phase !== 'granted' ? (
+          {withPass && !working && v.phase !== 'granted' ? (
             <button type="button" id="adBuy" className="btn" onClick={() => setView('pass')}>
               <Icon name="shield" size={16} />
               {t('gate_buy')}
@@ -164,7 +166,7 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
       }
     >
       <div className="dlg-body">
-        <p id="gate-req">{fmt(t('gate_req'), { price: priceText })}</p>
+        <p id="gate-req">{withPass ? fmt(t('gate_req'), { price: priceText }) : t('gate_req_ads')}</p>
         {ad1Done && v.phase === 'intro' ? <p className="hint">{t('gate_req1')}</p> : null}
         {status ? (
           <p className="gate-status" role="status" aria-live="polite">
@@ -186,8 +188,8 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
             {consentError}
           </p>
         ) : null}
-        <p className="hint">{t('gate_pass_note')}</p>
-        <p className="hint">{t('gate_offline_note')}</p>
+        {withPass ? <p className="hint">{t('gate_pass_note')}</p> : null}
+        <p className="hint">{t(withPass ? 'gate_offline_note' : 'gate_offline_ads')}</p>
       </div>
     </Dialog>
   );

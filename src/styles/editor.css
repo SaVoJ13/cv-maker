@@ -596,7 +596,7 @@
   .save.error > span {
     display: inline;
   }
-  .pdf-desktop {
+  .pdf-cta.pdf-desktop {
     display: none;
   }
   .edgrid {
@@ -733,4 +733,24 @@
 .dgrid .chk {
   gap: 6px;
   line-height: 1.25;
+}
+
+/* ---------- кнопка PDF із підказкою про умову ---------- */
+.pdf-cta {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+}
+.pdf-hint {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+/* у нижній панелі підказка не розширює колонку кнопки: вона може трохи виступати в обидва боки */
+.edbottom .pdf-hint {
+  margin: 0 -20px;
 }
