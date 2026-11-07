@@ -1,8 +1,9 @@
-// Dodaje do projektu android/ własny kod natywny: zapis PDF w folderze „Pobrane” (SaveFilePlugin)
-// oraz wpisy AdMob w AndroidManifest.xml i strings.xml (ID aplikacji z src/monetization/config.ts).
+// Dodaje do projektu android/ własny kod natywny: zapis PDF w folderze „Pobrane” (SaveFilePlugin),
+// reguły R8 (proguard-rules.pro + minifyEnabled/shrinkResources w build.gradle) oraz wpisy AdMob w AndroidManifest.xml i strings.xml (ID aplikacji z src/monetization/config.ts).
 // Można uruchamiać wielokrotnie: niczego nie dubluje. Wywołuje się samo przez `npm run android:sync`.
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { enableR8 } from './gradle-patch.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -98,5 +99,13 @@ if (admobTag.test(strings)) {
   writeFileSync(stringsPath, strings);
   report.push(`strings.xml: dodano admob_app_id (${admobAppId})`);
 }
+
+// 5. R8: reguły keep (z szablonu) i minifyEnabled/shrinkResources w build.gradle
+writeFileSync(join(androidDir, 'app', 'proguard-rules.pro'), template('proguard-rules.pro.tpl'));
+report.push('proguard-rules.pro: zapisano z szablonu native/proguard-rules.pro.tpl');
+const gradlePath = join(androidDir, 'app', 'build.gradle');
+const r8 = enableR8(readFileSync(gradlePath, 'utf8'));
+if (r8.changed) writeFileSync(gradlePath, r8.text);
+report.push(r8.changed ? 'build.gradle: włączono minifyEnabled i shrinkResources' : 'build.gradle: R8 już włączony');
 
 console.log(`\nKod natywny dla ${appId}:\n - ${report.join('\n - ')}\n`);

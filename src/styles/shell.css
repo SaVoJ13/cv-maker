@@ -157,7 +157,7 @@
     align-items: center;
     justify-content: space-between;
     width: var(--rail-w);
-    padding: 24px 0;
+    padding: calc(24px + var(--safe-t)) 0 calc(24px + var(--safe-b));
     border-right: 1px solid var(--line);
   }
   .brand {

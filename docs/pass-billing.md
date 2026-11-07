@@ -36,6 +36,6 @@
 ## Що зробити в Play Console
 1. **Monetize with Play → Products → In-app products → Create product**: ID **`pass_30d`** (точно так, потім змінити не можна), назва «Pass 30 dni», опис («Bez reklam przez 30 dni, bez automatycznego odnawiania»), ціна **9,99 PLN** (для інших країн Google перерахує). Статус **Active**.
 2. **Setup → License testing**: додайте e-mail тестувальників (вони купують без списання коштів).
-3. Завантажте збірку з versionCode 3 в закритий тест (продукти й Billing працюють лише з установленою з Play збіркою, не з `.apk` по кабелю).
+3. Завантажте збірку з versionCode 4 в закритий тест (продукти й Billing працюють лише з установленою з Play збіркою, не з `.apk` по кабелю).
 4. Профіль платежів Google (merchant) має бути налаштований, інакше продукт не активувати.
 5. Форма анкети про вміст: «In-app purchases» = **Так**. Data safety: додайте «Purchase history» (обробляє Google Play). Політика приватності: `docs/privacy-changes-billing.md`.

@@ -1,21 +1,38 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Правила R8 для CV Maker (com.savoj13.freecv).
+# ФАЙЛ ГЕНЕРУЄТЬСЯ скриптом scripts/install-native.mjs із native/proguard-rules.pro.tpl.
+# Не редагуйте android/app/proguard-rules.pro вручну: зміни зникнуть. Правте шаблон у native/.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Рядки коду в stack trace (разом із mapping.txt дають читабельні звіти про збої в Play Console)
+-keepattributes SourceFile,LineNumberTable,*Annotation*,Signature,InnerClasses,EnclosingMethod
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Capacitor: плагіни створюються за іменем класу з capacitor.plugins.json і викликаються
+# з JS за іменами методів. Дублює consumer-правила capacitor-android: так надійніше.
+-keep public class * extends com.getcapacitor.Plugin { *; }
+-keep @com.getcapacitor.annotation.CapacitorPlugin public class * {
+    @com.getcapacitor.annotation.PermissionCallback <methods>;
+    @com.getcapacitor.annotation.ActivityCallback <methods>;
+    @com.getcapacitor.annotation.Permission <methods>;
+    @com.getcapacitor.PluginMethod public <methods>;
+}
+-keep public class * extends com.getcapacitor.BridgeActivity { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Місток WebView ↔ нативний код (виклики з JavaScript)
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Наш плагін збереження PDF у «Завантаження»
+-keep class com.savoj13.freecv.SaveFilePlugin { *; }
+-keep class com.savoj13.freecv.MainActivity { *; }
+
+# @capacitor-community/admob (сам Google Mobile Ads SDK і UMP мають власні consumer-правила)
+-keep class com.getcapacitor.community.admob.** { *; }
+
+# @capgo/native-purchases (Google Play Billing має власні consumer-правила)
+-keep class ee.forgr.nativepurchases.** { *; }
+
+# Офіційні плагіни Capacitor (app, filesystem, share) покриває правило extends Plugin вище.
+
+# Попередження про класи, яких немає на Android (не впливають на роботу)
+-dontwarn org.apache.cordova.**
