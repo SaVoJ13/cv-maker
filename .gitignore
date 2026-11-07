@@ -25,3 +25,7 @@ keystore.properties
 # Редактори
 .idea/
 .vscode/
+
+# Папка з готовими релізними збірками і файл відповідності R8
+android/app/release/
+mapping.txt
