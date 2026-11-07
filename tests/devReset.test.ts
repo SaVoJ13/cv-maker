@@ -5,7 +5,7 @@ import { FREE_ACCESS, resetAccess } from '../src/domain/access.ts';
 import { ACCESS_KEY, saveAccess } from '../src/store/accessPersist.ts';
 
 test('resetAccess: passUntil, lastSeen, ad1At, rewardAt скинуті до порожнього стану', () => {
-  assert.deepEqual(resetAccess(), { v: 3, passUntil: null, lastSeen: 0, ad1At: null, rewardAt: null });
+  assert.deepEqual(resetAccess(), { v: 3, passUntil: null, lastSeen: 0, ad1At: null, rewardAt: null, granted: [] });
   assert.equal(resetAccess(), FREE_ACCESS);
 });
 

@@ -67,7 +67,12 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
 
   const exportPdf = async () => {
     if (pdfBusy) return;
-    const decision = gate.decide();
+    let decision = gate.decide();
+    if (decision.mode === 'ads' && decision.adsRequired > 0) {
+      // Покупка могла бути оплачена, а Pass не записано: підбираємо її перед показом реклами (не довше 4 с)
+      const got = await Promise.race([gate.restorePurchases(), new Promise<number>((r) => setTimeout(() => r(0), 4000))]);
+      if (got > 0) decision = gate.decide();
+    }
     if (decision.mode === 'ads' && decision.adsRequired > 0) {
       setAd1Done(decision.adsRequired === 1);
       setGateOpen(true);
@@ -84,8 +89,7 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
   };
 
   /** Pass kupiony: pobieranie bez reklam. */
-  const passBought = (until: number) => {
-    gate.applyPass(until);
+  const passBought = () => {
     setGateOpen(false);
     void runExport(false);
   };
@@ -230,7 +234,7 @@ export function Editor({ cv, onBack, onChangeTemplate }: { cv: Cv; onBack: () =>
       </div>
 
       {gateOpen ? (
-        <ExportGateDialog ad1Done={ad1Done} onAd1={gate.ad1} onGranted={rewardGranted} onPass={passBought} onClose={closeGate} />
+        <ExportGateDialog ad1Done={ad1Done} onAd1={gate.ad1} onGranted={rewardGranted} onRedeem={gate.activatePass} onPass={passBought} onClose={closeGate} />
       ) : null}
     </div>
   );

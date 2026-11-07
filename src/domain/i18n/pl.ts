@@ -70,6 +70,7 @@ export const pl = {
   pass_stub_note: 'Zakup testowy (tryb deweloperski): nic nie jest pobierane z konta.',
   pass_unavailable: 'Zakup Pass będzie dostępny w wersji z Google Play.',
   pass_active: 'Pass aktywny do {date}.',
+  pass_pending: 'Płatność oczekuje na potwierdzenie. Pass zostanie przyznany dopiero po jej zakończeniu, wtedy wróć do aplikacji.',
   pass_none: 'Brak aktywnego Pass.',
   gate_req_ads: 'Obejrzyj 2 reklamy, aby pobrać PDF.',
   gate_offline_ads: 'Edytować CV możesz bez internetu. Pobranie PDF wymaga obejrzenia reklam.',

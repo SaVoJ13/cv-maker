@@ -1,7 +1,7 @@
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { PASS_DURATION_MS } from '../src/domain/access.ts';
+import { DAY_MS, FREE_ACCESS, grantPass } from '../src/domain/access.ts';
 import { COUNTDOWN_MS, GATE_IDLE, adGate, type GateState } from '../src/domain/adGate.ts';
 import { fmt } from '../src/domain/i18n/fmt.ts';
 import { MESSAGES } from '../src/domain/i18n/index.ts';
@@ -54,10 +54,13 @@ test('gateView: відлік — секунди вгору, прогрес 0→1
   assert.deepEqual(seen, ['loading', 'showing', 'loading', 'showing', 'granted']);
 });
 
-test('заглушка billing: ціна 9,99 zł, Pass на 30 днів від поточного часу; знак для check:prod', async () => {
+test('заглушка billing: ціна 9,99 zł, buy видає Pass через redeem і повертає granted; знак для check:prod', async () => {
   const b = createStubBilling(() => 5_000, 0);
-  assert.equal(await b.price(), '9,99 zł');
-  assert.deepEqual(await b.buyPass(), { until: 5_000 + PASS_DURATION_MS });
+  assert.equal((await b.product())?.price, '9,99 zł');
+  let got: string[] = [];
+  assert.equal(await b.buy((ids) => ((got = ids), true)), 'granted');
+  assert.equal(got.length, 1);
+  assert.equal(grantPass(FREE_ACCESS, 5_000, 30, got).passUntil, 5_000 + 30 * DAY_MS);
   assert.equal(STUB_BILLING_MARKER, 'CVMAKER_STUB_BILLING_DEV_ONLY');
 });
 
@@ -65,7 +68,7 @@ const KEYS = [
   'gate_title', 'gate_req', 'gate_price_unknown', 'gate_req1', 'gate_pass_note', 'gate_offline_note', 'gate_watch', 'gate_watch2',
   'gate_loading_n', 'gate_showing_n', 'gate_countdown', 'gate_countdown_paused', 'gate_cancel', 'gate_fail', 'gate_consent',
   'gate_consent_btn', 'gate_no_reward', 'gate_retry', 'gate_buy', 'pass_title', 'pass_text', 'pass_back', 'pass_buy', 'pass_buying',
-  'pass_fail', 'pass_stub_note', 'pass_unavailable', 'pass_active', 'pass_none', 'set_pdf_title',
+  'pass_fail', 'pass_pending', 'pass_stub_note', 'pass_unavailable', 'pass_active', 'pass_none', 'set_pdf_title',
 ];
 
 test('тексти вікна експорту: усі ключі є в PL, UA, EN; плейсхолдери збігаються між мовами', () => {
@@ -120,9 +123,9 @@ test('варіант без Pass (billingAvailable=false): тексти лише
   assert.equal(MESSAGES.uk.gate_no_reward, 'Рекламу закрито достроково, тому винагороду не нараховано. Перегляньте її повністю.');
 });
 
-test('billingAvailable: у цій версії дорівнює наявності заглушки (dev); справжній Billing у 5b зробить true і для closed/prod', () => {
+test('billingAvailable: dev-заглушка або нативний Android; вікно й Налаштування спираються на нього', () => {
   const src = readFileSync('src/monetization/billing.ts', 'utf8');
-  assert.match(src, /export function billingAvailable\(\): boolean \{\s*return isStubBilling\(\);/);
+  assert.match(src, /export function billingAvailable\(\): boolean \{\s*return isStubBilling\(\) \|\| isPlayBilling\(\);/);
   assert.match(readFileSync('src/monetization/ExportGateDialog.tsx', 'utf8'), /billingAvailable\(\)/);
   assert.match(readFileSync('src/components/Settings.tsx', 'utf8'), /gateActive\(\) && billingAvailable\(\)/);
 });

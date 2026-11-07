@@ -5,7 +5,7 @@ import { fmt } from '../domain/i18n/fmt';
 import { useStore } from '../store/StoreProvider';
 import { errorText } from '../export/errors';
 import { openAdPrivacyOptions } from './ads';
-import { BillingUnavailable, billingAvailable, getBilling, isStubBilling } from './billing';
+import { billingAvailable, getBilling, isStubBilling, type PassProduct, type Redeem } from './billing';
 import { gateView } from './gateView';
 import { useAdGate } from './useAdGate';
 
@@ -16,8 +16,10 @@ interface Props {
   onAd1: () => void;
   /** Нагорода видана (дві реклами або запасний відлік); далі вікно закривається й починається експорт */
   onGranted: () => void;
-  /** Pass куплено: діє до `until`; далі вікно закривається й починається експорт */
-  onPass: (until: number) => void;
+  /** Видати Pass за покупку (синхронно зберігає стан). Викликається ДО споживання токена в Google Play. */
+  onRedeem: Redeem;
+  /** Pass куплено й записано; далі вікно закривається й починається експорт */
+  onPass: () => void;
   onClose: () => void;
 }
 
@@ -25,29 +27,38 @@ interface Props {
  * Вікно перед експортом PDF: умова показується заздалегідь, потім дві rewarded-реклами підряд
  * (запасний відлік 20 с лише для другої) або покупка Pass 30 днів.
  */
-export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }: Props) {
+export function ExportGateDialog({ ad1Done, onAd1, onGranted, onRedeem, onPass, onClose }: Props) {
   const { t } = useStore();
   const gate = useAdGate({ ad1Done, onAd1Rewarded: onAd1, onGranted });
   const billing = useMemo(() => getBilling(), []);
-  const withPass = useMemo(() => billingAvailable(), []);
+  const canBill = useMemo(() => billingAvailable(), []);
   const [view, setView] = useState<'ads' | 'pass'>('ads');
-  const [price, setPrice] = useState<string | null>(null);
+  const [product, setProduct] = useState<PassProduct | null>(null);
+  // Pass пропонуємо лише коли платформа дозволяє І продукт справді завантажено з Google Play
+  const withPass = canBill && product !== null;
   const [buying, setBuying] = useState(false);
   const [passError, setPassError] = useState('');
+  const [passInfo, setPassInfo] = useState('');
   const [consentError, setConsentError] = useState('');
   const primaryRef = useRef<HTMLButtonElement>(null);
   const v = gateView(gate.state, ad1Done);
 
   useEffect(() => {
     let alive = true;
-    if (!withPass) return;
-    billing.price().then((p) => alive && setPrice(p), () => alive && setPrice(null));
+    if (!canBill) return;
+    billing.product().then(
+      (p) => alive && setProduct(p),
+      (e: unknown) => {
+        console.warn(e); // Pass не пропонуємо, лишаються реклами
+        if (alive) setProduct(null);
+      },
+    );
     return () => {
       alive = false;
     };
-  }, [billing, withPass]);
+  }, [billing, canBill]);
 
-  const priceText = price ?? t('gate_price_unknown');
+  const priceText = product?.price ?? t('gate_price_unknown');
   const close = () => {
     gate.cancel();
     onClose();
@@ -57,12 +68,16 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
     if (buying) return;
     setBuying(true);
     setPassError('');
+    setPassInfo('');
     try {
-      const { until } = await billing.buyPass();
-      onPass(until);
+      const r = await billing.buy(onRedeem);
+      if (r === 'granted') onPass();
+      else if (r === 'pending') setPassInfo(t('pass_pending'));
+      else if (r === 'error') setPassError(t('pass_fail'));
+      // 'cancelled': користувач сам передумав, це не помилка
     } catch (e) {
       console.error(e);
-      setPassError(e instanceof BillingUnavailable ? t('pass_unavailable') : `${t('pass_fail')} (${errorText(e).slice(0, 120)})`);
+      setPassError(t('pass_fail'));
     } finally {
       setBuying(false);
     }
@@ -102,6 +117,11 @@ export function ExportGateDialog({ ad1Done, onAd1, onGranted, onPass, onClose }:
         <div className="dlg-body">
           <p>{fmt(t('pass_text'), { price: priceText })}</p>
           {isStubBilling() ? <p className="hint">{t('pass_stub_note')}</p> : null}
+          {passInfo ? (
+            <p className="hint" role="status">
+              {passInfo}
+            </p>
+          ) : null}
           {passError ? (
             <p className="dlg-err" role="alert">
               {passError}

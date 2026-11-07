@@ -1,7 +1,7 @@
 import { Suspense, lazy, type ReactNode } from 'react';
 import { adsActive, gateActive, openAdPrivacyOptions } from '../monetization/ads';
 import { billingAvailable } from '../monetization/billing';
-import { passActive } from '../domain/access';
+import { formatPassDate, passActive } from '../domain/access';
 import { fmt } from '../domain/i18n/fmt';
 import { loadAccess } from '../store/accessPersist';
 import { browserStorage } from '../store/persist';
@@ -70,7 +70,7 @@ export function Settings() {
               {(() => {
                 const a = loadAccess(browserStorage());
                 return passActive(a, Date.now()) && a.passUntil !== null
-                  ? fmt(t('pass_active'), { date: new Date(a.passUntil).toLocaleDateString() })
+                  ? fmt(t('pass_active'), { date: formatPassDate(a.passUntil) })
                   : t('pass_none');
               })()}
             </p>

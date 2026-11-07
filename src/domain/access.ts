@@ -18,6 +18,10 @@ export const AD_PROGRESS_TTL_MS = 10 * 60 * 1000;
 export const CLOCK_TOLERANCE_MS = 2 * 60 * 1000;
 /** Тривалість Pass: 30 діб. */
 export const PASS_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
+/** Скільки мс у добі. */
+export const DAY_MS = 24 * 60 * 60 * 1000;
+/** Скільки ідентифікаторів уже врахованих покупок пам'ятаємо (найстаріші відкидаються). */
+export const MAX_GRANTED_IDS = 30;
 /** Скільки реклам треба переглянути для одного експорту. */
 export const ADS_PER_EXPORT = 2;
 
@@ -31,9 +35,15 @@ export interface AccessState {
   ad1At: number | null;
   /** Коли видано нагороду за пару реклам (мс), або null. Нагорода діє 10 хв і витрачається після успішного експорту. */
   rewardAt: number | null;
+  /**
+   * Ідентифікатори (purchaseToken, orderId) покупок Pass, які вже враховано. Потрібні для ідемпотентності:
+   * та сама покупка Google Play (повторне відновлення після збою) ніколи не продовжує Pass двічі.
+   * Довжина обмежена MAX_GRANTED_IDS. Потрапляє лише в `cvmaker.access`, не в резервну копію.
+   */
+  granted: string[];
 }
 
-export const FREE_ACCESS: AccessState = { v: 3, passUntil: null, lastSeen: 0, ad1At: null, rewardAt: null };
+export const FREE_ACCESS: AccessState = { v: 3, passUntil: null, lastSeen: 0, ad1At: null, rewardAt: null, granted: [] };
 
 /** Прапорці збірки, потрібні рішенню про експорт. */
 export interface ExportFlags {
@@ -115,6 +125,26 @@ export function setPass(state: AccessState, until: number, now: number): AccessS
   return touch({ ...state, passUntil: keep }, now);
 }
 
+/** Чи вже врахована покупка з таким ідентифікатором (хоч один зі списку). */
+export function isGranted(state: AccessState, ids: readonly string[]): boolean {
+  return ids.some((id) => id !== '' && state.granted.includes(id));
+}
+
+/**
+ * Видає (або продовжує) Pass на `days` діб за покупку з ідентифікаторами `ids`.
+ * - нова дата = max(ефективний now, passUntil) + days: повторна покупка продовжує, а не скидає;
+ * - ефективний now = max(now, lastSeen): відкат годинника Pass не подовжує і не «омолоджує»;
+ * - вже врахована покупка (хоч один id є в журналі) нічого не змінює, повертається той самий об'єкт.
+ */
+export function grantPass(state: AccessState, now: number, days: number, ids: readonly string[] = []): AccessState {
+  if (isGranted(state, ids)) return state;
+  const effNow = Math.max(now, state.lastSeen);
+  const base = Math.max(effNow, state.passUntil ?? 0);
+  const fresh = ids.filter((id) => id !== '' && !state.granted.includes(id));
+  const granted = [...state.granted, ...fresh].slice(-MAX_GRANTED_IDS);
+  return touch({ ...state, passUntil: base + days * DAY_MS, granted }, now);
+}
+
 /** Pass більше не діє (повернення коштів, не знайдено в магазині). */
 export function clearPass(state: AccessState): AccessState {
   return state.passUntil === null ? state : { ...state, passUntil: null };
@@ -138,7 +168,11 @@ export function normalizeAccess(raw: unknown): AccessState {
   const stamps = [num(o.passUntil), num(o.ad1At), num(o.rewardAt)];
   // мітки часу не з майбутнього відносно lastSeen: інакше піднімаємо lastSeen, щоб не вийшло «вічного» доступу
   const seen = Math.max(lastSeen, num(o.ad1At) ?? 0, num(o.rewardAt) ?? 0);
-  return { v: 3, passUntil: stamps[0], lastSeen: seen, ad1At: stamps[1], rewardAt: stamps[2] };
+  // старий запис v3 без `granted` читається як порожній журнал; сміття в масиві відкидається
+  const granted = Array.isArray(o.granted)
+    ? o.granted.filter((x): x is string => typeof x === 'string' && x !== '' && x.length <= 512).slice(-MAX_GRANTED_IDS)
+    : [];
+  return { v: 3, passUntil: stamps[0], lastSeen: seen, ad1At: stamps[1], rewardAt: stamps[2], granted };
 }
 
 /**
@@ -147,4 +181,11 @@ export function normalizeAccess(raw: unknown): AccessState {
  */
 export function resetAccess(): AccessState {
   return FREE_ACCESS;
+}
+
+/** Дата для інтерфейсу у форматі dd.mm.yyyy (місцевий час), однакова для PL / UA / EN. */
+export function formatPassDate(ts: number): string {
+  const d = new Date(ts);
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
 }

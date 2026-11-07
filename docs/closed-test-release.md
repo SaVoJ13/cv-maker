@@ -5,9 +5,9 @@
 
 ## Що буде в цій збірці
 - Профіль **closed**: замок експорту PDF діє (2 реклами підряд), реклами **тестові** (`testAds: true`), напис «Test Ad».
-- **Pass і купівлі немає**: у вікні експорту нема кнопки «Kup Pass», ціни й екрана Pass (прапорець `billingAvailable` = false). Це зміниться в кроці 5b.
+- **Pass є (крок 5b)**: у вікні експорту після завантаження продукту з Google Play з’являється «Kup Pass» з ціною від Google. Потрібен продукт `pass_30d` у Play Console і тестувальники в License testing: див. `docs/pass-billing.md`.
 - Заглушок розробника немає, кнопки «Resetuj Pass i reklamy» немає.
-- `versionCode` = **2**, `versionName` = **1.0** (файл `android/app/build.gradle`). Кожне нове завантаження в Google Play має мати **більший** versionCode. Для наступної збірки збільшіть його (3, 4, …); versionName можна лишати 1.0 або піднімати (1.0.1, 1.1).
+- `versionCode` = **3**, `versionName` = **1.0.1** (5b; перша закрита збірка мала 2 і 1.0) (файл `android/app/build.gradle`). Кожне нове завантаження в Google Play має мати **більший** versionCode. Для наступної збірки збільшіть його (3, 4, …); versionName можна лишати 1.0 або піднімати (1.0.1, 1.1).
 - appId `com.savoj13.freecv` не змінюється.
 
 ## Крок 0. Іконка (перевірено)
@@ -56,8 +56,8 @@ npm run check:closed
 
 ## Крок 4. Швидка перевірка .aab перед завантаженням
 - Розмір файлу має бути розумним (кілька МБ, не 0).
-- У Android Studio: **Build → Analyze APK…** і вибрати `app-release.aab`. Перевірте: у `AndroidManifest.xml` пакет `com.savoj13.freecv`, `versionCode` = 2. У Merged Manifest зверніть увагу, чи є дозвіл `com.google.android.gms.permission.AD_ID` (від бібліотеки реклам). Якщо його немає, повідомте мене: цей дозвіл пов'язаний із відповіддю про рекламний ідентифікатор (див. `docs/play-console.md`).
-- Бажано встановити збірку на телефон і пройти експорт PDF: реклама тестова, кнопки Pass немає. Для .aab зручніше зібрати окремо debug (Run ▶ у Android Studio) із тим самим профілем (`android:sync:closed`).
+- У Android Studio: **Build → Analyze APK…** і вибрати `app-release.aab`. Перевірте: у `AndroidManifest.xml` пакет `com.savoj13.freecv`, `versionCode` = 3. У Merged Manifest мають бути дозволи `com.android.vending.BILLING` (Pass) і `com.google.android.gms.permission.AD_ID` (від бібліотеки реклам). Якщо його немає, повідомте мене: цей дозвіл пов'язаний із відповіддю про рекламний ідентифікатор (див. `docs/play-console.md`).
+- Бажано встановити збірку на телефон і пройти експорт PDF: реклама тестова, «Kup Pass» є лише зі встановленої з Play збіркою (див. `docs/pass-billing.md`). Для .aab зручніше зібрати окремо debug (Run ▶ у Android Studio) із тим самим профілем (`android:sync:closed`).
 
 ## Крок 5. Завантаження в Google Play (коли акаунт готовий)
 1. Play Console → ваш застосунок → **Testing → Closed testing → Create new release**.

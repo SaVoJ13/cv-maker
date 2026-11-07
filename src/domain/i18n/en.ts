@@ -69,6 +69,7 @@ export const en: Record<MsgKey, string> = {
   pass_stub_note: 'Test purchase (developer mode): nothing is charged to your account.',
   pass_unavailable: 'Buying a Pass will be available in the Google Play version.',
   pass_active: 'Pass active until {date}.',
+  pass_pending: 'Your payment is awaiting confirmation. The Pass is granted only once it completes; then come back to the app.',
   pass_none: 'No active Pass.',
   gate_req_ads: 'Watch 2 ads to download the PDF.',
   gate_offline_ads: 'You can edit your CV offline. Downloading a PDF requires watching ads.',

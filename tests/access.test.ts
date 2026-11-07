@@ -164,7 +164,7 @@ test('normalizeAccess: старі формати v1 і v2 не перенося�
 });
 
 test('normalizeAccess v3: читає коректні значення; погані числа стають null; мітки не з майбутнього відносно lastSeen', () => {
-  const ok: AccessState = { v: 3, passUntil: T + 5, lastSeen: T, ad1At: T - 1, rewardAt: null };
+  const ok: AccessState = { v: 3, passUntil: T + 5, lastSeen: T, ad1At: T - 1, rewardAt: null, granted: ['tok-1'] };
   assert.deepEqual(normalizeAccess(ok), ok);
   assert.deepEqual(normalizeAccess({ v: 3, passUntil: 'ні', lastSeen: NaN, ad1At: -5, rewardAt: Infinity }), FREE_ACCESS);
   // нагорода з майбутнього піднімає lastSeen, тож «вічною» вона не стане

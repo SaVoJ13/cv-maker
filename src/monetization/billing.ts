@@ -1,50 +1,49 @@
-import { PASS_DURATION_MS } from '../domain/access';
+import { Capacitor } from '@capacitor/core';
+import { MONETIZATION } from './config';
+import { createPlayBilling, type BillingPort, type PurchasesPlugin } from './billingPlay';
 
-/**
- * Покупка Pass 30 днів. Мережеві виклики лише тут (monetization/), не в domain.
- * Крок 5a: лише заглушка розробника; справжній Google Play Billing — крок 5b.
- */
-export interface BillingPort {
-  /** Ціна з магазину (наприклад «9,99 zł»), або null, якщо недоступна */
-  price(): Promise<string | null>;
-  /** Купує Pass; повертає момент завершення (мс). Відхиляється, якщо покупку скасовано чи не вдалась. */
-  buyPass(): Promise<{ until: number }>;
-}
-
-export class BillingUnavailable extends Error {
-  constructor() {
-    super('billing unavailable');
-    this.name = 'BillingUnavailable';
-  }
-}
-
-/** Покупка недоступна (збірка без заглушки й без Google Play Billing). */
-const unavailable: BillingPort = {
-  price: () => Promise.resolve(null),
-  buyPass: () => Promise.reject(new BillingUnavailable()),
-};
+export { BillingError, type BillingPort, type BuyResult, type PassProduct, type Redeem } from './billingPlay';
 
 /** Заглушка billing дозволена лише в розробці (npm run dev і збірка --mode dev). У closed і prod її немає. */
 export function isStubBilling(): boolean {
   return import.meta.env.DEV || import.meta.env.MODE === 'dev';
 }
 
+/** Справжній Google Play Billing: лише нативний Android (збірки closed і production). У вебі його немає. */
+function isPlayBilling(): boolean {
+  return Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android';
+}
+
 /**
- * Чи доступна купівля Pass у цій збірці. false: звичайна й closed до кроку 5b (там немає Billing) —
- * тоді вікно експорту й Налаштування не згадують Pass. З кроком 5b ця функція повертає true для збірок
- * зі справжнім Google Play Billing (і лишається true для dev із заглушкою).
+ * Чи може ця збірка пропонувати Pass: синхронна перевірка платформи (dev із заглушкою або Android).
+ * Остаточно вирішує завантаження продукту з Google Play (`port.product()`): якщо воно не вдалось
+ * (немає Play, продукту немає в Console), вікно експорту лишається в режимі «лише реклами».
+ * У вебі й у збірці без Billing: false, поведінка без змін.
  */
 export function billingAvailable(): boolean {
-  return isStubBilling();
+  return isStubBilling() || isPlayBilling();
 }
+
+/** Ліниво створений порт: плагін Capacitor вантажиться лише на Android і лише при першому зверненні. */
+function lazy(make: () => Promise<BillingPort>): BillingPort {
+  let inner: Promise<BillingPort> | null = null;
+  const get = () => (inner ??= make());
+  return { product: async () => (await get()).product(), buy: async (r) => (await get()).buy(r), restore: async (r) => (await get()).restore(r) };
+}
+
+let port: BillingPort | null = null;
 
 export function getBilling(): BillingPort {
+  if (port) return port;
+  // умова записана прямо тут, щоб збірник відкинув import заглушки в closed і production
   if (import.meta.env.DEV || import.meta.env.MODE === 'dev') {
-    let inner: Promise<BillingPort> | null = null;
-    const get = () => (inner ??= import('./billingStub').then((m) => m.createStubBilling()));
-    return { price: async () => (await get()).price(), buyPass: async () => (await get()).buyPass() };
+    port = lazy(() => import('./billingStub').then((m) => m.createStubBilling()));
+  } else if (isPlayBilling()) {
+    port = lazy(() =>
+      import('@capgo/native-purchases').then((m) => createPlayBilling(m.NativePurchases as unknown as PurchasesPlugin, MONETIZATION.passProductId)),
+    );
+  } else {
+    port = { product: () => Promise.resolve(null), buy: () => Promise.resolve('error'), restore: () => Promise.resolve(0) };
   }
-  return unavailable;
+  return port;
 }
-
-export { PASS_DURATION_MS };

@@ -19,4 +19,8 @@ export const MONETIZATION = {
   admobAppId: 'ca-app-pub-2983570541795370~6308389405',
   /** Blok „Nagradzana” (ze ukośnikiem). Testowy Google: ca-app-pub-3940256099942544/5224354917 */
   rewardedAdUnitId: 'ca-app-pub-2983570541795370/4915204657',
+  /** Identyfikator produktu jednorazowego (INAPP, zużywalny) „Pass 30 dni” w Google Play Console. Po utworzeniu nie zmieniaj. */
+  passProductId: 'pass_30d',
+  /** Na ile dni jeden zakup przedłuża Pass. Bez automatycznego odnawiania. */
+  passDays: 30,
 } as const;
